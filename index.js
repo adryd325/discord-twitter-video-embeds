@@ -7,8 +7,8 @@ const discord = new Discord(config.token);
 
 let logChannel;
 
-const twitterURLRegexGlobal = /(?<!<)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/g;
-const twitterURLRegex = /(?<!<)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/;
+const twitterURLRegexGlobal = /(?<!<|\|\|)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/g;
+const twitterURLRegex = /(?<!<|\|\|)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/;
 
 async function twitterDownload(twitterURL) {
   // Just in case there's something I overlooked in the regex that would allow code execution
