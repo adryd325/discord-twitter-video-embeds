@@ -7,10 +7,8 @@ const discord = new Discord(config.token);
 
 let logChannel;
 
-const twitterURLRegexGlobal =
-  /https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/g;
-const twitterURLRegex =
-  /https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/;
+const twitterURLRegexGlobal = /(?<!<)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/g;
+const twitterURLRegex = /(?<!<)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/;
 
 async function twitterDownload(twitterURL) {
   // Just in case there's something I overlooked in the regex that would allow code execution
@@ -29,9 +27,11 @@ async function twitterDownload(twitterURL) {
 
 async function handleMessage(message) {
   // If the message doesn't have content, or if we're reading our own message
-  if (!message.content || message.author.id === discord.user.id 
+  if (
+    !message.content ||
+    message.author.id === discord.user.id ||
     // Block bots, but reply to hiddenphox (quote rt unrolling)
-    || (message.author.bot && message.author.id !== "152172984373608449") 
+    (message.author.bot && message.author.id !== "152172984373608449")
   ) {
     return;
   }
@@ -98,8 +98,8 @@ discord.on("warn", handleError);
 
 discord.on("guildCreate", (guild) => {
   if (logChannel) {
-    logChannel.createMessage(`:tada: New guild: ${guild.name}`)
+    logChannel.createMessage(`:tada: New guild: ${guild.name}`);
   }
-})
+});
 
 discord.connect();
