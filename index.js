@@ -94,6 +94,7 @@ discord.on("ready", () => {
   }); */
 });
 
+/** @param {Error} error */
 function handleError(error) {
   if (logChannel) {
     try {
