@@ -18,7 +18,10 @@ async function twitterDownload(twitterURL) {
   return new Promise((resolve) => {
     childProcess.exec(
       `youtube-dl --get-url ${safeTwitterURL}`,
-      (stderr, stdout) => {
+      (err, stdout, stderr) => {
+        if (stderr && stderr.includes("WARNING: Falling back on generic information extractor.")) {
+          resolve();
+        }
         resolve(stdout);
       }
     );
@@ -45,7 +48,7 @@ async function handleMessage(message) {
     videoURLs.push(await twitterDownload(matches[index]));
   }
   const reply = videoURLs.join("");
-  // Make sure we're not sending an empty message somehow
+  // Make sure we're not sending an empty message if no links have videos
   if (reply.length === 0) {
     return;
   }
