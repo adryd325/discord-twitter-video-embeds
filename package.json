@@ -1,14 +1,17 @@
 {
+  "type": "module",
   "name": "discord-twitter-video-embeds",
   "version": "1.0.0",
   "description": "Replies to messages with twitter video links with the video",
   "main": "index.js",
   "scripts": {
+    "start": "node index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "adryd <me@adryd.com>",
   "license": "MIT",
   "dependencies": {
-    "eris": "^0.15.1"
+    "eris": "^0.15.1",
+    "node-fetch": "^2.6.1"
   }
 }

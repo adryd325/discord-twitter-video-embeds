@@ -1,33 +1,38 @@
-const Discord = require("eris");
-const fs = require("fs");
-const childProcess = require("child_process");
+import Discord from "eris";
+import fs from "fs";
+import { TwitterClient, TwitterErrorList } from "./twitter.js";
 
 const config = JSON.parse(fs.readFileSync("./config.json"));
 const discord = new Discord(config.token);
 
+const twitter = new TwitterClient(
+  `Discord twitter video embeds // adryd.co/twitter-embeds`
+);
+
 let logChannel;
 
-const twitterURLRegexGlobal = /(?<!<|\|\|)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/g;
-const twitterURLRegex = /(?<!<|\|\|)https?:\/\/((mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/;
+const TWITTER_URL_REGEX = /(?<!<|\|\|)https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/gm;
 
-async function twitterDownload(twitterURL) {
-  // Just in case there's something I overlooked in the regex that would allow code execution
-  // This is still hacky af, but I don't care, if you find an RCE with just numbers, you deserve it
-  const tweetID = twitterURLRegex.exec(twitterURL)[3];
-  const safeTwitterURL = `https://twitter.com/i/status/${tweetID}`;
-  return new Promise((resolve) => {
-    childProcess.exec(
-      `youtube-dl --get-url ${safeTwitterURL}`,
-      (err, stdout, stderr) => {
-        if (stderr && stderr.includes("WARNING: Falling back on generic information extractor.")) {
-          resolve();
+/** @param {string} id */
+async function getVideoURL(id) {
+  try {
+    const videos = await twitter.getVideos(id);
+    return videos?.[0]?.url;
+  } catch (error) {
+    if (error instanceof TwitterErrorList) {
+      error.errors.forEach((err) => {
+        // Ignore page does not exist error
+        if (err.code !== 34) {
+          handleError(err);
         }
-        resolve(stdout);
-      }
-    );
-  });
+      });
+    } else {
+      handleError(error);
+    }
+  }
 }
 
+/** @param {Discord.Message} message */
 async function handleMessage(message) {
   // If the message doesn't have content, or if we're reading our own message
   if (
@@ -38,20 +43,25 @@ async function handleMessage(message) {
   ) {
     return;
   }
-  const matches = message.content.match(twitterURLRegexGlobal);
-  // If there are no Twitter URLs, we don't need to do anything
-  if (!matches) {
-    return;
-  }
-  const videoURLs = [];
-  for (let index = 0; index < matches.length; index++) {
-    videoURLs.push(await twitterDownload(matches[index]));
-  }
-  const reply = videoURLs.join("");
+
+  // Match the URL
+  // then get the video url for each id
+  const promises = [...message.content.matchAll(TWITTER_URL_REGEX)]?.map(
+    (m) => {
+      return getVideoURL(m[1]);
+    }
+  );
+
+  // Wait for all the video url fetches to finish asynchronously
+  const urls = await Promise.all(promises);
+
+  const reply = urls.join("\n");
+
   // Make sure we're not sending an empty message if no links have videos
   if (reply.length === 0) {
     return;
   }
+
   message.channel.createMessage({
     content: reply,
     messageReference: {
@@ -65,7 +75,7 @@ discord.on("messageCreate", handleMessage);
 
 discord.on("ready", () => {
   discord.getChannel(config.logChannel);
-  discord.editStatus("online", {name: "adryd.co/twitter-embeds"});
+  discord.editStatus("online", { name: "adryd.co/twitter-embeds" });
   logChannel = discord.getChannel(config.logChannel);
   logChannel.createMessage("Ready!");
   // Test code
@@ -84,6 +94,7 @@ discord.on("ready", () => {
   }); */
 });
 
+/** @param {Error} error */
 function handleError(error) {
   if (logChannel) {
     try {
