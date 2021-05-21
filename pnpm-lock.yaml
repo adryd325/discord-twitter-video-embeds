@@ -2,9 +2,11 @@ lockfileVersion: 5.3
 
 specifiers:
   eris: ^0.15.1
+  node-fetch: ^2.6.1
 
 dependencies:
   eris: 0.15.1
+  node-fetch: 2.6.1
 
 packages:
 
@@ -19,6 +21,11 @@ packages:
     transitivePeerDependencies:
       - bufferutil
       - utf-8-validate
+    dev: false
+
+  /node-fetch/2.6.1:
+    resolution: {integrity: sha512-V4aYg89jEoVRxRb2fJdAg8FHvI7cEyYdVAh94HH0UIK8oJxUfkjlDQN9RbMx+bEjP7+ggMiFRprSti032Oipxw==}
+    engines: {node: 4.x || >=6.0.0}
     dev: false
 
   /opusscript/0.0.8:
