@@ -1,6 +1,7 @@
 lockfileVersion: 5.3
 
 specifiers:
+  '@types/node': ^15.6.0
   eris: ^0.15.1
   node-fetch: ^2.6.1
 
@@ -8,7 +9,14 @@ dependencies:
   eris: 0.15.1
   node-fetch: 2.6.1
 
+devDependencies:
+  '@types/node': 15.6.0
+
 packages:
+
+  /@types/node/15.6.0:
+    resolution: {integrity: sha512-gCYSfQpy+LYhOFTKAeE8BkyGqaxmlFxe+n4DKM6DR0wzw/HISUE/hAmkC/KT8Sw5PCJblqg062b3z9gucv3k0A==}
+    dev: true
 
   /eris/0.15.1:
     resolution: {integrity: sha512-IQ3BPW6OjgFoqjdh+irPOa1jFlkotk+WNu2GQQ7QAQfbzQEPZgn+F+hpOxfMUXPHOZMX4sPKLkVDkMHAssBYhw==}
