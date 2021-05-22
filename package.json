@@ -13,5 +13,8 @@
   "dependencies": {
     "eris": "^0.15.1",
     "node-fetch": "^2.6.1"
+  },
+  "devDependencies": {
+    "@types/node": "^15.6.0"
   }
 }

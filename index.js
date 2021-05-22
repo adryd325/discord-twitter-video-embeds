@@ -1,20 +1,20 @@
-import Discord from "eris";
-import fs from "fs";
+import * as Discord from "eris";
+import * as fs from "fs";
 import { TwitterClient, TwitterErrorList } from "./twitter.js";
 
-const config = JSON.parse(fs.readFileSync("./config.json"));
-const discord = new Discord(config.token);
+const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
+const discord = new Discord.Client(config.token);
 
-const twitter = new TwitterClient(
-  `Discord twitter video embeds // adryd.co/twitter-embeds`
-);
-
+/** @type {Discord.TextChannel} */
 let logChannel;
 
 const TWITTER_URL_REGEX = /(?<!<|\|\|)https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/gm;
 
-/** @param {string} id */
-async function getVideoURL(id) {
+/**
+ * @param {string} id
+ * @param {TwitterClient} twitter
+ **/
+async function getVideoURL(id, twitter) {
   try {
     const videos = await twitter.getVideos(id);
     return videos?.[0]?.url;
@@ -44,13 +44,20 @@ async function handleMessage(message) {
     return;
   }
 
+  const matches = [...message.content.matchAll(TWITTER_URL_REGEX)];
+
+  // Make sure we have at least one link so we don't create uneeded twitter instances
+  if (matches.length === 0) return;
+
+  const twitter = new TwitterClient(
+    `Discord twitter video embeds // adryd.co/twitter-embeds`
+  );
+
   // Match the URL
   // then get the video url for each id
-  const promises = [...message.content.matchAll(TWITTER_URL_REGEX)]?.map(
-    (m) => {
-      return getVideoURL(m[1]);
-    }
-  );
+  const promises = matches?.map((m) => {
+    return getVideoURL(m[1], twitter);
+  });
 
   // Wait for all the video url fetches to finish asynchronously
   const urls = await Promise.all(promises);
@@ -76,7 +83,11 @@ discord.on("messageCreate", handleMessage);
 discord.on("ready", () => {
   discord.getChannel(config.logChannel);
   discord.editStatus("online", { name: "adryd.co/twitter-embeds" });
-  logChannel = discord.getChannel(config.logChannel);
+  let channel = discord.getChannel(config.logChannel);
+  if (!(channel instanceof Discord.TextChannel)) {
+    throw new Error("`config.logChannel` must be a text channel");
+  }
+  logChannel = channel;
   logChannel.createMessage("Ready!");
   // Test code
   /* handleMessage({
