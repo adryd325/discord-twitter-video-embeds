@@ -62,7 +62,11 @@ async function handleMessage(message) {
   // Wait for all the video url fetches to finish asynchronously
   const urls = await Promise.all(promises);
 
-  const reply = urls.join("\n");
+  const reply = urls.filter(url => {
+    return url !== undefined
+  }).join("\n");
+
+  console.log(urls);
 
   // Make sure we're not sending an empty message if no links have videos
   if (reply.length === 0) {
