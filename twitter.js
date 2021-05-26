@@ -46,7 +46,7 @@ export class TwitterClient {
   }
 
   /** @param {string} id the tweet id */
-  async getVideos(id) {
+  async getTweet(id) {
     const apiUrl = `https://api.twitter.com/2/timeline/conversation/${id}.json?tweet_mode=extended`;
 
     return fetch(apiUrl, {
@@ -74,15 +74,21 @@ export class TwitterClient {
             tweets[id].quoted_status_id_str ??
             id
         ];
-      })
+      });
+  }
+
+  /** @param {string} id the tweet id */
+  async getVideos(id) {
+    return this.getTweet(id)
       .then((tweet) =>
         tweet.extended_entities?.media
-          ?.filter((m) => m.type === "video")
+          // Make sure it's actually a video
+          .filter((m) => m.type === "video" || m.type === "animated_gif")
           .flatMap(
             (entity) =>
               entity.video_info.variants
                 // Make sure it's a valid video
-                .filter((v) => v.bitrate)
+                .filter((v) => v.bitrate != null)
                 // Get the highest quality
                 .sort((a, b) => b.bitrate - a.bitrate)?.[0]
           )
