@@ -12,7 +12,7 @@ const TWITTER_URL_REGEX = /(?<!<|\|\|)https?:\/\/(?:(?:mobile|www)\.)?twitter\.c
 
 /**
  * @param {string} id
- * @param {TwitterClient} twitter
+ * @param {TwitterClient} twitter twitter
  **/
 async function getVideoURL(id, twitter) {
   try {
@@ -62,9 +62,7 @@ async function handleMessage(message) {
   // Wait for all the video url fetches to finish asynchronously
   const urls = await Promise.all(promises);
 
-  const reply = urls.filter(url => {
-    return url !== undefined
-  }).join("\n");
+  const reply = urls.filter((url) => url !== null).join("\n");
 
   console.log(urls);
 
