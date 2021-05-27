@@ -69,10 +69,7 @@ export class TwitterClient {
         const tweets = conversation.globalObjects.tweets;
         return tweets[
           // Follow retweets
-          tweets[id].retweeted_status_id_str ??
-            // Follow quotes
-            tweets[id].quoted_status_id_str ??
-            id
+          tweets[id].retweeted_status_id_str ?? id
         ];
       });
   }
