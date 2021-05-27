@@ -44,6 +44,11 @@ async function handleMessage(message) {
     return;
   }
 
+  // Make sure the user has "Embed Links" permission
+  if (message.member && !message.member.permissions.has("embedLinks")) {
+    return;
+  }
+
   const matches = [...message.content.matchAll(TWITTER_URL_REGEX)];
 
   // Make sure we have at least one link so we don't create uneeded twitter instances
