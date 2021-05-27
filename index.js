@@ -67,7 +67,7 @@ async function handleMessage(message) {
   // Wait for all the video url fetches to finish asynchronously
   const urls = await Promise.all(promises);
 
-  const reply = urls.filter((url) => url !== null).join("\n");
+  const reply = urls.filter((url) => url !== undefined).join("\n");
 
   console.log(urls);
 
