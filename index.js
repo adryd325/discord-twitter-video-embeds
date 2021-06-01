@@ -8,7 +8,8 @@ const discord = new Discord.Client(config.token);
 /** @type {Discord.TextChannel} */
 let logChannel;
 
-const TWITTER_URL_REGEX = /(?<!<|\|\|)https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/gm;
+const TWITTER_URL_REGEX =
+  /(?<!<|\|\|)https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/gm;
 
 /**
  * @param {string} id
@@ -34,18 +35,29 @@ async function getVideoURL(id, twitter) {
 
 /** @param {Discord.Message} message */
 async function handleMessage(message) {
-  // If the message doesn't have content, or if we're reading our own message
-  if (
-    !message.content ||
-    message.author.id === discord.user.id ||
-    // Block bots, but reply to hiddenphox (quote rt unrolling)
-    (message.author.bot && message.author.id !== "152172984373608449")
-  ) {
-    return;
+  // If the message doesn't have content
+  if (!message.content) return;
+  // Do not respond to ourselves
+  if (message.author.id === discord.user.id) return;
+  // Block bots, but reply to hiddenphox (quote rt unrolling)
+  if (message.author.bot && message.author.id !== "152172984373608449") return;
+  // If we're in a guild (TextChannel)
+  if (message.channel instanceof Discord.TextChannel) {
+    // Check to make sure we have permission to send in the channel we're going to send
+    if (!message.channel.permissionsOf(discord.user.id).has("sendMessages")) return;
+    // Check that the user sending the message has permissions to embed links
+    if (!message.channel.permissionsOf(message.author.id).has("embedLinks")) return;
   }
 
-  // Make sure the user has "Embed Links" permission
-  if (message.member && !message.member.permissions.has("embedLinks")) {
+  // There have been times where the bot has crashed because message.channel.createMessage is underfined????
+  if (!message.channel.createMessage) {
+    // try to catch whatever bug is happening
+    console.log("--- BEGIN BROKEN MESSAGE ---")
+    console.log("message:")
+    console.log(message);
+    console.log("message.channel:")
+    console.log(message.channel);
+    console.log("--- END BROKEN MESSAGE ---")
     return;
   }
 
@@ -66,18 +78,15 @@ async function handleMessage(message) {
 
   // Wait for all the video url fetches to finish asynchronously
   const urls = await Promise.all(promises);
-
-  const reply = urls.filter((url) => url !== undefined).join("\n");
-
-  console.log(urls);
+  const response = urls.filter((url) => url !== undefined).join("\n");
 
   // Make sure we're not sending an empty message if no links have videos
-  if (reply.length === 0) {
+  if (response.length === 0) {
     return;
   }
 
   message.channel.createMessage({
-    content: reply,
+    content: response,
     messageReference: {
       channelID: message.channel.id,
       messageID: message.id,
@@ -130,7 +139,10 @@ discord.on("warn", handleError);
 
 discord.on("guildCreate", (guild) => {
   if (logChannel) {
-    logChannel.createMessage(`:tada: New guild: ${guild.name}`);
+    const safeName = guild.name.replace(/@/g, '@\u200b')
+      .replace(/<#/g, '<#\u200b')
+      .replace(/<:/g, '<:\u200b\u200b');
+    logChannel.createMessage(`:tada: New guild: ${guild.id} ${safeName}`);
   }
 });
 
