@@ -48,18 +48,8 @@ async function handleMessage(message) {
     // Check that the user sending the message has permissions to embed links
     if (!message.channel.permissionsOf(message.author.id).has("embedLinks")) return;
   }
-
-  // There have been times where the bot has crashed because message.channel.createMessage is underfined????
-  if (!message.channel.createMessage) {
-    // try to catch whatever bug is happening
-    console.log("--- BEGIN BROKEN MESSAGE ---")
-    console.log("message:")
-    console.log(message);
-    console.log("message.channel:")
-    console.log(message.channel);
-    console.log("--- END BROKEN MESSAGE ---")
-    return;
-  }
+  // if the channel is unsupported by eris (Threads)
+  if (!message.channel.createMessage) return;
 
   const matches = [...message.content.matchAll(TWITTER_URL_REGEX)];
 
