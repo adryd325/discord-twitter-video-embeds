@@ -2,14 +2,16 @@ import * as Discord from "eris";
 import * as fs from "fs";
 import { TwitterClient, TwitterErrorList } from "./twitter.js";
 
-const config = JSON.parse(fs.readFileSync("./config.json", "utf8"));
-const discord = new Discord.Client(config.token);
+const discord = new Discord.Client(process.env.TOKEN, {
+  intents: ["guilds", "guildMessages", "directMessages"],
+});
 
 /** @type {Discord.TextChannel} */
 let logChannel;
 
-const TWITTER_URL_REGEX =
-  /(?<!<|\|\|)https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]+)/gm;
+const userAgent = `discord-twitter-video-embeds (https://github.com/adryd325/discord-twitter-video-embeds, https://adryd.co/twitter-embeds)`;
+const TWITTER_URL_REGEXP = /(?<!<)https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]+\/status\/([0-9]{1,32})(?:\?s=\d{1,2})?/g;
+const SPOILER_REGEXP = /\|\|([\s\S]+?)\|\|/g;
 
 /**
  * @param {string} id
@@ -48,27 +50,61 @@ async function handleMessage(message) {
     // Check that the user sending the message has permissions to embed links
     if (!message.channel.permissionsOf(message.author.id).has("embedLinks")) return;
   }
-  // if the channel is unsupported by eris (Threads)
+  // if the channel is currently unsupported by eris (Threads)
   if (!message.channel.createMessage) return;
 
-  const matches = [...message.content.matchAll(TWITTER_URL_REGEX)];
+  // this is the simplest way I could think of for doing this, I guess it also resolves duplicates.
+  // it's not optimal but i refuse to write a propper parser for this
+  let twitterLinks = [];
+  [...message.content.matchAll(TWITTER_URL_REGEXP)].forEach((match) => {
+    const id = match[1];
+    if (!twitterLinks.find((twitterLink) => twitterLink.id === id)) {
+      twitterLinks.push({
+        id,
+        spoiler: false,
+      });
+    }
+  });
+
+  const spoilers = [...message.content.matchAll(SPOILER_REGEXP)].map((match) => [
+    ...match[1].matchAll(TWITTER_URL_REGEXP),
+  ]);
+  spoilers.forEach((matches) => {
+    matches.forEach((match) => {
+      const id = match[1];
+      const index = twitterLinks.findIndex((twitterLink) => twitterLink.id === id);
+      if (index !== null) {
+        twitterLinks[index].spoiler = true;
+      }
+    });
+  });
 
   // Make sure we have at least one link so we don't create uneeded twitter instances
-  if (matches.length === 0) return;
-
-  const twitter = new TwitterClient(
-    `Discord twitter video embeds // adryd.co/twitter-embeds`
-  );
+  if (twitterLinks.length === 0) return;
+  const twitter = new TwitterClient(userAgent);
 
   // Match the URL
   // then get the video url for each id
-  const promises = matches?.map((m) => {
-    return getVideoURL(m[1], twitter);
+  const promises = twitterLinks?.map((twitterLink) => {
+    return getVideoURL(twitterLink.id, twitter);
   });
 
   // Wait for all the video url fetches to finish asynchronously
   const urls = await Promise.all(promises);
-  const response = urls.filter((url) => url !== undefined).join("\n");
+  twitterLinks = twitterLinks.map((link, index) => {
+    return {
+      ...link,
+      url: urls[index],
+      sendUrl: link.spoiler ? "|| " + urls[index] + " ||" : urls[index],
+    };
+  });
+  twitterLinks = twitterLinks.filter((link) => link.url !== undefined);
+
+  const response = twitterLinks
+    .map((link) => {
+      return link.sendUrl;
+    })
+    .join("\n");
 
   // Make sure we're not sending an empty message if no links have videos
   if (response.length === 0) {
@@ -87,9 +123,9 @@ async function handleMessage(message) {
 discord.on("messageCreate", handleMessage);
 
 discord.on("ready", () => {
-  discord.getChannel(config.logChannel);
-  discord.editStatus("online", { name: "adryd.co/twitter-embeds" });
-  let channel = discord.getChannel(config.logChannel);
+  console.log("ready");
+  discord.editStatus("online", { name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 1 });
+  let channel = discord.getChannel(process.env.LOG_CHANNEL);
   if (!(channel instanceof Discord.TextChannel)) {
     throw new Error("`config.logChannel` must be a text channel");
   }
@@ -97,7 +133,7 @@ discord.on("ready", () => {
   logChannel.createMessage("Ready!");
   // Test code
   /* handleMessage({
-    content: "https://twitter.com/crimsonruinz/status/1393126235606183939?s=20",
+    content: "https://twitter.com/yonasawa/status/1374689368980385801?s=20",
     author: {
       id: "authorID",
     },
@@ -127,12 +163,11 @@ function handleError(error) {
 discord.on("error", handleError);
 discord.on("warn", handleError);
 
+/** @param {Discord.Guild} message */
 discord.on("guildCreate", (guild) => {
   if (logChannel) {
-    const safeName = guild.name.replace(/@/g, '@\u200b')
-      .replace(/<#/g, '<#\u200b')
-      .replace(/<:/g, '<:\u200b\u200b');
-    logChannel.createMessage(`:tada: New guild: ${guild.id} ${safeName}`);
+    const safeName = guild.name.replace(/<@/g, "<@\u200b");
+    logChannel.createMessage(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${safeName}`);
   }
 });
 

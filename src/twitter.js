@@ -59,9 +59,7 @@ export class TwitterClient {
       .then((res) => res.json())
       .then((res) => {
         if (res.errors) {
-          throw new TwitterErrorList(
-            res.errors.map((err) => new TwitterError(err))
-          );
+          throw new TwitterErrorList(res.errors.map((err) => new TwitterError(err)));
         }
         return res;
       })

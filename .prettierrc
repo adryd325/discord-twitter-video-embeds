@@ -2,5 +2,6 @@
     "semi": true,
     "bracketSpacing": true,
     "endOfLine": "lf",
-    "singleQuote": false
+    "singleQuote": false,
+    "printWidth": 120
 }
