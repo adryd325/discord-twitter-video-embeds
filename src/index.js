@@ -124,7 +124,7 @@ discord.on("messageCreate", handleMessage);
 
 discord.on("ready", () => {
   console.log("ready");
-  discord.editStatus("online", { name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 1 });
+  discord.editStatus("online", { name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 });
   let channel = discord.getChannel(process.env.LOG_CHANNEL);
   if (!(channel instanceof Discord.TextChannel)) {
     throw new Error("`config.logChannel` must be a text channel");
