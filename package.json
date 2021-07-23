@@ -1,12 +1,12 @@
 {
   "dependencies": {
-    "discord.js": "^13.0.0-dev",
+    "discord.js": "^13.0.0-dev.870a0de.1626998625",
     "node-fetch": "^2.6.1",
     "simple-markdown": "^0.7.3"
   },
   "type": "module",
   "devDependencies": {
-    "eslint": "^7.30.0",
+    "eslint": "^7.31.0",
     "prettier": "^2.3.2"
   },
   "name": "discord-twitter-video-embeds",

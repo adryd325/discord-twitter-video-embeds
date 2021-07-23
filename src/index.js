@@ -1,4 +1,4 @@
-import { Client, Intents, GuildChannel, MessageAttachment } from "discord.js";
+import { Client, Intents, GuildChannel, MessageAttachment, Message } from "discord.js";
 import fetch from "node-fetch";
 import { TWITTER_URL_REGEXP, USER_AGENT, EmbedModes } from "./constants.js";
 import { parse } from "./parser.js";
@@ -13,14 +13,20 @@ const discord = new Client({
     Intents.FLAGS.DIRECT_MESSAGES,
     Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
   ],
+  allowedMentions: {
+    roles: false,
+    repliedUser: false
+  }
 });
 
 async function downloadVideo(url) {
-  return (await fetch(url, {
-    headers: {
-      "user-agent": USER_AGENT,
-    },
-  })).body;
+  return (
+    await fetch(url, {
+      headers: {
+        "user-agent": USER_AGENT,
+      },
+    })
+  ).body;
 }
 
 function getTweets(parsedData, twitterClient, spoiler = false) {
@@ -28,17 +34,18 @@ function getTweets(parsedData, twitterClient, spoiler = false) {
   for (let mdEntryIndex in parsedData) {
     let mdEntry = parsedData[mdEntryIndex];
     switch (mdEntry.type) {
-    case "tweet":
-      tweets.push({ spoiler, tweet: twitterClient.getTweet(mdEntry.id), id: mdEntry.id});
-      break;
-    case "spoiler":
-      tweets.push(...getTweets(mdEntry.content, twitterClient, true));
-      break;
+      case "tweet":
+        tweets.push({ spoiler, tweet: twitterClient.getTweet(mdEntry.id), id: mdEntry.id });
+        break;
+      case "spoiler":
+        tweets.push(...getTweets(mdEntry.content, twitterClient, true));
+        break;
     }
   }
   return tweets;
 }
 
+/** @param {Message} message */
 async function videoReply(tweets, message) {
   // wait for these to all be resolved before getting urls
   await Promise.all(
@@ -55,9 +62,9 @@ async function videoReply(tweets, message) {
     return tweet.spoiler ? "|| " + videoUrl + " ||" : videoUrl;
   });
   // await all the links and join
-  const messageContent = (await Promise.all(preparedLinks)).join(" ");
-  if (messageContent.length === 0) return;
-  message.channel.send(messageContent);
+  const content = (await Promise.all(preparedLinks)).join(" ");
+  if (content.length === 0) return;
+  message.reply({ content });
 }
 
 async function reEmbed(tweets, message) {
@@ -75,7 +82,7 @@ async function reEmbed(tweets, message) {
       const videoURL = bestVideo[0].url;
       const embed = (await tweet.tweet).discordEmbed;
       // spoiler the video if needed
-      const spoilerText = tweet.spoiler ? "|| " + embed.url + " ||" : embed.url;
+      const spoilerText = tweet.spoiler ? "|| " + embed.url + " ||" : "";
       return { ...tweet, embed, videoURL, spoilerText };
     })
   );
@@ -92,12 +99,13 @@ async function reEmbed(tweets, message) {
     })
   );
   message.suppressEmbeds();
-  message.channel.send({content, embeds, files});
+  message.reply({ content, embeds, files });
 }
 
+/** @param {Message} message */
 discord.on("messageCreate", (message) => {
   // todo: attach to database
-  let embedMode = "1";
+  let embedMode = "2";
   // If the message doesn't have content
   if (!message.content) return;
   // Do not respond to ourselves
@@ -122,22 +130,22 @@ discord.on("messageCreate", (message) => {
 
   // Until we have the database set up, we'll use process.env
   switch (embedMode) {
-  case EmbedModes.OFF:
-    return;
-  case EmbedModes.VIDEO_REPLY:
-    videoReply(tweets, message);
-    break;
-  case EmbedModes.REEMBED:
-    // We can't re-embed in a DM channel
-    if (!(message.channel instanceof GuildChannel)) break;
-    // Can't clear embeds without manage messages permission
-    if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) break;
-    reEmbed(tweets, message);
-    break;
-  case EmbedModes.RECOMPOSE:
-    return;
-  default:
-    videoReply(tweets, message);
+    case EmbedModes.OFF:
+      return;
+    case EmbedModes.VIDEO_REPLY:
+      videoReply(tweets, message);
+      break;
+    case EmbedModes.REEMBED:
+      // We can't re-embed in a DM channel
+      if (!(message.channel instanceof GuildChannel)) break;
+      // Can't clear embeds without manage messages permission
+      if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) break;
+      reEmbed(tweets, message);
+      break;
+    case EmbedModes.RECOMPOSE:
+      return;
+    default:
+      videoReply(tweets, message);
   }
 });
 

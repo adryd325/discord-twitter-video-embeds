@@ -1,19 +1,19 @@
 lockfileVersion: 5.3
 
 specifiers:
-  discord.js: ^13.0.0-dev
-  eslint: ^7.30.0
+  discord.js: ^13.0.0-dev.870a0de.1626998625
+  eslint: ^7.31.0
   node-fetch: ^2.6.1
   prettier: ^2.3.2
   simple-markdown: ^0.7.3
 
 dependencies:
-  discord.js: 13.0.0-dev.1e90be8.1626825831
+  discord.js: 13.0.0-dev.870a0de.1626998625
   node-fetch: 2.6.1
   simple-markdown: 0.7.3
 
 devDependencies:
-  eslint: 7.30.0
+  eslint: 7.31.0
   prettier: 2.3.2
 
 packages:
@@ -24,8 +24,8 @@ packages:
       '@babel/highlight': 7.14.5
     dev: true
 
-  /@babel/helper-validator-identifier/7.14.5:
-    resolution: {integrity: sha512-5lsetuxCLilmVGyiLEfoHBRX8UCFD+1m2x3Rj97WrW3V7H3u4RWRXA4evMjImCsin2J2YT0QaVDGf+z8ondbAg==}
+  /@babel/helper-validator-identifier/7.14.8:
+    resolution: {integrity: sha512-ZGy6/XQjllhYQrNw/3zfWRwZCTVSiBLZ9DHVZxn9n2gip/7ab8mv2TWlKPIBk26RwedCBoWdjLmn+t9na2Gcow==}
     engines: {node: '>=6.9.0'}
     dev: true
 
@@ -33,7 +33,7 @@ packages:
     resolution: {integrity: sha512-qf9u2WFWVV0MppaL877j2dBtQIDgmidgjGk5VIMw3OadXvYaXn66U1BFlH2t4+t3i+8PhedppRv+i40ABzd+gg==}
     engines: {node: '>=6.9.0'}
     dependencies:
-      '@babel/helper-validator-identifier': 7.14.5
+      '@babel/helper-validator-identifier': 7.14.8
       chalk: 2.4.2
       js-tokens: 4.0.0
     dev: true
@@ -59,8 +59,8 @@ packages:
       mime-types: 2.1.31
     dev: false
 
-  /@eslint/eslintrc/0.4.2:
-    resolution: {integrity: sha512-8nmGq/4ycLpIwzvhI4tNDmQztZ8sp+hI7cyG8i1nQDhkAbRzHpXPidRAHlNvCZQpJTKw5ItIpMw9RSToGF00mg==}
+  /@eslint/eslintrc/0.4.3:
+    resolution: {integrity: sha512-J6KFFz5QCYUJq3pf0mjEcCJVERbzv71PUIDczuh9JkwGEzced6CO5ADLHB1rbf/+oPBtoPfMYNOpGDzCANlbXw==}
     engines: {node: ^10.12.0 || >=12.0.0}
     dependencies:
       ajv: 6.12.6
@@ -96,8 +96,8 @@ packages:
     engines: {node: '>=14', npm: '>=6'}
     dev: false
 
-  /@types/node/16.4.0:
-    resolution: {integrity: sha512-HrJuE7Mlqcjj+00JqMWpZ3tY8w7EUd+S0U3L1+PQSWiXZbOgyQDvi+ogoUxaHApPJq5diKxYBQwA3iIlNcPqOg==}
+  /@types/node/16.4.1:
+    resolution: {integrity: sha512-UW7cbLqf/Wu5XH2RKKY1cHwUNLicIDRLMraYKz+HHAerJ0ZffUEk+fMnd8qU2JaS6cAy0r8tsaf7yqHASf/Y0Q==}
     dev: false
 
   /@types/prop-types/15.7.4:
@@ -119,7 +119,7 @@ packages:
   /@types/ws/7.4.7:
     resolution: {integrity: sha512-JQbbmxZTZehdc2iszGKs5oC3NFnjeay7mtAWrdt7qNtAVK0g19muApzAy4bm9byz79xa2ZnO/BOBC2R8RC5Lww==}
     dependencies:
-      '@types/node': 16.4.0
+      '@types/node': 16.4.1
     dev: false
 
   /abort-controller/3.0.0:
@@ -310,8 +310,8 @@ packages:
     engines: {node: '>=12'}
     dev: false
 
-  /discord.js/13.0.0-dev.1e90be8.1626825831:
-    resolution: {integrity: sha512-Kv32vfxiqHzSB4HY1MfHdvf868toZde86sPOCBhvmLbKZo5XaiZKMuZgfAUv7pBriNNTA0FtKoIid/2BqjuZqg==}
+  /discord.js/13.0.0-dev.870a0de.1626998625:
+    resolution: {integrity: sha512-r4Q+hqkXmSqM3729YbRquWasXrN0NYwlAey3lKEjt5w1WPHxgte7EDac6djnrardS8e4iktlIMXV+Hkp3ujq/A==}
     engines: {node: '>=14.0.0', npm: '>=7.0.0'}
     dependencies:
       '@discordjs/builders': 0.2.0
@@ -381,13 +381,13 @@ packages:
     engines: {node: '>=10'}
     dev: true
 
-  /eslint/7.30.0:
-    resolution: {integrity: sha512-VLqz80i3as3NdloY44BQSJpFw534L9Oh+6zJOUaViV4JPd+DaHwutqP7tcpkW3YiXbK6s05RZl7yl7cQn+lijg==}
+  /eslint/7.31.0:
+    resolution: {integrity: sha512-vafgJpSh2ia8tnTkNUkwxGmnumgckLh5aAbLa1xRmIn9+owi8qBNGKL+B881kNKNTy7FFqTEkpNkUvmw0n6PkA==}
     engines: {node: ^10.12.0 || >=12.0.0}
     hasBin: true
     dependencies:
       '@babel/code-frame': 7.12.11
-      '@eslint/eslintrc': 0.4.2
+      '@eslint/eslintrc': 0.4.3
       '@humanwhocodes/config-array': 0.5.0
       ajv: 6.12.6
       chalk: 4.1.1
