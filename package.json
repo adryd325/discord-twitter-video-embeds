@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "discord.js": "^13.0.0-dev",
-    "node-fetch": "^2.6.1"
+    "node-fetch": "^2.6.1",
+    "simple-markdown": "^0.7.3"
   },
   "type": "module",
   "devDependencies": {
