@@ -1,4 +1,5 @@
-import { Client, Intents, GuildChannel } from "discord.js";
+import { Client, Intents, GuildChannel, MessageAttachment } from "discord.js";
+import fetch from "node-fetch";
 import { TWITTER_URL_REGEXP, USER_AGENT, EmbedModes } from "./constants.js";
 import { parse } from "./parser.js";
 import { TwitterClient } from "./structures/TwitterClient.js";
@@ -14,13 +15,21 @@ const discord = new Client({
   ],
 });
 
+async function downloadVideo(url) {
+  return (await fetch(url, {
+    headers: {
+      "user-agent": USER_AGENT,
+    },
+  })).body;
+}
+
 function getTweets(parsedData, twitterClient, spoiler = false) {
   let tweets = [];
   for (let mdEntryIndex in parsedData) {
     let mdEntry = parsedData[mdEntryIndex];
     switch (mdEntry.type) {
     case "tweet":
-      tweets.push({ spoiler, tweet: twitterClient.getTweet(mdEntry.id) });
+      tweets.push({ spoiler, tweet: twitterClient.getTweet(mdEntry.id), id: mdEntry.id});
       break;
     case "spoiler":
       tweets.push(...getTweets(mdEntry.content, twitterClient, true));
@@ -51,9 +60,43 @@ async function videoReply(tweets, message) {
   message.channel.send(messageContent);
 }
 
-function reEmbed(tweets, message) {}
+async function reEmbed(tweets, message) {
+  // wait for these to all be resolved before getting urls
+  await Promise.all(
+    tweets.map((tweet) => {
+      return tweet.tweet;
+    })
+  );
+  const tweetData = await Promise.all(
+    tweets.map(async (tweet) => {
+      // get best video
+      const bestVideo = (await tweet.tweet).bestVideo;
+      if (!bestVideo) return "";
+      const videoURL = bestVideo[0].url;
+      const embed = (await tweet.tweet).discordEmbed;
+      // spoiler the video if needed
+      const spoilerText = tweet.spoiler ? "|| " + embed.url + " ||" : embed.url;
+      return { ...tweet, embed, videoURL, spoilerText };
+    })
+  );
+  // let embeds = tweetData.map((tweet) => tweet.embed);
+  let content = tweetData.map((tweet) => tweet.spoilerText).join(" ");
+  if (content === "") content = undefined;
+  let embeds = tweetData.map((tweet) => tweet.embed);
+  let files = await Promise.all(
+    tweetData.map(async (tweet) => {
+      return new MessageAttachment(
+        await downloadVideo(tweet.videoURL),
+        (tweet.spoiler ? "SPOILER_" : "") + tweet.id + ".mp4"
+      );
+    })
+  );
+  message.suppressEmbeds();
+  message.channel.send({content, embeds, files});
+}
 
 discord.on("messageCreate", (message) => {
+  // todo: attach to database
   let embedMode = "1";
   // If the message doesn't have content
   if (!message.content) return;

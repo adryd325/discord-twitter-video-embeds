@@ -10,8 +10,8 @@ export default class Tweet {
     this.userID = data.user_id_str;
     this.content = data.full_text;
     this.entities = data.entities;
-    this.retweets = data.retweet_count;
-    this.likes = data.favorite_count;
+    this.retweets = data.retweet_count.toString() || "0";
+    this.likes = data.favorite_count.toString() || "0";
   }
 
   addUserData(data) {
@@ -45,7 +45,6 @@ export default class Tweet {
         iconURL: this.avatar,
       },
       color: embedColor,
-      createdAt: this.createdAt,
       description: this.content,
       fields: [
         {
@@ -59,10 +58,12 @@ export default class Tweet {
           inline: true,
         },
       ],
-      url: `https://twitter.com/i/status/${this.id}`,
-      video: {
-        url: this.bestVideo[0].url,
+      footer: {
+        text: "Twitter",
+        icon_url: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
       },
+      timestamp: this.createdAt,
+      url: `https://twitter.com/i/status/${this.id}`,
     });
   }
 }

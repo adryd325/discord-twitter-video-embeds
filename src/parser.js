@@ -87,5 +87,3 @@ const parser = SimpleMarkdown.parserFor(rules);
 export function parse(source) {
   return parser(source, { inline: false });
 }
-
-console.log(parse("https://twitter.com/i/status/20my balls itch"));
