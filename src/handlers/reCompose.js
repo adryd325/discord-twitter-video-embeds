@@ -101,6 +101,7 @@ export default async function reCompose(tweetPromises, message) {
 	if (embeds.length === 0 && downloads.length === 0) return;
 	const files = await Promise.all(downloads);
 	if (content.trim() === "") content = undefined;
+	if (embeds.length === 0) return;
 	try {
 		const response = await webhook.send({
 			content,

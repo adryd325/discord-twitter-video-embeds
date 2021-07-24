@@ -29,6 +29,7 @@ export default async function reEmbed(tweetPromises, message) {
 	const embeds = [];
 	const downloads = [];
 	tweets.map((tweet) => {
+		// TODO: if tweets are just regular and along side other tweets, we need to fix their embeds too
 		if (!tweet || !tweet.tweet.bestVideo) return;
 		content += tweet.spoiler ? "|| " + tweet.tweet.url + " ||" : "";
 		embeds.push(tweet.tweet.discordEmbed);
@@ -37,7 +38,8 @@ export default async function reEmbed(tweetPromises, message) {
 		);
 	});
 	const files = await Promise.all(downloads);
-	if (content === "") content = undefined;
+	if (content.trim() === "") content = undefined;
+	if (embeds.length === 0) return;
 	const response = await message.reply({ content, embeds, files });
 	message.suppressEmbeds();
 	registerMessage(response, message);
