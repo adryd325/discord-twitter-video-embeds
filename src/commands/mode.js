@@ -40,8 +40,8 @@ export default new Command(
 			return;
 		}
 		if (!interaction.options.get("mode")) return;
-		setMode(interaction.guild, interaction.options.get("mode")).then(() => {
-			interaction.reply(`Embed mode has been set to ${interaction.options.get("mode")}!`);
+		setMode(interaction.guild, interaction.options.get("mode").value).then(() => {
+			interaction.reply({ content: `Embed mode has been set to ${interaction.options.get("mode").value}!`, ephemeral: true });
 		});
 	}
 );

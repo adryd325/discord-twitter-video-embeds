@@ -40,14 +40,14 @@ export async function getMode(channel) {
 
 /** @param {import("discord.js").Guild} guild */
 export async function setMode(guild, mode) {
-	modes.set(guild.id, mode.value);
+	modes.set(guild.id, mode);
 	const dbModeMap = await ModeMappings.findOne({ where: { guildID: guild.id } });
 	if (!dbModeMap) {
-		ModeMappings.create({ guildID: guild.id, mode: mode.value });
+		ModeMappings.create({ guildID: guild.id, mode: mode });
 	} else {
 		ModeMappings.update(
 			{
-				mode: mode.value,
+				mode: mode,
 			},
 			{ where: { guildID: guild.id } }
 		);

@@ -3,7 +3,7 @@ import TwitterClient from "./structures/TwitterClient.js";
 import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
 import { parse } from "./parser.js";
 import database from "./database.js";
-import { getMode, setMode } from "./structures/ModeMappings.js";
+import { getMode } from "./structures/ModeMappings.js";
 import videoReply from "./handlers/videoReply.js";
 import reEmbed from "./handlers/reEmbed.js";
 import reCompose from "./handlers/reCompose.js";
@@ -70,6 +70,7 @@ discord.on("ready", () => {
 		status: "online",
 		activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }],
 	});
+	// @ts-ignore
 	let channel = discord.channels.cache.get(process.env.LOG_CHANNEL);
 	if (!(channel instanceof TextChannel)) {
 		throw new Error("`config.logChannel` must be a text channel");
@@ -147,7 +148,7 @@ discord.on("interactionCreate", (interaction) => {
 	interactionHandler.handle(interaction);
 });
 
-/** @param {Discord.Guild} message */
+/** @param {import("discord.js").Guild} guild*/
 discord.on("guildCreate", (guild) => {
 	if (logChannel) {
 		logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${guild.name}`);
