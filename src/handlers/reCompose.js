@@ -90,7 +90,6 @@ export default async function reCompose(tweetPromises, message) {
 	const downloads = [];
 	tweets.map((tweet) => {
 		if (!tweet || !tweet.tweet.bestVideo) return;
-		content += tweet.spoiler ? "|| " + tweet.tweet.url + " ||" : "";
 		embeds.push(tweet.tweet.discordEmbed);
 		downloads.push(
 			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")

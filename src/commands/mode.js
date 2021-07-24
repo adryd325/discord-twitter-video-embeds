@@ -37,7 +37,7 @@ export default new Command(
 			return;
 		}
 		if (!interaction.member.permissions.has("MANAGE_SERVER")) {
-			interaction.reply("You do not have permission to use this command");
+			interaction.reply({ content: "You do not have permission to use this command", ephemeral: true });
 			return;
 		}
 		if (!interaction.options.get("mode")) return;
