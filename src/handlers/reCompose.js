@@ -6,6 +6,7 @@ import WebhookMappings from "../structures/WebhookMappings.js";
 import { discord } from "../index.js";
 import { setMode } from "../structures/ModeMappings.js";
 import { EmbedModes } from "../constants.js";
+import videoReply from "./videoReply.js";
 
 const { APIErrors } = DiscordConstants;
 
@@ -67,6 +68,7 @@ export default async function reCompose(tweetPromises, message) {
 			"Hi, the bot doesn't have manage messages permission, so it is unable to re-compose messages. We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
 		);
 		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		videoReply(tweetPromises, message);
 		return;
 	}
 	if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_WEBHOOKS")) {
@@ -74,6 +76,7 @@ export default async function reCompose(tweetPromises, message) {
 			"Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
 		);
 		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		videoReply(tweetPromises, message);
 		return;
 	}
 	if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
@@ -95,11 +98,20 @@ export default async function reCompose(tweetPromises, message) {
 			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")
 		);
 		const urlRegExp = new RegExp(`(?<!<)${escapeRegExp(tweet.match.content)}(?!>)`);
+		// Prevent 
 		content.replace(urlRegExp, "$&");
 	});
 	// assume all tweets failed to resolve
 	if (embeds.length === 0 && downloads.length === 0) return;
-	const files = await Promise.all(downloads);
+	// don't crash if videos fail to download
+	let files;
+	try {
+		files = await Promise.all(downloads);
+	} catch (error) {
+		console.log("Failed to download videos:");
+		console.error(error);
+		return;
+	}
 	if (content.trim() === "") content = undefined;
 	if (embeds.length === 0) return;
 	try {
@@ -134,7 +146,6 @@ export default async function reCompose(tweetPromises, message) {
 					break;
 			}
 		} else {
-			message.channel.send("An error occured while recomposing a message.");
 			throw error;
 		}
 	}

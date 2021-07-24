@@ -1,4 +1,5 @@
 import { registerMessage } from "../structures/MessageMappings.js";
+import { DiscordAPIError } from "discord.js";
 
 /** @param {Promise[]} tweetPromises */
 /** @param {import("discord.js").Message} message */
@@ -14,6 +15,12 @@ export default async function videoReply(tweetPromises, message) {
 		.join(" ");
 	// Make sure we're not sending an empty message
 	if (content.trim() === "") return;
-	const response = await message.reply({ content });
-	registerMessage(response, message);
+	try {
+		const response = await message.reply({ content });
+		registerMessage(response, message);
+	} catch (error) {
+		if (!(error instanceof DiscordAPIError)) {
+			throw error;
+		}
+	}
 }

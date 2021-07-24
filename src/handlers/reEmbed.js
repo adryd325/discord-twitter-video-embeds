@@ -1,9 +1,10 @@
 import getAttachment from "../util/getAttachment.js";
 import { registerMessage } from "../structures/MessageMappings.js";
-import { GuildChannel } from "discord.js";
+import { GuildChannel, DiscordAPIError } from "discord.js";
 import { setMode } from "../structures/ModeMappings.js";
 import { EmbedModes } from "../constants.js";
 import { discord } from "../index.js";
+import videoReply from "./videoReply.js";
 
 /** @param {Promise[]} tweetPromises */
 /** @param {import("discord.js").Message} message */
@@ -15,6 +16,7 @@ export default async function reEmbed(tweetPromises, message) {
 			"Hi, the bot doesn't have manage messages permission, so it is unable to re-embed messages. We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
 		);
 		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		videoReply(tweetPromises, message);
 		return;
 	}
 	if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
@@ -22,6 +24,7 @@ export default async function reEmbed(tweetPromises, message) {
 			"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
 		);
 		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		videoReply(tweetPromises, message);
 		return;
 	}
 	const tweets = await Promise.all(tweetPromises);
@@ -29,7 +32,6 @@ export default async function reEmbed(tweetPromises, message) {
 	const embeds = [];
 	const downloads = [];
 	tweets.map((tweet) => {
-		// TODO: if tweets are just regular and along side other tweets, we need to fix their embeds too
 		if (!tweet || !tweet.tweet.bestVideo) return;
 		content += tweet.spoiler ? "|| " + tweet.tweet.url + " ||" : "";
 		embeds.push(tweet.tweet.discordEmbed);
@@ -37,10 +39,24 @@ export default async function reEmbed(tweetPromises, message) {
 			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")
 		);
 	});
-	const files = await Promise.all(downloads);
+	let files;
+	// don't crash if videos fail to download
+	try {
+		files = await Promise.all(downloads);
+	} catch (error) {
+		console.log("Failed to download videos:");
+		console.error(error);
+		return;
+	}
 	if (content.trim() === "") content = undefined;
 	if (embeds.length === 0) return;
-	const response = await message.reply({ content, embeds, files });
-	message.suppressEmbeds();
-	registerMessage(response, message);
+	try {
+		const response = await message.reply({ content, embeds, files });
+		registerMessage(response, message);
+		message.suppressEmbeds();
+	} catch (error) {
+		if (!(error instanceof DiscordAPIError)) {
+			throw error;
+		}
+	}
 }

@@ -50,7 +50,7 @@ function getTweets(syntaxTree, twitterClient, spoiler = false) {
 		switch (mdEntry.type) {
 			case "tweet":
 				// If we're the last syntax element in a spoiler, do not embed. This mimics Discord's behaviour
-				if (mdEntryIndex === syntaxTree.length) break;
+				if (spoiler && parseInt(mdEntryIndex) === syntaxTree.length - 1) continue;
 				// This is a promise to avoid a tangled code mess later
 				tweets.push(hackyMakeTweetPromise(spoiler, twitterClient.getTweet(mdEntry.id), mdEntry));
 				break;
@@ -62,10 +62,24 @@ function getTweets(syntaxTree, twitterClient, spoiler = false) {
 	return tweets;
 }
 
+function hasUnembedableLinks(syntaxTree, spoiler) {
+	for (let mdEntryIndex in syntaxTree) {
+		let mdEntry = syntaxTree[mdEntryIndex];
+		switch (mdEntry.type) {
+			case "url":
+				// If we're the last syntax element in a spoiler, do not embed. This mimics Discord's behaviour
+				if (spoiler && parseInt(mdEntryIndex) === syntaxTree.length - 1) continue;
+				return true;
+			case "spoiler":
+				if (hasUnembedableLinks(mdEntry.content, spoiler)) return true;
+				break;
+		}
+	}
+}
+
 discord.on("ready", () => {
-	console.log("ready");
+	console.log("Ready!");
 	discord.application.commands.set(interactionHandler.getCommands());
-	console.log("ready");
 	discord.user.setPresence({
 		status: "online",
 		activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }],
@@ -73,7 +87,7 @@ discord.on("ready", () => {
 	// @ts-ignore
 	let channel = discord.channels.cache.get(process.env.LOG_CHANNEL);
 	if (!(channel instanceof TextChannel)) {
-		throw new Error("`config.logChannel` must be a text channel");
+		throw new Error("`process.env.LOG_CHANNEL` must be a text channel");
 	}
 	logChannel = channel;
 	logChannel.send("Ready!");
@@ -96,11 +110,14 @@ discord.on("messageCreate", async (message) => {
 		// Check that the user sending the message has permissions to embed links
 		if (!message.channel.permissionsFor(message.author.id).has("EMBED_LINKS")) return;
 	}
-	const embedMode = getMode(message.channel);
+	let embedMode = getMode(message.channel);
 	const syntaxTree = parse(message.content);
 	const twitterClient = new TwitterClient(USER_AGENT);
 	const tweets = getTweets(syntaxTree, twitterClient);
-
+	if (hasUnembedableLinks(syntaxTree)) {
+		// Oops embedMode is a promise above and im not awaiting immediately so things can run in the background
+		embedMode = new Promise((resolve) => resolve(1));
+	}
 	// In case a tweet matched before but doesn't pass propper parsing
 	if (tweets.length === 0) return;
 

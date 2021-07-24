@@ -52,7 +52,7 @@ const rules = {
 	tweet: {
 		order: (currentOrder += 1),
 		match: (source) =>
-			/^https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]{1,32}\/status\/([0-9]{2,20})(?:\?s=\d{1,2})?(\s|$)/.exec(
+			/^https?:\/\/(?:(?:mobile|www)\.)?twitter\.com\/[a-zA-Z0-9_]{1,32}\/status\/([0-9]{2,20})(?:\?s=\d{1,2})?(?=\s|$)/.exec(
 				source
 			),
 		parse: (capture) => {
