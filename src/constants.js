@@ -21,7 +21,7 @@ export const EmbedModeNames = {
 	0: "off",
 	1: "video_reply",
 	2: "reembed",
-	3: "recompose"
+	3: "recompose",
 };
 export const QRT_UNROLL_BOTS = ["152172984373608449", "276487450669613056"];
 export const DATABASE_PATH = path.join(dirname, "..", "data", "database.db");

@@ -31,5 +31,5 @@ export async function getMessageOwner(message) {
 	const dbMessageMap = await MessageMappings.findOne({ where: { messageID: message.id } });
 	if (dbMessageMap) {
 		return dbMessageMap.getDataValue("userID");
-	} 
+	}
 }

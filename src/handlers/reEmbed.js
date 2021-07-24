@@ -1,9 +1,29 @@
 import getAttachment from "../util/getAttachment.js";
 import { registerMessage } from "../structures/MessageMappings.js";
+import { GuildChannel } from "discord.js";
+import { setMode } from "../structures/ModeMappings.js";
+import { EmbedModes } from "../constants.js";
+import { discord } from "../index.js";
 
 /** @param {Promise[]} tweetPromises */
 /** @param {import("discord.js").Message} message */
 export default async function reEmbed(tweetPromises, message) {
+	// To suppress TS errors, even though we already handled that.
+	if (!(message.channel instanceof GuildChannel)) return;
+	if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
+		message.channel.send(
+			"Hi, the bot doesn't have manage messages permission, so it is unable to re-embed messages. We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
+		);
+		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		return;
+	}
+	if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
+		message.channel.send(
+			"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
+		);
+		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		return;
+	}
 	const tweets = await Promise.all(tweetPromises);
 	let content = "";
 	const embeds = [];

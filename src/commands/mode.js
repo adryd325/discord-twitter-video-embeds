@@ -17,11 +17,11 @@ export default new Command(
 						value: 1,
 					},
 					{
-						name: "reembed",
+						name: "re-embed",
 						value: 2,
 					},
 					{
-						name: "recompose",
+						name: "re-compose",
 						value: 3,
 					},
 				],
@@ -41,7 +41,7 @@ export default new Command(
 		}
 		if (!interaction.options.get("mode")) return;
 		setMode(interaction.guild, interaction.options.get("mode")).then(() => {
-			interaction.reply("Mode has been set!");
+			interaction.reply(`Embed mode has been set to ${interaction.options.get("mode")}!`);
 		});
 	}
 );

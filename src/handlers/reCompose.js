@@ -5,6 +5,7 @@ import { Constants as DiscordConstants, DiscordAPIError, GuildChannel, Webhook }
 import WebhookMappings from "../structures/WebhookMappings.js";
 import { discord } from "../index.js";
 import { setMode } from "../structures/ModeMappings.js";
+import { EmbedModes } from "../constants.js";
 
 const { APIErrors } = DiscordConstants;
 
@@ -20,17 +21,19 @@ async function getWebhook(channel) {
 		if (dbWebhookMap) {
 			const webhook = new Webhook(discord, {
 				id: dbWebhookMap.getDataValue("webhookID"),
-				token: dbWebhookMap.getDataValue("webhookToken")
+				token: dbWebhookMap.getDataValue("webhookToken"),
 			});
 			webhookMappings.set(channel.id, webhook);
 			return webhook;
 		} else {
 			if (!channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
 				// @ts-ignore
-				channel.send("Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched you to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage Messages, Manage Webhooks)");
+				channel.send(
+					"Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched you to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage Messages, Manage Webhooks)"
+				);
 				setMode(channel.guild, 1);
 				return;
-			};
+			}
 			try {
 				// @ts-ignore
 				const webhook = await channel.createWebhook("TwitterVideoEmbeds Proxy Webhook");
@@ -44,7 +47,9 @@ async function getWebhook(channel) {
 				if (error instanceof DiscordAPIError && error.code === APIErrors.MAXIMUM_WEBHOOKS) {
 					// Set mode to 2 and notify
 					// @ts-ignore
-					channel.send("Hi, We tried to create a webhook for re-composing messages, but you're at the webhook limit for this channel. We've switched you to re-embed mode. You're free to switch back to re-compose mode once you're not at the webhook limit.");
+					channel.send(
+						"Hi, We tried to create a webhook for re-composing messages, but you're at the webhook limit for this channel. We've switched you to re-embed mode. You're free to switch back to re-compose mode once you're not at the webhook limit."
+					);
 					setMode(channel.guild, 2);
 				}
 			}
@@ -55,9 +60,30 @@ async function getWebhook(channel) {
 /** @param {Promise[]} tweetPromises */
 /** @param {import("discord.js").Message} message */
 export default async function reCompose(tweetPromises, message) {
-	const tweets = await Promise.all(tweetPromises);
 	// To suppress TS errors, even though we already handled that.
 	if (!(message.channel instanceof GuildChannel)) return;
+	if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
+		message.channel.send(
+			"Hi, the bot doesn't have manage messages permission, so it is unable to re-compose messages. We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
+		);
+		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		return;
+	}
+	if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_WEBHOOKS")) {
+		message.channel.send(
+			"Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
+		);
+		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		return;
+	}
+	if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
+		message.channel.send(
+			"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
+		);
+		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		return;
+	}
+	const tweets = await Promise.all(tweetPromises);
 	const webhook = await getWebhook(message.channel);
 	let content = message.content;
 	const embeds = [];
@@ -95,7 +121,9 @@ export default async function reCompose(tweetPromises, message) {
 					// Assume webhook was deleted
 					webhookMappings.delete(message.channel.id);
 					WebhookMappings.destroy({ where: { channelID: message.channel.id } });
-					message.channel.send("An error occured while recomposing a message (UNKNOWN_WEBHOOK), This error should resolve itself next time a message is proxied.");
+					message.channel.send(
+						"An error occured while recomposing a message (UNKNOWN_WEBHOOK), This error should resolve itself next time a message is proxied."
+					);
 					break;
 				case APIErrors.INVALID_WEBHOOK_TOKEN:
 					// Delete and recreate webhook

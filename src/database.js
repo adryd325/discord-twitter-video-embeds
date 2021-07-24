@@ -9,5 +9,3 @@ export default new Sequelize({
 	storage: path.join(DATABASE_PATH),
 	logging: () => {},
 });
-
-

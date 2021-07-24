@@ -111,27 +111,6 @@ discord.on("messageCreate", async (message) => {
 			// We can't re-compose in a DM channel
 			// I'm not optimistic that webhooks will work in threads
 			if (message.channel instanceof GuildChannel && !(message.channel instanceof ThreadChannel)) {
-				if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
-					message.channel.send(
-						"Hi, the bot doesn't have manage messages permission, so it is unable to re-compose messages. We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
-					);
-					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
-					break;
-				}
-				if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_WEBHOOKS")) {
-					message.channel.send(
-						"Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
-					);
-					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
-					break;
-				}
-				if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
-					message.channel.send(
-						"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
-					);
-					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
-					break;
-				}
 				reCompose(tweets, message);
 				break;
 			}
@@ -139,20 +118,6 @@ discord.on("messageCreate", async (message) => {
 		case EmbedModes.REEMBED:
 			// We can't re-embed in a DM channel
 			if (message.channel instanceof GuildChannel) {
-				if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
-					message.channel.send(
-						"Hi, the bot doesn't have manage messages permission, so it is unable to re-embed messages. We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
-					);
-					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
-					break;
-				}
-				if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
-					message.channel.send(
-						"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
-					);
-					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
-					break;
-				}
 				reEmbed(tweets, message);
 				break;
 			}
