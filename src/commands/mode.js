@@ -1,4 +1,5 @@
 import { Constants as DiscordConstants } from "discord.js";
+import { EmbedModeNames } from "../constants.js";
 const { ApplicationCommandOptionTypes } = DiscordConstants;
 import { Command } from "../structures/Command.js";
 import { setMode } from "../structures/ModeMappings.js";
@@ -41,7 +42,10 @@ export default new Command(
 		}
 		if (!interaction.options.get("mode")) return;
 		setMode(interaction.guild, interaction.options.get("mode").value).then(() => {
-			interaction.reply({ content: `Embed mode has been set to ${interaction.options.get("mode").value}!`, ephemeral: true });
+			interaction.reply({
+				content: `Embed mode has been set to ${EmbedModeNames[interaction.options.get("mode").value]}!`,
+				ephemeral: true,
+			});
 		});
 	}
 );
