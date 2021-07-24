@@ -7,13 +7,13 @@ export default async function videoReply(tweetPromises, message) {
 	// Make an array of urls, with spoiler marks if needed, then join them
 	const content = tweets
 		.map((tweet) => {
-			if (!tweet.tweet.bestVideo) return;
+			if (!tweet || !tweet.tweet.bestVideo) return;
 			const videoUrl = tweet.tweet.bestVideo.url;
 			return tweet.spoiler ? "|| " + videoUrl + " ||" : videoUrl;
 		})
 		.join(" ");
 	// Make sure we're not sending an empty message
-	if (content.length === 0) return;
+	if (content.trim() === "") return;
 	const response = await message.reply({ content });
 	registerMessage(response, message);
 }
