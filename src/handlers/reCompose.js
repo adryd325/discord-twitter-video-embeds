@@ -4,6 +4,7 @@ import { escapeRegExp } from "../util.js";
 import { Constants as DiscordConstants, DiscordAPIError, GuildChannel, Webhook } from "discord.js";
 import WebhookMappings from "../structures/WebhookMappings.js";
 import { discord } from "../index.js";
+import { setMode } from "../structures/ModeMappings.js";
 
 const { APIErrors } = DiscordConstants;
 
@@ -24,7 +25,12 @@ async function getWebhook(channel) {
 			webhookMappings.set(channel.id, webhook);
 			return webhook;
 		} else {
-			if (!channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) return;
+			if (!channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
+				// @ts-ignore
+				channel.send("Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched you to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage Messages, Manage Webhooks)");
+				setMode(channel.guild, 1);
+				return;
+			};
 			try {
 				// @ts-ignore
 				const webhook = await channel.createWebhook("TwitterVideoEmbeds Proxy Webhook");
@@ -39,6 +45,7 @@ async function getWebhook(channel) {
 					// Set mode to 2 and notify
 					// @ts-ignore
 					channel.send("Hi, We tried to create a webhook for re-composing messages, but you're at the webhook limit for this channel. We've switched you to re-embed mode. You're free to switch back to re-compose mode once you're not at the webhook limit.");
+					setMode(channel.guild, 2);
 				}
 			}
 		}
@@ -88,7 +95,7 @@ export default async function reCompose(tweetPromises, message) {
 					// Assume webhook was deleted
 					webhookMappings.delete(message.channel.id);
 					WebhookMappings.destroy({ where: { channelID: message.channel.id } });
-					message.channel.send("An error occured while recomposing a message (UNKNOWN_WEBHOOK)");
+					message.channel.send("An error occured while recomposing a message (UNKNOWN_WEBHOOK), This error should resolve itself next time a message is proxied.");
 					break;
 				case APIErrors.INVALID_WEBHOOK_TOKEN:
 					// Delete and recreate webhook
@@ -99,7 +106,7 @@ export default async function reCompose(tweetPromises, message) {
 					break;
 			}
 		} else {
-			message.channel.send("An error occured while recomposing a message");
+			message.channel.send("An error occured while recomposing a message.");
 			throw error;
 		}
 	}

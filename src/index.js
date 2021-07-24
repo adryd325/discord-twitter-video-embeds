@@ -3,7 +3,7 @@ import TwitterClient from "./structures/TwitterClient.js";
 import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
 import { parse } from "./parser.js";
 import database from "./database.js";
-import { getMode } from "./structures/ModeMappings.js";
+import { getMode, setMode } from "./structures/ModeMappings.js";
 import videoReply from "./handlers/videoReply.js";
 import reEmbed from "./handlers/reEmbed.js";
 import reCompose from "./handlers/reCompose.js";
@@ -67,8 +67,8 @@ discord.on("ready", () => {
 	discord.application.commands.set(interactionHandler.getCommands());
 	console.log("ready");
 	discord.user.setPresence({
-		status: "online", 
-		activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }]
+		status: "online",
+		activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }],
 	});
 	let channel = discord.channels.cache.get(process.env.LOG_CHANNEL);
 	if (!(channel instanceof TextChannel)) {
@@ -109,26 +109,50 @@ discord.on("messageCreate", async (message) => {
 			break;
 		case EmbedModes.RECOMPOSE:
 			// We can't re-compose in a DM channel
-			// We can't delete message without manage messages permission
 			// I'm not optimistic that webhooks will work in threads
-			// We can't create or send messages in channels we can't manage webhooks
-			if (
-				message.channel instanceof GuildChannel &&
-				!(message.channel instanceof ThreadChannel) &&
-				message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES") &&
-				message.channel.permissionsFor(discord.user.id).has("MANAGE_WEBHOOKS")
-			) {
+			if (message.channel instanceof GuildChannel && !(message.channel instanceof ThreadChannel)) {
+				if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
+					message.channel.send(
+						"Hi, the bot doesn't have manage messages permission, so it is unable to re-compose messages. We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
+					);
+					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+					break;
+				}
+				if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_WEBHOOKS")) {
+					message.channel.send(
+						"Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
+					);
+					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+					break;
+				}
+				if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
+					message.channel.send(
+						"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
+					);
+					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+					break;
+				}
 				reCompose(tweets, message);
 				break;
 			}
 		// eslint-disable-next-line no-fallthrough
 		case EmbedModes.REEMBED:
 			// We can't re-embed in a DM channel
-			// We can't clear embeds without manage messages permission
-			if (
-				message.channel instanceof GuildChannel &&
-				message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")
-			) {
+			if (message.channel instanceof GuildChannel) {
+				if (!message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
+					message.channel.send(
+						"Hi, the bot doesn't have manage messages permission, so it is unable to re-embed messages. We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
+					);
+					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+					break;
+				}
+				if (!message.channel.permissionsFor(discord.user.id).has("ATTACH_FILES")) {
+					message.channel.send(
+						"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-embed mode once the bot has appropriate permissions. (Manage messages, Embed links, Attach files)"
+					);
+					setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+					break;
+				}
 				reEmbed(tweets, message);
 				break;
 			}
@@ -164,7 +188,6 @@ discord.on("guildCreate", (guild) => {
 		logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${guild.name}`);
 	}
 });
-  
 
 (async function init() {
 	await database.sync();
