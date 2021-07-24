@@ -1,30 +1,45 @@
-import { Client, Intents, GuildChannel, MessageAttachment, Message, Webhook } from "discord.js";
-import fetch from "node-fetch";
-import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes } from "./constants.js";
+import { Client, Intents, GuildChannel, ThreadChannel } from "discord.js";
+import TwitterClient from "./structures/TwitterClient.js";
+import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
 import { parse } from "./parser.js";
-import { TwitterClient } from "./structures/TwitterClient.js";
+import database from "./database.js";
+import { getMode } from "./structures/ModeMappings.js";
+import videoReply from "./handlers/videoReply.js";
+import reEmbed from "./handlers/reEmbed.js";
+import reCompose from "./handlers/reCompose.js";
+import TwitterErrorList from "./structures/TwitterErrorList.js";
+import { getMessageOwner } from "./structures/MessageMappings.js";
+import InteractionHandler from "./structures/InteractionHandler.js";
+import modeCommand from "./commands/mode.js";
 
-const discord = new Client({
+export const discord = new Client({
 	intents: [
 		Intents.FLAGS.GUILDS,
 		Intents.FLAGS.GUILD_WEBHOOKS,
 		Intents.FLAGS.GUILD_MESSAGES,
 		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
 		Intents.FLAGS.DIRECT_MESSAGES,
-		Intents.FLAGS.DIRECT_MESSAGE_REACTIONS,
 	],
 	allowedMentions: {
 		parse: [],
 		repliedUser: false,
 	},
+	partials: ["MESSAGE", "CHANNEL", "USER", "REACTION"],
 });
 
-function escapeRegExp(string) {
-	return string.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); // $& means the whole matched string
-}
+export const interactionHandler = new InteractionHandler(discord);
+
+interactionHandler.registerCommand(modeCommand);
 
 async function hackyMakeTweetPromise(spoiler, tweet, match) {
-	return { spoiler, tweet: await tweet, match };
+	try {
+		const resolvedTweet = await tweet;
+		return { spoiler, tweet: resolvedTweet, match };
+	} catch (error) {
+		if (error instanceof TwitterErrorList) {
+			return;
+		}
+	}
 }
 
 function getTweets(syntaxTree, twitterClient, spoiler = false) {
@@ -46,106 +61,13 @@ function getTweets(syntaxTree, twitterClient, spoiler = false) {
 	return tweets;
 }
 
-/** @param {Promise[]} tweetPromises */
-/** @param {Message} message */
-async function videoReply(tweetPromises, message) {
-	const tweets = await Promise.all(tweetPromises);
-	// Make an array of urls, with spoiler marks if needed, then join them
-	const content = tweets
-		.map((tweet) => {
-			if (!tweet.tweet.bestVideo) return;
-			const videoUrl = tweet.tweet.bestVideo.url;
-			return tweet.spoiler ? "|| " + videoUrl + " ||" : videoUrl;
-		})
-		.join(" ");
-	// Make sure we're not sending an empty message
-	if (content.length === 0) return;
-	message.reply({ content });
-}
+discord.on("ready", () => {
+	console.log("ready");
+	discord.application.commands.set(interactionHandler.getCommands());
+});
 
-/** @param {String} url */
-/** @param {String} name */
-async function getAttachment(url, name) {
-	return new MessageAttachment(
-		(
-			await fetch(url, {
-				headers: {
-					"user-agent": USER_AGENT,
-				},
-			})
-		).body,
-		name
-	);
-}
-
-/** @param {Promise[]} tweetPromises */
-/** @param {Message} message */
-async function reEmbed(tweetPromises, message) {
-	const tweets = await Promise.all(tweetPromises);
-	let content = "";
-	const embeds = [];
-	const downloads = [];
-	tweets.map((tweet) => {
-		if (!tweet.tweet.bestVideo) return;
-		content += tweet.spoiler ? "|| " + tweet.tweet.url + " ||" : "";
-		embeds.push(tweet.tweet.discordEmbed);
-		downloads.push(
-			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")
-		);
-	});
-	const files = await Promise.all(downloads);
-	if (content === "") content = undefined;
-	message.suppressEmbeds();
-	message.reply({ content, embeds, files });
-}
-
-// TEMP WEBOOKS MAPPINGS
-const webhookMappings = new Map();
-
-/** @param {GuildChannel} channel */
-async function getWebhook(channel) {
-	if (webhookMappings.has(channel.id)) {
-		return webhookMappings.get(channel.id);
-	} else {
-		throw new Error("Not Implemented");
-	}
-}
-
-/** @param {Promise[]} tweetPromises */
-/** @param {Message} message */
-async function reCompose(tweetPromises, message) {
-	const tweets = await Promise.all(tweetPromises);
-	const webhook = await getWebhook(message.channel);
-	let content = message.content;
-	const embeds = [];
-	const downloads = [];
-	tweets.map((tweet) => {
-		if (!tweet.tweet.bestVideo) return;
-		content += tweet.spoiler ? "|| " + tweet.tweet.url + " ||" : "";
-		embeds.push(tweet.tweet.discordEmbed);
-		downloads.push(
-			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")
-		);
-		const urlRegExp = new RegExp(`(?<!<)${escapeRegExp(tweet.match.content)}(?!>)`);
-		content.replace(urlRegExp, "$&");
-	});
-	const files = await Promise.all(downloads);
-	if (content === "") content = undefined;
-	message.delete();
-	webhook.send({
-		content,
-		embeds,
-		files,
-		username: message.author.username,
-		avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
-		allowed_mentions: { parse: ["users"] },
-	});
-}
-
-/** @param {Message} message */
-discord.on("messageCreate", (message) => {
-	// todo: attach to database
-	let embedMode = "3";
+/** @param {import("discord.js").Message} message */
+discord.on("messageCreate", async (message) => {
 	// If the message doesn't have content
 	if (!message.content) return;
 	// Do not respond to ourselves
@@ -161,7 +83,7 @@ discord.on("messageCreate", (message) => {
 		// Check that the user sending the message has permissions to embed links
 		if (!message.channel.permissionsFor(message.author.id).has("EMBED_LINKS")) return;
 	}
-
+	const embedMode = getMode(message.channel);
 	const syntaxTree = parse(message.content);
 	const twitterClient = new TwitterClient(USER_AGENT);
 	const tweets = getTweets(syntaxTree, twitterClient);
@@ -170,15 +92,17 @@ discord.on("messageCreate", (message) => {
 	if (tweets.length === 0) return;
 
 	// Until we have the database set up, we'll use process.env
-	switch (embedMode) {
+	switch (await embedMode) {
 		case EmbedModes.OFF:
 			break;
 		case EmbedModes.RECOMPOSE:
 			// We can't re-compose in a DM channel
 			// We can't delete message without manage messages permission
+			// I'm not optimistic that webhooks will work in threads
 			// We can't create or send messages in channels we can't manage webhooks
 			if (
 				message.channel instanceof GuildChannel &&
+				!(message.channel instanceof ThreadChannel) &&
 				message.channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES") &&
 				message.channel.permissionsFor(discord.user.id).has("MANAGE_WEBHOOKS")
 			) {
@@ -206,4 +130,23 @@ discord.on("messageCreate", (message) => {
 	}
 });
 
-discord.login(process.env.TOKEN);
+discord.on("messageReactionAdd", async (messageReaction, user) => {
+	// If the user reacts with one of the delete message emojis
+	if (!DELETE_MESSAGE_EMOJIS.includes(messageReaction.emoji.name)) return;
+	const messageOwner = await getMessageOwner(messageReaction.message);
+	// If we got nothing
+	if (!messageOwner) return;
+	// If the message owner is the one who reacted, delete
+	if (messageOwner === user.id) {
+		messageReaction.message.delete();
+	}
+});
+
+discord.on("interactionCreate", (interaction) => {
+	interactionHandler.handle(interaction);
+});
+
+(async function init() {
+	await database.sync();
+	discord.login(process.env.TOKEN);
+})();

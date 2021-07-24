@@ -9,7 +9,7 @@ const GUEST_TOKEN_ENDPOINT = "https://api.twitter.com/1.1/guest/activate.json";
 const TWEET_ENDPOINT = (tweetID) =>
 	`https://api.twitter.com/2/timeline/conversation/${tweetID}.json?tweet_mode=extended&include_user_entities=1`;
 
-export class TwitterClient {
+export default class TwitterClient {
 	/** @param {string} userAgent */
 	constructor(userAgent) {
 		this.userAgent = userAgent;

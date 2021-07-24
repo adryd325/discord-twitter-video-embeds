@@ -2,7 +2,9 @@
 	"dependencies": {
 		"discord.js": "^13.0.0-dev.870a0de.1626998625",
 		"node-fetch": "^2.6.1",
-		"simple-markdown": "^0.7.3"
+		"sequelize": "^6.6.5",
+		"simple-markdown": "^0.7.3",
+		"sqlite3": "^5.0.2"
 	},
 	"type": "module",
 	"devDependencies": {

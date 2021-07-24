@@ -1,6 +1,6 @@
 module.exports = {
 	env: {
-		browser: false,
+		node: true,
 		es2021: true,
 	},
 	extends: "eslint:recommended",
@@ -13,5 +13,5 @@ module.exports = {
 		"linebreak-style": ["error", "unix"],
 		quotes: ["error", "double"],
 		semi: ["error", "always"],
-	},
+	}
 };
