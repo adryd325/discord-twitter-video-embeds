@@ -1,4 +1,4 @@
-import { Client, Intents, GuildChannel, ThreadChannel } from "discord.js";
+import { Client, Intents, GuildChannel, ThreadChannel, TextChannel } from "discord.js";
 import TwitterClient from "./structures/TwitterClient.js";
 import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
 import { parse } from "./parser.js";
@@ -27,6 +27,7 @@ export const discord = new Client({
 	partials: ["MESSAGE", "CHANNEL", "USER", "REACTION"],
 });
 
+let logChannel;
 export const interactionHandler = new InteractionHandler(discord);
 
 interactionHandler.registerCommand(modeCommand);
@@ -64,6 +65,17 @@ function getTweets(syntaxTree, twitterClient, spoiler = false) {
 discord.on("ready", () => {
 	console.log("ready");
 	discord.application.commands.set(interactionHandler.getCommands());
+	console.log("ready");
+	discord.user.setPresence({
+		status: "online", 
+		activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }]
+	});
+	let channel = discord.channels.cache.get(process.env.LOG_CHANNEL);
+	if (!(channel instanceof TextChannel)) {
+		throw new Error("`config.logChannel` must be a text channel");
+	}
+	logChannel = channel;
+	logChannel.send("Ready!");
 });
 
 /** @param {import("discord.js").Message} message */
@@ -145,6 +157,14 @@ discord.on("messageReactionAdd", async (messageReaction, user) => {
 discord.on("interactionCreate", (interaction) => {
 	interactionHandler.handle(interaction);
 });
+
+/** @param {Discord.Guild} message */
+discord.on("guildCreate", (guild) => {
+	if (logChannel) {
+		logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${guild.name}`);
+	}
+});
+  
 
 (async function init() {
 	await database.sync();

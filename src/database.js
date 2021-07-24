@@ -7,9 +7,7 @@ const { Sequelize } = sequelize;
 export default new Sequelize({
 	dialect: "sqlite",
 	storage: path.join(DATABASE_PATH),
-	logging: (str) => {
-		console.log(str);
-	},
+	logging: () => {},
 });
 
 
