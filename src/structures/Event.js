@@ -1,5 +1,3 @@
 export class Event {
-    constructor(name, callback) {
-        
-    }
+	constructor(name, callback) {}
 }

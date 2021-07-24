@@ -1,8 +1,8 @@
 {
-  "compilerOptions": {
-    "target": "es2020",
-    "allowJs": true,
-    "checkJs": true,
-    "moduleResolution": "node"
-  }
+	"compilerOptions": {
+		"target": "es2020",
+		"allowJs": true,
+		"checkJs": true,
+		"moduleResolution": "node"
+	}
 }

@@ -1,4 +1,4 @@
 {
-  "token": "Bot <token>",
-  "logChannel": "<log channel id>"
+	"token": "Bot <token>",
+	"logChannel": "<log channel id>"
 }
