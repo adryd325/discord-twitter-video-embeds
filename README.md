@@ -10,11 +10,13 @@ Twitter Embeds fixes video embeds from Twitter on Discord with a goal of convini
 ## Usage
 You can use the bot by [adding it to your Discord server](https://adryd.co/twitter-embeds), or sending it a direct message. It has 3 different modes that can be changed by a server administrator (Manage Server permission). 
  - The video reply mode will reply with a direct link to the twitter video.  
+ 
   <img src="https://cdn.discordapp.com/attachments/857368936672526356/868639403667488788/unknown.png" width="960">
   
  - Re-embed will remove the embeds on the original message and reply with a new set of embeds, along with video attachments.  
   
   <img src="https://cdn.discordapp.com/attachments/857368936672526356/868639702528446504/unknown.png" width="522">
+  
  - Re-compose uses a webhook to recompose the original message with a new set of embeds.  
   
   <img src="https://cdn.discordapp.com/attachments/857368936672526356/868641645304901672/unknown.png" width="631">
