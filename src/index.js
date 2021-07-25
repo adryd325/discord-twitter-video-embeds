@@ -1,4 +1,4 @@
-import { Client, Intents, GuildChannel, ThreadChannel, TextChannel } from "discord.js";
+import { Client, Intents, GuildChannel, ThreadChannel, TextChannel, DiscordAPIError, Constants as DiscordConstants } from "discord.js";
 import TwitterClient from "./structures/TwitterClient.js";
 import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
 import { parse } from "./parser.js";
@@ -11,6 +11,8 @@ import TwitterErrorList from "./structures/TwitterErrorList.js";
 import { getMessageOwner } from "./structures/MessageMappings.js";
 import InteractionHandler from "./structures/InteractionHandler.js";
 import modeCommand from "./commands/mode.js";
+
+const { APIErrors } = DiscordConstants
 
 export const discord = new Client({
 	intents: [
@@ -157,7 +159,20 @@ discord.on("messageReactionAdd", async (messageReaction, user) => {
 	if (!messageOwner) return;
 	// If the message owner is the one who reacted, delete
 	if (messageOwner === user.id) {
-		messageReaction.message.delete();
+		try {
+			await messageReaction.message.delete();
+		} catch (error) {
+			if (error instanceof DiscordAPIError) {
+				switch (error.code) {
+					case APIErrors.UNKNOWN_MESSAGE:
+						console.log("Failed to delete message from reaction delete (Unknown Message)");
+						break;
+					case APIErrors.MISSING_PERMISSIONS:
+						console.log("Failed to delete message from reaction delete (Missing Permissions");
+						break;
+				}
+			} 
+		}
 	}
 });
 
