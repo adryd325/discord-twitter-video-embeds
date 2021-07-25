@@ -25,7 +25,7 @@ export function registerMessage(message, originalMessage) {
 		originalMessageID: originalMessage.id,
 		userID: originalMessage.author.id,
 		channelID: message.channel.id,
-		guildID: message.channel?.guild.id
+		guildID: message.channel?.guild?.id
 	});
 }
 
