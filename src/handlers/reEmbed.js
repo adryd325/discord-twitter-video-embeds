@@ -56,9 +56,15 @@ export default async function reEmbed(tweetPromises, message) {
 		registerMessage(response, message);
 		message.suppressEmbeds();
 	} catch (error) {
-		if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
-			// Try again with a link embed
-			videoReply(tweetPromises, message);
+		if (error instanceof DiscordAPIError) {
+			switch (error.code) {
+				case APIErrors.REQUEST_ENTITY_TOO_LARGE:
+					// Try again with a link embed
+					videoReply(tweetPromises, message);
+					break;
+				case APIErrors.UNKNOWN_MESSAGE:
+					break;
+			}
 		} else {
 			throw error;
 		}

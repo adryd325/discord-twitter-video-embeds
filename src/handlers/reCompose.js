@@ -149,6 +149,8 @@ export default async function reCompose(tweetPromises, message) {
 					// Try again with a link embed
 					videoReply(tweetPromises, message);
 					break;
+				case APIErrors.UNKNOWN_MESSAGE:
+					break;
 			}
 		} else {
 			throw error;
