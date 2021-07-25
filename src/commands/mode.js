@@ -1,4 +1,4 @@
-import { Constants as DiscordConstants } from "discord.js";
+import { Constants as DiscordConstants, Permissions } from "discord.js";
 import { EmbedModeNames } from "../constants.js";
 const { ApplicationCommandOptionTypes } = DiscordConstants;
 import { Command } from "../structures/Command.js";
@@ -36,7 +36,7 @@ export default new Command(
 			interaction.reply("This command only applies to servers");
 			return;
 		}
-		if (!interaction.member.permissions.has("MANAGE_SERVER")) {
+		if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
 			interaction.reply({ content: "You do not have permission to use this command", ephemeral: true });
 			return;
 		}
