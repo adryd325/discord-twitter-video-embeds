@@ -1,8 +1,6 @@
 
 # Twitter Video Embeds
 I'm a Discord bot that fixes your broken Twitter videos. You can add me here: https://adryd.co/twitter-embeds.
-<<<<<<< HEAD
-=======
 
 https://user-images.githubusercontent.com/48024900/126883933-396745dd-806b-4cde-abee-1a5f8b7d5585.mp4
 
@@ -60,5 +58,3 @@ If for any reason you need to contact me, I'm available through the following ch
  - Discord: [adryd#6880](https://discord.com/users/298475055141355520); State why you added me after sending a friend request
  - Email: [me@adryd.com](mailto:me@adryd.com); Please include Twitter Embeds in the subject line
  - Github: You can create an issue on this repository if you've found a bug not already mentioned in TODO.txt
-
->>>>>>> dev
