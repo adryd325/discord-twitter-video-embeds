@@ -2,7 +2,7 @@ import sequelize from "sequelize";
 import { DEFAULT_MODE } from "../constants.js";
 const { Model, DataTypes } = sequelize;
 import database from "../database.js";
-import { GuildChannel } from "discord.js";
+import { GuildChannel, Guild } from "discord.js";
 
 class ModeMappings extends Model {}
 
@@ -40,6 +40,7 @@ export async function getMode(channel) {
 
 /** @param {import("discord.js").Guild} guild */
 export async function setMode(guild, mode) {
+	if (!(guild instanceof Guild)) return;
 	modes.set(guild.id, mode);
 	const dbModeMap = await ModeMappings.findOne({ where: { guildID: guild.id } });
 	if (!dbModeMap) {
