@@ -21,11 +21,12 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 
 ### Additional Features
  - The bot obeys spoilers
- - Users can delete their own re-composed messages or bot replies to their messages.
+ - Users can delete their own re-composed messages or bot replies to their messages bt reacting with an "X" emoji.
  - The bot integrates with [HiddenPhox](https://discordapp.com/oauth2/authorize?client_id=173441062243663872&scope=bot) and replies to HiddenPhox's quote-retweet unrolling
 
 ### Quirks
  - If re-embed or re-compose fail, the bot falls back to video reply mode.
+ - re-embed and re-compose attach a file sepperately since [Discord doesn't allow bots to add videos to embeds](https://github.com/discord/discord-api-docs/discussions/3456).
  - By following Discord's markdown rules exactly, it also has some of the same quirks; such as spoilers needing to be spaced out.
 
 ## Official Instance
