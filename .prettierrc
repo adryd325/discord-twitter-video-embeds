@@ -1,7 +1,7 @@
 {
-    "semi": true,
-    "bracketSpacing": true,
-    "endOfLine": "lf",
-    "singleQuote": false,
-    "printWidth": 120
+	"bracketSpacing": true,
+	"endOfLine": "lf",
+	"printWidth": 120,
+	"semi": true,
+	"useTabs": true
 }

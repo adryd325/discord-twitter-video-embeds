@@ -1,20 +1,35 @@
 {
-  "type": "module",
-  "name": "discord-twitter-video-embeds",
-  "version": "1.0.0",
-  "description": "Replies to messages with twitter video links with the video",
-  "main": "index.js",
-  "scripts": {
-    "start": "node index.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
-  },
-  "author": "adryd <me@adryd.com>",
-  "license": "MIT",
-  "dependencies": {
-    "eris": "^0.15.1",
-    "node-fetch": "^2.6.1"
-  },
-  "devDependencies": {
-    "@types/node": "^15.6.0"
-  }
+	"dependencies": {
+		"discord.js": "^13.0.0-dev.870a0de.1626998625",
+		"node-fetch": "^2.6.1",
+		"sequelize": "^6.6.5",
+		"simple-markdown": "^0.7.3",
+		"sqlite3": "^5.0.2"
+	},
+	"type": "module",
+	"devDependencies": {
+		"eslint": "^7.31.0",
+		"prettier": "^2.3.2"
+	},
+	"name": "discord-twitter-video-embeds",
+	"version": "2.0.0",
+	"description": "Fixes embeds for tweets with videos in them",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"keywords": [
+		"discord",
+		"twitter"
+	],
+	"author": "adryd <me@adryd.com>",
+	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+ssh://git@github.com/adryd325/discord-twitter-video-embeds.git"
+	},
+	"bugs": {
+		"url": "https://github.com/adryd325/discord-twitter-video-embeds/issues"
+	},
+	"homepage": "https://github.com/adryd325/discord-twitter-video-embeds#readme"
 }
