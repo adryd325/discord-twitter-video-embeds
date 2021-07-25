@@ -1,10 +1,11 @@
 import getAttachment from "../util/getAttachment.js";
 import { registerMessage } from "../structures/MessageMappings.js";
-import { GuildChannel, DiscordAPIError } from "discord.js";
+import { GuildChannel, DiscordAPIError, Constants as DiscordConstants } from "discord.js";
 import { setMode } from "../structures/ModeMappings.js";
 import { EmbedModes } from "../constants.js";
 import { discord } from "../index.js";
 import videoReply from "./videoReply.js";
+const { APIErrors } = DiscordConstants;
 
 /** @param {Promise[]} tweetPromises */
 /** @param {import("discord.js").Message} message */
@@ -55,7 +56,10 @@ export default async function reEmbed(tweetPromises, message) {
 		registerMessage(response, message);
 		message.suppressEmbeds();
 	} catch (error) {
-		if (!(error instanceof DiscordAPIError)) {
+		if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
+			// Try again with a link embed
+			videoReply(tweetPromises, message);
+		} else {
 			throw error;
 		}
 	}

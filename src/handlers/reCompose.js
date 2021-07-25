@@ -84,6 +84,7 @@ export default async function reCompose(tweetPromises, message) {
 			"Hi, We cannot upload videos as attachments cause the bot doesn't have permission, We've switched your server to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage messages, Manage webhooks, Embed links, Attach files)"
 		);
 		setMode(message.channel.guild, EmbedModes.VIDEO_REPLY);
+		videoReply(tweetPromises, message);
 		return;
 	}
 	const tweets = await Promise.all(tweetPromises);
@@ -98,7 +99,7 @@ export default async function reCompose(tweetPromises, message) {
 			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")
 		);
 		const urlRegExp = new RegExp(`(?<!<)${escapeRegExp(tweet.match.content)}(?!>)`);
-		// Prevent 
+		// Prevent
 		content.replace(urlRegExp, "$&");
 	});
 	// assume all tweets failed to resolve
@@ -143,6 +144,10 @@ export default async function reCompose(tweetPromises, message) {
 					WebhookMappings.destroy({ where: { channelID: message.channel.id } });
 					message.channel.send("An error occured while recomposing a message (INVALID_WEBHOOK_TOKEN)");
 					webhook.delete();
+					break;
+				case APIErrors.REQUEST_ENTITY_TOO_LARGE:
+					// Try again with a link embed
+					videoReply(tweetPromises, message);
 					break;
 			}
 		} else {

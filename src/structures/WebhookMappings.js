@@ -6,7 +6,8 @@ class WebhookMappings extends Model {}
 
 WebhookMappings.init(
 	{
-		channelID: DataTypes.STRING,
+		guildID: DataTypes.STRING,
+		channelID: { type: DataTypes.STRING, unique: true},
 		webhookID: DataTypes.STRING,
 		webhookToken: DataTypes.STRING,
 	},

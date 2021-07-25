@@ -6,10 +6,11 @@ class MessageMappings extends Model {}
 
 MessageMappings.init(
 	{
+		messageID: { type: DataTypes.STRING, unique: true },
+		originalMessageID: DataTypes.STRING,
 		channelID: DataTypes.STRING,
 		userID: DataTypes.STRING,
-		originalMessageID: DataTypes.STRING,
-		messageID: DataTypes.STRING,
+		guildID: { type: DataTypes.STRING, allowNull: true }
 	},
 	{
 		sequelize: database,
@@ -21,9 +22,10 @@ MessageMappings.init(
 export function registerMessage(message, originalMessage) {
 	MessageMappings.create({
 		messageID: message.id,
-		originalMessage: originalMessage.id,
+		originalMessageID: originalMessage.id,
 		userID: originalMessage.author.id,
 		channelID: message.channel.id,
+		guildID: message.channel?.guild.id
 	});
 }
 

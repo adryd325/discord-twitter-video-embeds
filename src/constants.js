@@ -27,3 +27,4 @@ export const QRT_UNROLL_BOTS = ["152172984373608449", "276487450669613056"];
 export const DATABASE_PATH = path.join(dirname, "..", "data", "database.db");
 export const DEFAULT_MODE = EmbedModes.VIDEO_REPLY;
 export const DELETE_MESSAGE_EMOJIS = ["\u2716", "\u274E", "\u274C"];
+export const DISCORD_MAX_FILE_SIZE = 22n;
