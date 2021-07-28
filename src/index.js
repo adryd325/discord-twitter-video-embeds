@@ -1,4 +1,12 @@
-import { Client, Intents, GuildChannel, ThreadChannel, TextChannel, DiscordAPIError, Constants as DiscordConstants } from "discord.js";
+import {
+	Client,
+	Intents,
+	GuildChannel,
+	ThreadChannel,
+	TextChannel,
+	DiscordAPIError,
+	Constants as DiscordConstants,
+} from "discord.js";
 import TwitterClient from "./structures/TwitterClient.js";
 import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
 import { parse } from "./parser.js";
@@ -12,7 +20,7 @@ import { getMessageOwner } from "./structures/MessageMappings.js";
 import InteractionHandler from "./structures/InteractionHandler.js";
 import modeCommand from "./commands/mode.js";
 
-const { APIErrors } = DiscordConstants
+const { APIErrors } = DiscordConstants;
 
 export const discord = new Client({
 	intents: [
@@ -171,7 +179,7 @@ discord.on("messageReactionAdd", async (messageReaction, user) => {
 						console.log("Failed to delete message from reaction delete (Missing Permissions");
 						break;
 				}
-			} 
+			}
 		}
 	}
 });
@@ -183,8 +191,13 @@ discord.on("interactionCreate", (interaction) => {
 /** @param {import("discord.js").Guild} guild*/
 discord.on("guildCreate", (guild) => {
 	if (logChannel) {
-		logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${guild.name}`);
+		const safeName = guild.name.replace(/(@everyone|@here|<|>)/g, "\\$&");
+		logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${safeName}`);
 	}
+});
+
+discord.on("error", (error) => {
+	console.log(error);
 });
 
 (async function init() {

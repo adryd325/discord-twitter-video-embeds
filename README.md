@@ -33,10 +33,12 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 
 ## Official Instance
 The information in this section only applies to [the official instance](https://adryd.co/twitter-embeds). This section is made to be easy to understand as nobody likes reading legaleese. 
+
 ### Terms of Service
  - Do not intentionally break or crash the official instance
  - If you find a critical bug with the bot you are to report it using the contact info below
  - Usage of the bot must obey the laws in the United States (where Discord and Twitter are owned), Canada (where the bot is hosted) and the country of the end user.
+
 ### Data Privacy
 The following types of user data are stored
  - Message metadata is stored to allow the original owner of a message to delete the replies or re-composed message
@@ -53,11 +55,16 @@ The following types of user data are stored
  - Mode preference is saved so the bot can remember what type of embeds a server prefers
     - **Mode**: The mode the server prefers embeds be sent in
     - **Guild ID**: The ID of the server
+ - Servers the bot joins are logged to a private server with the following information (member count, guild id, name)
 
 Obviously Tweet information is fetched from Twitter, and information is sent through Discord.  
 You're free to request deletion of data associated with your user or a server you own using the contact info below.
+
 ### Contact Info
 If for any reason you need to contact me, I'm available through the following channels
  - Discord: [adryd#6880](https://discord.com/users/298475055141355520); State why you added me after sending a friend request
  - Email: [me@adryd.com](mailto:me@adryd.com); Please include Twitter Embeds in the subject line
  - Github: You can create an issue on this repository if you've found a bug not already mentioned in TODO.txt
+
+## Hosting Your Own Instance
+Personally I'd prefer other instances are not hosted unless explicitly needed, though you're free to within the terms of the license. If you do host your own instance, I would like for you link back to this repository or to the official instance. 
