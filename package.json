@@ -1,10 +1,13 @@
 {
 	"dependencies": {
+		"bufferutil": "^4.0.3",
 		"discord.js": "^13.0.0-dev.870a0de.1626998625",
 		"node-fetch": "^2.6.1",
 		"sequelize": "^6.6.5",
 		"simple-markdown": "^0.7.3",
-		"sqlite3": "^5.0.2"
+		"sqlite3": "^5.0.2",
+		"utf-8-validate": "^5.0.5",
+		"zlib-sync": "^0.1.7"
 	},
 	"type": "module",
 	"devDependencies": {
