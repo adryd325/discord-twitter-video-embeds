@@ -1,5 +1,5 @@
-import { registerMessage } from "../structures/MessageMappings.js";
 import { DiscordAPIError } from "discord.js";
+import { registerMessage } from "../structures/MessageMappings.js";
 
 /** @param {Promise[]} tweetPromises */
 /** @param {import("discord.js").Message} message */

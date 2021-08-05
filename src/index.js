@@ -5,20 +5,20 @@ import {
 	ThreadChannel,
 	TextChannel,
 	DiscordAPIError,
-	Constants as DiscordConstants,
+	Constants as DiscordConstants
 } from "discord.js";
-import TwitterClient from "./structures/TwitterClient.js";
-import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
-import { parse } from "./parser.js";
-import database from "./database.js";
-import { getMode } from "./structures/ModeMappings.js";
-import videoReply from "./handlers/videoReply.js";
-import reEmbed from "./handlers/reEmbed.js";
-import reCompose from "./handlers/reCompose.js";
-import TwitterErrorList from "./structures/TwitterErrorList.js";
-import { getMessageOwner } from "./structures/MessageMappings.js";
-import InteractionHandler from "./structures/InteractionHandler.js";
 import modeCommand from "./commands/mode.js";
+import { TWITTER_URL_REGEXP, USER_AGENT, QRT_UNROLL_BOTS, EmbedModes, DELETE_MESSAGE_EMOJIS } from "./constants.js";
+import database from "./database.js";
+import reCompose from "./handlers/reCompose.js";
+import reEmbed from "./handlers/reEmbed.js";
+import videoReply from "./handlers/videoReply.js";
+import { parse } from "./parser.js";
+import InteractionHandler from "./structures/InteractionHandler.js";
+import { getMessageOwner } from "./structures/MessageMappings.js";
+import { getMode, setMode } from "./structures/ModeMappings.js";
+import TwitterClient from "./structures/TwitterClient.js";
+import TwitterErrorList from "./structures/TwitterErrorList.js";
 
 const { APIErrors } = DiscordConstants;
 
@@ -28,21 +28,25 @@ export const discord = new Client({
 		Intents.FLAGS.GUILD_WEBHOOKS,
 		Intents.FLAGS.GUILD_MESSAGES,
 		Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-		Intents.FLAGS.DIRECT_MESSAGES,
+		Intents.FLAGS.DIRECT_MESSAGES
 	],
 	allowedMentions: {
 		parse: [],
-		repliedUser: false,
+		repliedUser: false
 	},
-	partials: ["MESSAGE", "CHANNEL", "USER", "REACTION"],
+	partials: ["MESSAGE", "CHANNEL", "USER", "REACTION"]
 });
 
 let logChannel;
-export const interactionHandler = new InteractionHandler(discord);
 
+export const interactionHandler = new InteractionHandler(discord);
 interactionHandler.registerCommand(modeCommand);
 
-async function hackyMakeTweetPromise(spoiler, tweet, match) {
+/** @param {import("./structures/Tweet")} tweet */
+/** @param {Object} match */
+/** @param {Boolean} spoiler */
+/** @returns {Promise<Object>} */
+async function hackyMakeTweetPromise(tweet, match, spoiler) {
 	try {
 		const resolvedTweet = await tweet;
 		return { spoiler, tweet: resolvedTweet, match };
@@ -53,16 +57,20 @@ async function hackyMakeTweetPromise(spoiler, tweet, match) {
 	}
 }
 
+/** @param {Array} syntaxTree */
+/** @param {TwitterClient} twitterClient */
+/** @param {Boolean} spoiler */
+/** @returns {Array<Promise>} */
 function getTweets(syntaxTree, twitterClient, spoiler = false) {
-	let tweets = [];
-	for (let mdEntryIndex in syntaxTree) {
-		let mdEntry = syntaxTree[mdEntryIndex];
+	const tweets = [];
+	for (const mdEntryIndex in syntaxTree) {
+		const mdEntry = syntaxTree[mdEntryIndex];
 		switch (mdEntry.type) {
 			case "tweet":
 				// If we're the last syntax element in a spoiler, do not embed. This mimics Discord's behaviour
 				if (spoiler && parseInt(mdEntryIndex) === syntaxTree.length - 1) continue;
 				// This is a promise to avoid a tangled code mess later
-				tweets.push(hackyMakeTweetPromise(spoiler, twitterClient.getTweet(mdEntry.id), mdEntry));
+				tweets.push(hackyMakeTweetPromise(twitterClient.asyncGetTweet(mdEntry.id), mdEntry, spoiler));
 				break;
 			case "spoiler":
 				tweets.push(...getTweets(mdEntry.content, twitterClient, true));
@@ -72,9 +80,12 @@ function getTweets(syntaxTree, twitterClient, spoiler = false) {
 	return tweets;
 }
 
+/** @param {Array} syntaxTree */
+/** @param {Boolean} spoiler */
+/** @returns {boolean} */
 function hasUnembedableLinks(syntaxTree, spoiler) {
-	for (let mdEntryIndex in syntaxTree) {
-		let mdEntry = syntaxTree[mdEntryIndex];
+	for (const mdEntryIndex in syntaxTree) {
+		const mdEntry = syntaxTree[mdEntryIndex];
 		switch (mdEntry.type) {
 			case "url":
 				// If we're the last syntax element in a spoiler, do not embed. This mimics Discord's behaviour
@@ -92,10 +103,10 @@ discord.on("ready", () => {
 	discord.application.commands.set(interactionHandler.getCommands());
 	discord.user.setPresence({
 		status: "online",
-		activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }],
+		activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }]
 	});
 	// @ts-ignore
-	let channel = discord.channels.cache.get(process.env.LOG_CHANNEL);
+	const channel = discord.channels.cache.get(process.env.LOG_CHANNEL);
 	if (!(channel instanceof TextChannel)) {
 		throw new Error("`process.env.LOG_CHANNEL` must be a text channel");
 	}
@@ -120,13 +131,14 @@ discord.on("messageCreate", async (message) => {
 		// Check that the user sending the message has permissions to embed links
 		if (!message.channel.permissionsFor(message.author.id).has("EMBED_LINKS")) return;
 	}
+	// get the embed mode in the background (getMode returns a promise)
 	let embedMode = getMode(message.channel);
 	const syntaxTree = parse(message.content);
 	const twitterClient = new TwitterClient(USER_AGENT);
 	const tweets = getTweets(syntaxTree, twitterClient);
 	if (hasUnembedableLinks(syntaxTree)) {
 		// Oops embedMode is a promise above and im not awaiting immediately so things can run in the background
-		embedMode = new Promise((resolve) => resolve(1));
+		embedMode = new Promise((resolve) => resolve(EmbedModes.VIDEO_REPLY));
 	}
 	// In case a tweet matched before but doesn't pass propper parsing
 	if (tweets.length === 0) return;
@@ -194,6 +206,8 @@ discord.on("guildCreate", (guild) => {
 		const safeName = guild.name.replace(/(@everyone|@here|<|>)/g, "\\$&");
 		logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${safeName}`);
 	}
+	// Most popular mode, even though my poor bandwidth hates it ;-;
+	setMode(guild, EmbedModes.REEMBED);
 });
 
 discord.on("error", (error) => {

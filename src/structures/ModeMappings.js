@@ -1,18 +1,18 @@
-import sequelize from "sequelize";
-import { DEFAULT_MODE } from "../constants.js";
-const { Model, DataTypes } = sequelize;
-import database from "../database.js";
 import { GuildChannel, Guild } from "discord.js";
+import sequelize from "sequelize";
+import { SAFE_EMBED_MODE } from "../constants.js";
+import database from "../database.js";
+const { Model, DataTypes } = sequelize;
 
 class ModeMappings extends Model {}
 
 ModeMappings.init(
 	{
 		guildID: { type: DataTypes.STRING, unique: true },
-		mode: DataTypes.INTEGER,
+		mode: DataTypes.INTEGER
 	},
 	{
-		sequelize: database,
+		sequelize: database
 	}
 );
 
@@ -22,7 +22,7 @@ const modes = new Map();
 
 /** @param {import("discord.js").Channel} channel*/
 export async function getMode(channel) {
-	if (!(channel instanceof GuildChannel)) return DEFAULT_MODE;
+	if (!(channel instanceof GuildChannel)) return SAFE_EMBED_MODE;
 	if (modes.has(channel.guild.id)) {
 		return modes.get(channel.guild.id);
 	} else {
@@ -32,8 +32,8 @@ export async function getMode(channel) {
 			modes.set(channel.guild.id, mode);
 			return mode;
 		} else {
-			modes.set(channel.guild.id, DEFAULT_MODE);
-			return DEFAULT_MODE;
+			modes.set(channel.guild.id, SAFE_EMBED_MODE);
+			return SAFE_EMBED_MODE;
 		}
 	}
 }
@@ -48,7 +48,7 @@ export async function setMode(guild, mode) {
 	} else {
 		ModeMappings.update(
 			{
-				mode: mode,
+				mode: mode
 			},
 			{ where: { guildID: guild.id } }
 		);

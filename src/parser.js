@@ -9,45 +9,45 @@ const rules = {
 		parse: (capture) => {
 			return {
 				type: "text",
-				content: capture[1],
+				content: capture[1]
 			};
-		},
+		}
 	},
 	codeBlock: {
 		order: (currentOrder += 1),
 		match: (source) => /^```(?:([a-z0-9_+\-.]+?)\n)?\n*([^\n][^]*?)\n*```/i.exec(source),
 		parse: (capture) => {
 			return {
-				content: capture[2],
+				content: capture[2]
 			};
-		},
+		}
 	},
 	inlineCode: {
 		order: (currentOrder += 1),
 		match: (source) => /^(`+)([\s\S]*?[^`])\1(?!`)/i.exec(source),
 		parse: (capture) => {
 			return {
-				content: capture[2],
+				content: capture[2]
 			};
-		},
+		}
 	},
 	spoiler: {
 		order: (currentOrder += 1),
 		match: (source) => /^\|\|([\s\S]+?)\|\|/.exec(source),
 		parse: (capture, parse, state) => {
 			return {
-				content: parse(capture[1], state),
+				content: parse(capture[1], state)
 			};
-		},
+		}
 	},
 	embedPrevention: {
 		order: (currentOrder += 1),
 		match: (source) => /^<([\S]+?)>/.exec(source),
 		parse: (capture) => {
 			return {
-				content: capture[1],
+				content: capture[1]
 			};
-		},
+		}
 	},
 	tweet: {
 		order: (currentOrder += 1),
@@ -58,28 +58,28 @@ const rules = {
 		parse: (capture) => {
 			return {
 				content: capture[0],
-				id: capture[1],
+				id: capture[1]
 			};
-		},
+		}
 	},
 	url: {
 		order: (currentOrder += 1),
 		match: (source) => /^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/.exec(source),
 		parse: (capture) => {
 			return {
-				content: capture[1],
+				content: capture[1]
 			};
-		},
+		}
 	},
 	text: {
 		order: (currentOrder += 1),
 		match: (source) => /^[\s\S]+?(?=[^0-9A-Za-z\s\u00c0-\uffff]|\n\n| {2,}\n|\w+:\S|$)/.exec(source),
 		parse: (capture) => {
 			return {
-				content: capture[0],
+				content: capture[0]
 			};
-		},
-	},
+		}
+	}
 };
 
 const parser = SimpleMarkdown.parserFor(rules);

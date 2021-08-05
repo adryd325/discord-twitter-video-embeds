@@ -50,7 +50,7 @@ export default class Tweet {
 			author: {
 				name: `${this.displayName} (${this.username})`,
 				url: this.authorUrl,
-				iconURL: this.avatar,
+				iconURL: this.avatar
 			},
 			color: embedColor,
 			description: this.content,
@@ -58,20 +58,20 @@ export default class Tweet {
 				{
 					name: "Likes",
 					value: this.likes,
-					inline: true,
+					inline: true
 				},
 				{
 					name: "Retweets",
 					value: this.retweets,
-					inline: true,
-				},
+					inline: true
+				}
 			],
 			footer: {
 				text: "Twitter",
-				icon_url: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png",
+				icon_url: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 			},
 			timestamp: this.createdAt,
-			url: this.url,
+			url: this.url
 		});
 	}
 }

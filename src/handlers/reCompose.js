@@ -1,62 +1,15 @@
-import getAttachment from "../util/getAttachment.js";
-import { registerMessage } from "../structures/MessageMappings.js";
-import { escapeRegExp } from "../util.js";
-import { Constants as DiscordConstants, DiscordAPIError, GuildChannel, Webhook } from "discord.js";
-import WebhookMappings from "../structures/WebhookMappings.js";
-import { discord } from "../index.js";
-import { setMode } from "../structures/ModeMappings.js";
-import { EmbedModes } from "../constants.js";
+import { Constants as DiscordConstants, DiscordAPIError, GuildChannel } from "discord.js";
 import videoReply from "./videoReply.js";
+import { EmbedModes } from "../constants.js";
+import { discord } from "../index.js";
+import { registerMessage } from "../structures/MessageMappings.js";
+import { setMode } from "../structures/ModeMappings.js";
+import WebhookMappings from "../structures/WebhookMappings.js";
+import { escapeRegExp } from "../util.js";
+import getAttachment from "../util/getAttachment.js";
+import { getWebhook, webhookMappings } from "../util/getWebhook.js";
 
 const { APIErrors } = DiscordConstants;
-
-// TEMP WEBOOKS MAPPINGS
-const webhookMappings = new Map();
-
-/** @param {import("discord.js").GuildChannel} channel */
-async function getWebhook(channel) {
-	if (webhookMappings.has(channel.id)) {
-		return webhookMappings.get(channel.id);
-	} else {
-		const dbWebhookMap = await WebhookMappings.findOne({ where: { channelID: channel.id } });
-		if (dbWebhookMap) {
-			const webhook = new Webhook(discord, {
-				id: dbWebhookMap.getDataValue("webhookID"),
-				token: dbWebhookMap.getDataValue("webhookToken"),
-			});
-			webhookMappings.set(channel.id, webhook);
-			return webhook;
-		} else {
-			if (!channel.permissionsFor(discord.user.id).has("MANAGE_MESSAGES")) {
-				// @ts-ignore
-				channel.send(
-					"Hi, We tried to create a webhook for re-composing messages, but the bot doesn't have permission, We've switched you to video_reply mode. You're free to switch back to re-compose mode once the bot has appropriate permissions. (Manage Messages, Manage Webhooks)"
-				);
-				setMode(channel.guild, 1);
-				return;
-			}
-			try {
-				// @ts-ignore
-				const webhook = await channel.createWebhook("TwitterVideoEmbeds Proxy Webhook");
-				WebhookMappings.create({
-					channelID: channel.id,
-					webhookID: webhook.id,
-					webhookToken: webhook.token,
-				});
-				return webhook;
-			} catch (error) {
-				if (error instanceof DiscordAPIError && error.code === APIErrors.MAXIMUM_WEBHOOKS) {
-					// Set mode to 2 and notify
-					// @ts-ignore
-					channel.send(
-						"Hi, We tried to create a webhook for re-composing messages, but you're at the webhook limit for this channel. We've switched you to re-embed mode. You're free to switch back to re-compose mode once you're not at the webhook limit."
-					);
-					setMode(channel.guild, 2);
-				}
-			}
-		}
-	}
-}
 
 /** @param {Promise[]} tweetPromises */
 /** @param {import("discord.js").Message} message */
@@ -95,9 +48,7 @@ export default async function reCompose(tweetPromises, message) {
 	tweets.map((tweet) => {
 		if (!tweet || !tweet.tweet.bestVideo) return;
 		embeds.push(tweet.tweet.discordEmbed);
-		downloads.push(
-			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")
-		);
+		downloads.push(getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4"));
 		const urlRegExp = new RegExp(`(?<!<)${escapeRegExp(tweet.match.content)}(?!>)`);
 		// Prevent
 		content.replace(urlRegExp, "$&");
@@ -114,7 +65,6 @@ export default async function reCompose(tweetPromises, message) {
 		return;
 	}
 	if (content.trim() === "") content = undefined;
-	if (embeds.length === 0) return;
 	try {
 		const response = await webhook.send({
 			content,
@@ -122,7 +72,7 @@ export default async function reCompose(tweetPromises, message) {
 			files,
 			username: message.author.username,
 			avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
-			allowed_mentions: { parse: ["users"] },
+			allowed_mentions: { parse: ["users"] }
 		});
 		message.delete();
 		registerMessage(response, message);

@@ -17,7 +17,7 @@ export default class InteractionHandler {
 	}
 
 	getCommands() {
-		let commandMeta = [];
+		const commandMeta = [];
 		this.commands.forEach((command) => commandMeta.push(command.meta));
 		return commandMeta;
 	}

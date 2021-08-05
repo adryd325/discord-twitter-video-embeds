@@ -13,7 +13,7 @@ MessageMappings.init(
 		guildID: { type: DataTypes.STRING, allowNull: true }
 	},
 	{
-		sequelize: database,
+		sequelize: database
 	}
 );
 

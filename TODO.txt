@@ -3,6 +3,8 @@
  - (video reply): Handle youtube videos in Tweets
  - GDPR nuke function
  - Research possible PluralKit integration
+ - Notify when the bot doesn't have embed-links permission
+ - Cache TwitterClient, make a singleton
  - Documentation (official instance)
    - Terms of Use
      - Do not try to break the bot unless trying to report bugs

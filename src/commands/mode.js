@@ -1,5 +1,5 @@
 import { Constants as DiscordConstants, Permissions } from "discord.js";
-import { EmbedModeNames } from "../constants.js";
+import { EmbedModes } from "../constants.js";
 const { ApplicationCommandOptionTypes } = DiscordConstants;
 import { Command } from "../structures/Command.js";
 import { setMode } from "../structures/ModeMappings.js";
@@ -15,21 +15,21 @@ export default new Command(
 				choices: [
 					{
 						name: "video_reply",
-						value: 1,
+						value: EmbedModes.VIDEO_REPLY
 					},
 					{
 						name: "re-embed",
-						value: 2,
+						value: EmbedModes.REEMBED
 					},
 					{
 						name: "re-compose",
-						value: 3,
-					},
+						value: EmbedModes.RECOMPOSE
+					}
 				],
-				required: true,
-			},
+				required: true
+			}
 		],
-		description: "Switches embed mode",
+		description: "Switches embed mode"
 	},
 	function mode(interaction) {
 		if (!interaction.inGuild()) {
@@ -43,8 +43,8 @@ export default new Command(
 		if (!interaction.options.get("mode")) return;
 		setMode(interaction.guild, interaction.options.get("mode").value).then(() => {
 			interaction.reply({
-				content: `Embed mode has been set to ${EmbedModeNames[interaction.options.get("mode").value]}!`,
-				ephemeral: true,
+				content: `Embed mode has been set to ${EmbedModes[interaction.options.get("mode").value]}!`,
+				ephemeral: true
 			});
 		});
 	}

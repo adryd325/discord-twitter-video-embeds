@@ -7,12 +7,12 @@ class WebhookMappings extends Model {}
 WebhookMappings.init(
 	{
 		guildID: DataTypes.STRING,
-		channelID: { type: DataTypes.STRING, unique: true},
+		channelID: { type: DataTypes.STRING, unique: true },
 		webhookID: DataTypes.STRING,
-		webhookToken: DataTypes.STRING,
+		webhookToken: DataTypes.STRING
 	},
 	{
-		sequelize: database,
+		sequelize: database
 	}
 );
 

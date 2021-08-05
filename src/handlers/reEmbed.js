@@ -1,10 +1,10 @@
-import getAttachment from "../util/getAttachment.js";
-import { registerMessage } from "../structures/MessageMappings.js";
 import { GuildChannel, DiscordAPIError, Constants as DiscordConstants } from "discord.js";
-import { setMode } from "../structures/ModeMappings.js";
+import videoReply from "./videoReply.js";
 import { EmbedModes } from "../constants.js";
 import { discord } from "../index.js";
-import videoReply from "./videoReply.js";
+import { registerMessage } from "../structures/MessageMappings.js";
+import { setMode } from "../structures/ModeMappings.js";
+import getAttachment from "../util/getAttachment.js";
 const { APIErrors } = DiscordConstants;
 
 /** @param {Promise[]} tweetPromises */
@@ -36,9 +36,7 @@ export default async function reEmbed(tweetPromises, message) {
 		if (!tweet || !tweet.tweet.bestVideo) return;
 		content += tweet.spoiler ? "|| " + tweet.tweet.url + " ||" : "";
 		embeds.push(tweet.tweet.discordEmbed);
-		downloads.push(
-			getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4")
-		);
+		downloads.push(getAttachment(tweet.tweet.bestVideo.url, (tweet.spoiler ? "SPOILER_" : "") + tweet.match.id + ".mp4"));
 	});
 	let files;
 	// don't crash if videos fail to download

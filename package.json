@@ -12,7 +12,10 @@
 	"type": "module",
 	"devDependencies": {
 		"eslint": "^7.31.0",
-		"prettier": "^2.3.2"
+		"prettier": "^2.3.2",
+		"eslint-config-prettier": "^8.3.0",
+		"eslint-plugin-import": "^2.23.4",
+		"eslint-plugin-prettier": "^3.4.0"
 	},
 	"name": "discord-twitter-video-embeds",
 	"version": "2.0.0",

@@ -20,8 +20,8 @@ export default class TwitterClient {
 			method: "post",
 			headers: {
 				"user-agent": this.userAgent,
-				authorization: TWITTER_BEARER_TOKEN,
-			},
+				authorization: TWITTER_BEARER_TOKEN
+			}
 		}).then((res) => res.json());
 	}
 
@@ -34,13 +34,13 @@ export default class TwitterClient {
 	}
 
 	/** @param {string} id the tweet id */
-	async getTweet(id) {
+	async asyncGetTweet(id) {
 		return fetch(TWEET_ENDPOINT(id), {
 			headers: {
 				"user-agent": this.userAgent,
 				authorization: TWITTER_BEARER_TOKEN,
-				"x-guest-token": await this.getGuestToken(),
-			},
+				"x-guest-token": await this.getGuestToken()
+			}
 		})
 			.then((res) => res.json())
 			.then((res) => {
