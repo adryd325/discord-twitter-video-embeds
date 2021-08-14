@@ -64,13 +64,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
   // If both of these are empty, we can do nothing
   if (!content && attachments.length == 0) return null;
 
-  // Delete original message
-  // Needs to be awaited to not crash on unknown message
-  // TODO: find an alternative to await to prevent crashes
-  await message.delete();
-
   try {
-    return webhook.send({
+    const replyPromise = webhook.send({
       content,
       embeds,
       files: attachments,
@@ -78,6 +73,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
       allowed_mentions: { parse: ["users"] }
     });
+    const [_deletedMessage, reply] = await Promise.all([message.delete(), replyPromise]);
+    return reply;
   } catch (error) {
     if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_WEBHOOK) {
       await resetWebhook(message.channel);

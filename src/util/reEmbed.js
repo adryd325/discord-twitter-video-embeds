@@ -53,10 +53,13 @@ module.exports = async function reEmbed(message, posts) {
   }
 
   if (content.trim() === "") content = undefined;
-  // Needs to be awaited to not crash on unknown message
-  // TODO: find an alternative to await to prevent crashes
-  await message.suppressEmbeds();
-  return safeReply(message, { files: attachments, embeds, content });
+
+  const [_suppressedMessage, reply] = await Promise.all([
+    message.suppressEmbeds(),
+    safeReply(message, { files: attachments, embeds, content })
+  ]);
+
+  return reply;
 };
 
 module.exports.REQUIRED_PERMISSIONS = REQUIRED_PERMISSIONS;
