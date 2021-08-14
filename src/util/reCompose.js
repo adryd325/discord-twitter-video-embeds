@@ -65,6 +65,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
   if (!content && attachments.length == 0) return null;
 
   // Delete original message
+  // Needs to be awaited to not crash on unknown message
+  // TODO: find an alternative to await to prevent crashes
   await message.delete();
 
   try {

@@ -39,61 +39,6 @@ const rules = {
       content: capture[1]
     })
   },
-  //   instagramPost: {
-  //     order: (currentOrder += 1),
-  //     match: (source) => /^https?:\/\/(?:www\.)?instagram\.com\/(?:p|tv|reel)\/[^/?#&]+/.exec(source),
-  //     parse: (capture) => ({
-  //       content: capture[0],
-  //       url: capture[0]
-  //     })
-  //   },
-  //   redditPost: {
-  //     order: (currentOrder += 1),
-  //     match: (source) => /^https?:\/\/(?:[^/]+\.)?reddit\.com\/r\/[^/]+\/comments\/([^/?#&]+)/.exec(source),
-  //     parse: (capture) => ({
-  //       content: capture[0],
-  //       url: capture[0],
-  //       id: capture[2]
-  //     })
-  //   },
-  //   tiktokPost: {
-  //     order: (currentOrder += 1),
-  //     match: (source) => /^https?:\/\/(?:www\.)?tiktok\.com\/@[^/]+\/video\/(\d+)/.exec(source),
-  //     parse: (capture) => ({
-  //       content: capture[0],
-  //       url: capture[0],
-  //       id: capture[1]
-  //     })
-  //   },
-  //   twitterPost: {
-  //     order: (currentOrder += 1),
-  //     // eslint-disable-next-line prettier/prettier
-  //     match: (source) => /^https?:\/\/(?:(?:www|m(?:obile)?)\.)?(fx)?twitter\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/.exec(source),
-  //     parse: (capture) => ({
-  //       content: capture[0],
-  //       url: capture[0],
-  //       twitfix: capture[1] === "fx",
-  //       id: capture[2]
-  //     })
-  //   },
-  //   redditVideo: {
-  //     order: (currentOrder += 1),
-  //     match: (source) => /^https?:\/\/v\.redd\.it\/([^/?#&]+)/.exec(source),
-  //     parse: (capture) => ({
-  //       content: capture[0],
-  //       url: capture[0],
-  //       id: capture[1]
-  //     })
-  //   },
-  //   tiktokRedirect: {
-  //     order: (currentOrder += 1),
-  //     match: (source) => /^https?:\/\/vm\.tiktok\.com\/([^/?#&]+)/.exec(source),
-  //     parse: (capture) => ({
-  //       content: capture[0],
-  //       url: capture[0],
-  //       id: capture[1]
-  //     })
-  //   },
   url: {
     order: (currentOrder += 1),
     match: (source) => /^(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/.exec(source),
