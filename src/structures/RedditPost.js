@@ -19,7 +19,7 @@ class RedditPost {
     this.url = `https://reddit.com${data.permalink}`;
     this.shortUrl = `${data.url}`;
     // Huge thanks to GenProg for letting me use this as a fallback <3
-    this.videoUrl = `https://proxy.knotty.dev/v/${this.videoId}`;
+    this.videoUrl = `https://proxy.knotty.dev/s/${this.videoId}.mp4`;
     this.dashUrl = `${data.url}/DASHPlaylist.mpd`;
     this.video = this._getVideo(this.dashUrl);
     this.subreddit = `/r/${data.subreddit}`;
