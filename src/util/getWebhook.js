@@ -4,7 +4,7 @@ const { tempMsg } = require("./Utils");
 const WebhooksDB = require("../database/WebhooksDB");
 const discord = require("../discord");
 
-module.exports = async function getWebhook(channel) {
+module.exports.getWebhook = async function getWebhook(channel) {
   const dbWebhookMap = await WebhooksDB.findOne({ where: { channelID: channel.id } });
   if (dbWebhookMap) {
     // @ts-ignore
@@ -34,5 +34,13 @@ module.exports = async function getWebhook(channel) {
       }
       throw error;
     }
+  }
+};
+
+module.exports.resetWebhook = async function resetWebhook(channel) {
+  const channelID = channel.id;
+  const dbWebhookMap = await WebhooksDB.findOne({ where: { channelID } });
+  if (dbWebhookMap) {
+    WebhooksDB.delete({ where: { channelID } });
   }
 };

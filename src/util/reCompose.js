@@ -1,7 +1,8 @@
-const { Permissions, GuildChannel } = require("discord.js");
+const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
+const { APIErrors } = DiscordConstants;
 const { MAX_DISCORD_UPLOAD } = require("./Constants");
 const { notifyPermissions } = require("./Utils");
-const getWebhook = require("./getWebhook");
+const { getWebhook, resetWebhook } = require("./getWebhook");
 const videoReply = require("./videoReply");
 const discord = require("../discord");
 
@@ -12,7 +13,8 @@ const REQUIRED_PERMISSIONS = new Permissions([
   Permissions.FLAGS.MANAGE_WEBHOOKS
 ]);
 
-module.exports = async function reEmbed(message, posts) {
+module.exports = async function reEmbed(message, posts, retry = false) {
+  console.log("a");
   // To suppress TS errors, even though we already handled that.
   if (!(message.channel instanceof GuildChannel)) return null;
   if (!message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)) {
@@ -65,14 +67,25 @@ module.exports = async function reEmbed(message, posts) {
   // Delete original message
   message.delete();
 
-  return webhook.send({
-    content,
-    embeds,
-    files: attachments,
-    username: message.author.username,
-    avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
-    allowed_mentions: { parse: ["users"] }
-  });
+  try {
+    return webhook.send({
+      content,
+      embeds,
+      files: attachments,
+      username: message.author.username,
+      avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
+      allowed_mentions: { parse: ["users"] }
+    });
+  } catch (error) {
+    if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_WEBHOOK) {
+      await resetWebhook(message.channel);
+      if (retry === false) {
+        return reEmbed(message, posts, true);
+      }
+    } else {
+      throw error;
+    }
+  }
 };
 
 module.exports.REQUIRED_PERMISSIONS = REQUIRED_PERMISSIONS;
