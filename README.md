@@ -6,7 +6,14 @@ https://user-images.githubusercontent.com/48024900/126883933-396745dd-806b-4cde-
 
 ## Description
 
-Twitter Embeds fixes video embeds from Twitter on Discord with a goal of convinience, seamlessness, and feature-completeness. It parses and obeys Discord's own markdown rules, and allows users to delete their own messages
+Titwter Embeds fixes video embeds from Twitter on Discord with a goal of convinience, seamlessness, and feature-completeness. It parses and obeys Discord's own markdown rules, and allows users to delete their own messages
+
+### Special Thanks
+
+- **[Brecert](https://github.com/Brecert)**: Twitter Client Implementation
+- **[Youtube DL](https://github.com/ytdl-org/youtube-dl)**: Reference for Instagram, Reddit, Tiktok and Twitter Clients.
+- **[general-programming](https://generalprogramming.org/)**: Allowing me to use proxy.knotty.dev as a fallback for oversized reddit videos.
+- **BLOCKLETTER Discord**: Initially pushing me to make this
 
 ## Usage
 
@@ -79,4 +86,4 @@ If for any reason you need to contact me, I'm available through the following ch
 
 ## Hosting Your Own Instance
 
-Personally I'd prefer other instances are not hosted unless explicitly needed, though you're free to within the terms of the license. If you do host your own instance, I would like for you link back to this repository or to the official instance.
+You're free to host your own instance as long as you link back to this repo, or wherever it moves to.

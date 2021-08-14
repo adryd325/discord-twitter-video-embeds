@@ -1,10 +1,9 @@
 {
-	"compilerOptions": {
-		"target": "es2021",
-		"module": "esnext",
-		"allowSyntheticDefaultImports": true,
-		"allowJs": true,
-		"checkJs": true,
-		"moduleResolution": "node"
-	}
+  "compilerOptions": {
+    "allowJs": true,
+    "checkJs": true,
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "target": "es2021"
+  }
 }

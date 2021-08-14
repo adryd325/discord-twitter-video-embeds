@@ -1,24 +1,35 @@
-export default class InteractionHandler {
-	constructor(client) {
-		this.client = client;
-		this.commands = new Map();
-	}
+const discord = require("../discord.js");
 
-	registerCommand(command) {
-		this.commands.set(command.meta.name, command);
-	}
+class InteractionHandler {
+  constructor(client) {
+    this.client = client;
+    this.commands = new Map();
+  }
 
-	handle(interaction) {
-		if (interaction.isCommand()) {
-			if (this.commands.has(interaction.commandName)) {
-				this.commands.get(interaction.commandName).exec(interaction);
-			}
-		}
-	}
+  registerCommand(command) {
+    this.commands.set(command.meta.name, command);
+  }
 
-	getCommands() {
-		const commandMeta = [];
-		this.commands.forEach((command) => commandMeta.push(command.meta));
-		return commandMeta;
-	}
+  handle(interaction) {
+    if (interaction.isCommand()) {
+      if (this.commands.has(interaction.commandName)) {
+        this.commands.get(interaction.commandName).exec(interaction);
+      }
+    }
+  }
+
+  getCommands() {
+    const commandMeta = [];
+    this.commands.forEach((command) => commandMeta.push(command.meta));
+    return commandMeta;
+  }
 }
+
+const interactionHandler = new InteractionHandler(discord);
+
+discord.on("ready", () => {
+  discord.application.commands.set(interactionHandler.getCommands());
+  console.log(interactionHandler.getCommands());
+});
+
+module.exports = interactionHandler;
