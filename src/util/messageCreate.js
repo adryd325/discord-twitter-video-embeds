@@ -38,6 +38,8 @@ function shouldProcessMessage(message) {
   if (message.author.id === discord.user.id) return false;
   // Block bots, but reply to HiddenPhox (quote rt unrolling)
   if (message.author.bot && !QRT_UNROLL_BOTS.includes(message.author.id)) return false;
+  // Check for a URL
+  if (!/(https?:\/\/[^\s<]+[^<.,:;"')\]\s])/.test(message.content)) return false;
   // If we're in a guild
   if (message.channel instanceof GuildChannel) {
     // Check to make sure we have permission to send in the channel we're going to send
