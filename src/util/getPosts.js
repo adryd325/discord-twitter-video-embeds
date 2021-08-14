@@ -44,7 +44,7 @@ async function getPost(mdMatch, options, spoiler) {
   }
 
   // In the case a post doesn't meet our criteria (eg. not a video)
-  if (post === null) return null;
+  if (!post) return null;
 
   // TIKTOK and TIKTOK_REDIRECT need to be downloadded with a cookie and origin
   // INSTAGRAM video urls are just borked in Discord
