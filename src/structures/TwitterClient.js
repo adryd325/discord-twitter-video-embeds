@@ -25,8 +25,8 @@ class TwitterClient {
     }).then((res) => res.json());
   }
 
-  async _getGuestToken(force = false) {
-    if (!this.guestToken || force) {
+  async _getGuestToken() {
+    if (!this.guestToken) {
       const data = await this._fetchGuestToken();
       this.guestToken = data["guest_token"];
     }
@@ -49,25 +49,30 @@ class TwitterClient {
       .then((res) => res.text())
       .then((res) => {
         let parsed;
-        // Preemtively try to catch guest token expiry so we can later compensate for it
         try {
           parsed = JSON.parse(res);
         } catch (error) {
-          this._getGuestToken(true);
-          console.error(res);
-          throw new ClientError("Guest token expiry, I'm asuming", "Twitter");
+          throw new ClientError("Error parsing JSON", "Twitter");
         }
-        if (res.errors) {
+        if (parsed.errors) {
+          if (parsed.errors.filter((error) => error.code === 239)) {
+            console.log("Renewing Twitter guest token");
+            this.guestToken = null;
+            return this.getPost(match, options, true);
+          }
           throw new TwitterErrorList(res.errors.map((err) => new TwitterError(err)));
         }
         return parsed;
       })
       .then((conversation) => {
+        if (!conversation?.globalObjects?.tweets) {
+          throw new ClientError(`Didn't recieve conversation data; ID:${id}`);
+        }
         const tweets = conversation.globalObjects.tweets;
         if (!tweets[id]) {
           throw new ClientError(`Didn't recieve tweet data; ID:${id}`);
         }
-        let tweetIndex = tweets[id].retweeted_status_id_str ?? id;
+        const tweetIndex = tweets[id].retweeted_status_id_str ?? id;
         const tweet = new TwitterPost(tweets[tweetIndex]);
         tweet.addUserData(conversation.globalObjects.users[tweet.userID]);
         if (!tweet.videoUrl) return null;
