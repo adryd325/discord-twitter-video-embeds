@@ -31,7 +31,9 @@ async function getPost(mdMatch, options, spoiler) {
   // If we do have a provider, call getPost
   let post;
   try {
-    post = await clients.get(provider).getPost(match, options);
+    const providerClient = clients.get(provider);
+    if (!providerClient) return null;
+    post = await getPost(match, options);
   } catch (error) {
     if (error instanceof ClientError || error instanceof TwitterError || error instanceof TwitterErrorList) {
       if (logChannel && error instanceof TwitterErrorList) {
