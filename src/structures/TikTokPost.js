@@ -8,8 +8,8 @@ class TikTokPost {
     this.createdAt = new Date(parseInt(data.createTime.toString() + "000"));
     this.cookies = cookies;
     this.content = data.desc.split("#").join(" #").trim();
-    this.username = data.author.nickname;
-    this.displayName = data.author.uniqueId;
+    this.displayName = data.author.nickname;
+    this.username = data.author.uniqueId;
     this.avatar = data.author.avatarThumb;
     this.authorUrl = `${TIKTOK_HOME}/@${data.author.uniqueId}`;
     this.url = `${TIKTOK_HOME}/@${data.author.uniqueId}/video/${data.id}`;
