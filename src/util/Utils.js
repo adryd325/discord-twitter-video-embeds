@@ -17,7 +17,7 @@ function notifyPermissions(message, permissions, mode) {
   const reply = safeReply(
     message,
     // eslint-disable-next-line prettier/prettier
-    `For the bot to use ${mode} mode, it needs the following permissions: ${permissions.toArray().join(", ")}. An administrator can switch mode using /embedmode. This message will self-destruct in 30 seconds`
+    `For the bot to use ${mode} mode, it needs the following permissions: ${permissions.toArray().join(", ")}. An administrator can switch mode using /embedmode or grant the required permissions in server settings. This message will self-destruct in 30 seconds.`
   );
   setTimeout(async () => {
     reply.then((replyResolved) => replyResolved.delete());
