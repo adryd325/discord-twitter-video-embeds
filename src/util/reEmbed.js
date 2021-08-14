@@ -15,7 +15,7 @@ module.exports = async function reEmbed(message, posts) {
     message.channel instanceof GuildChannel &&
     !message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)
   ) {
-    notifyPermissions(message, REQUIRED_PERMISSIONS);
+    notifyPermissions(message, REQUIRED_PERMISSIONS, "RE_EMBED");
     return;
   }
   const embeds = [];

@@ -16,7 +16,7 @@ module.exports = async function reEmbed(message, posts) {
   // To suppress TS errors, even though we already handled that.
   if (!(message.channel instanceof GuildChannel)) return null;
   if (!message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)) {
-    notifyPermissions(message, REQUIRED_PERMISSIONS);
+    notifyPermissions(message, REQUIRED_PERMISSIONS, "RE_COMPOSE");
     return null;
   }
 
