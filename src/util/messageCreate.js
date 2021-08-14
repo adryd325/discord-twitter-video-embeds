@@ -62,19 +62,19 @@ async function sendMessage(message, posts, options) {
           !(message.channel instanceof ThreadChannel) &&
           message.content.length < MAX_DISCORD_MESSAGE_LENGTH
         ) {
-          return reCompose(message, posts);
+          return await reCompose(message, posts);
         }
 
       // eslint-disable-next-line no-fallthrough
       case EmbedModes.RE_EMBED:
         // We can't re-embed in a DM channel
         if (message.channel instanceof GuildChannel) {
-          return reEmbed(message, posts);
+          return await reEmbed(message, posts);
         }
 
       // eslint-disable-next-line no-fallthrough
       case EmbedModes.VIDEO_REPLY:
-        return videoReply(message, posts);
+        return await videoReply(message, posts);
     }
   } catch (error) {
     // @ts-ignore
