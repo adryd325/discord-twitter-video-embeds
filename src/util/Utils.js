@@ -1,4 +1,4 @@
-const { Permissions, GuildChannel } = require("discord.js");
+const { Permissions, GuildChannel, DiscordAPIError } = require("discord.js");
 const discord = require("../discord");
 
 // Cannot reply to messages without READ_MESSAGE_HISTORY
@@ -20,7 +20,15 @@ function notifyPermissions(message, permissions, mode) {
     `For the bot to use ${mode} mode, it needs the following permissions: ${permissions.toArray().join(", ")}. An administrator can switch mode using /embedmode or grant the required permissions in server settings. This message will self-destruct in 30 seconds.`
   );
   setTimeout(async () => {
-    reply.then((replyResolved) => replyResolved.delete());
+    reply.then((replyResolved) => {
+      try {
+        replyResolved.delete();
+      } catch (error) {
+        if (error instanceof DiscordAPIError) {
+          return;
+        }
+      }
+    });
   }, 30 * 1000);
   return message;
 }
@@ -28,7 +36,15 @@ function notifyPermissions(message, permissions, mode) {
 function tempMsg(channel, message) {
   const newMessage = channel.send(message);
   setTimeout(async () => {
-    newMessage.then((replyResolved) => replyResolved.delete());
+    newMessage.then((replyResolved) => {
+      try {
+        replyResolved.delete();
+      } catch (error) {
+        if (error instanceof DiscordAPIError) {
+          return;
+        }
+      }
+    });
   }, 30 * 1000);
   return newMessage;
 }
