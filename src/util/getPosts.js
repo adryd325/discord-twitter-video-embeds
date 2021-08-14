@@ -33,7 +33,7 @@ async function getPost(mdMatch, options, spoiler) {
   try {
     const providerClient = clients.get(provider);
     if (!providerClient) return null;
-    post = await getPost(match, options);
+    post = await providerClient.getPost(match, options);
   } catch (error) {
     if (error instanceof ClientError || error instanceof TwitterError || error instanceof TwitterErrorList) {
       if (logChannel && error instanceof TwitterErrorList) {
