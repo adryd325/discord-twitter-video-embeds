@@ -22,7 +22,7 @@ class GuildOptions {
     if (dbEntry) {
       const mode = dbEntry.getDataValue("mode");
       // @ts-ignore
-      const flags = new GuildFlags(dbEntry.getDataValue("flags"));
+      const flags = new GuildFlags(dbEntry.getDataValue("flags") ?? 0);
       const options = { mode, flags };
       return options;
     } else {
