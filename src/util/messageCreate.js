@@ -98,10 +98,6 @@ module.exports = async function handleMessage(message) {
     }
   }
 
-  await new Promise((resolve) => {
-    setTimeout(resolve, 5000);
-  });
-
   const syntaxTree = markdownParser(message.content);
 
   // Get all tweets from message, this starts fetching things in the background
