@@ -25,7 +25,10 @@ const ignoredErrors = [
   APIErrors.SLOWMODE_RATE_LIMIT,
   APIErrors.MAXIMUM_THREAD_PARICIPANTS,
   APIErrors.INVALID_THREAD_ARCHIVE_STATE, // Race condition if thread is archived before bot replies
-  APIErrors.MAXIMUM_WEBHOOKS
+  APIErrors.MAXIMUM_WEBHOOKS,
+  APIErrors.UNKNOWN_MESSAGE,
+  APIErrors.MISSING_PERMISSIONS,
+  APIErrors.REQUEST_ENTITY_TOO_LARGE
 ];
 
 function shouldProcessMessage(message) {
@@ -47,16 +50,6 @@ function shouldProcessMessage(message) {
   // All checks passed
   return true;
 }
-
-// RE_EMBED
-
-// // RE_COMPOSE
-// const REQUIRED_PERMISSIONS = [
-//   Permissions.FLAGS.EMBED_LINKS,
-//   Permissions.FLAGS.ATTACH_FILES,
-//   Permissions.FLAGS.MANAGE_MESSAGES,
-//   Permissions.FLAGS.MANAGE_WEBHOOKS
-// ];
 
 async function sendMessage(message, posts, options) {
   try {
@@ -116,7 +109,7 @@ module.exports = async function handleMessage(message) {
   const posts = await Promise.all(postsPromises);
 
   // Check for links we cannot re-embed
-  if (posts.includes(null)) options.embedMode = SAFEST_EMBED_MODE;
+  if (posts.includes(null)) options.mode = SAFEST_EMBED_MODE;
 
   // No embedable links
   if (!posts.find((post) => post !== null)) return;

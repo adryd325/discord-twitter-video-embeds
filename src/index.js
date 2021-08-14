@@ -35,6 +35,7 @@ discord.on("guildDelete", (guild) => {
 });
 
 discord.on("ready", () => {
+  console.log("Ready!");
   discord.user.setPresence({
     status: "online",
     activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }]

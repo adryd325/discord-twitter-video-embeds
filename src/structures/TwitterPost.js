@@ -23,7 +23,7 @@ class TwitterPost {
             .filter((video) => video.bitrate != null)
             // Get the highest quality
             .sort((a, b) => b.bitrate - a.bitrate)?.[0]
-      )[0].url;
+      )[0]?.url;
   }
 
   addUserData(data) {

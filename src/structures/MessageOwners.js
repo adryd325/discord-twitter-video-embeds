@@ -47,6 +47,7 @@ class GuildOptions {
 
   _import(messageID, originalMessageID, userID, channelID, guildID) {
     if (guildID === "null") guildID = null;
+    if (originalMessageID === "null") originalMessageID = null;
     this.db.create({ messageID, originalMessageID, userID, channelID, guildID });
   }
 }

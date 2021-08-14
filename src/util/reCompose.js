@@ -27,6 +27,7 @@ module.exports = async function reEmbed(message, posts) {
   const attachmentPromises = [];
 
   posts.forEach((post) => {
+    if (!post) return;
     if (post.embed) {
       embeds.push(post.embed);
     }
@@ -43,7 +44,7 @@ module.exports = async function reEmbed(message, posts) {
 
     // Get total attachment size
     attachments.forEach((attachment) => {
-      attachmentTotal += attachment.attachment.length;
+      if (attachment.attachment.length) attachmentTotal += attachment.attachment.length;
     });
 
     // If it's over the attachment limit, try VIDEO_REPLY for URLs

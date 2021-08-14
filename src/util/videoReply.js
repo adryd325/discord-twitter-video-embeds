@@ -17,6 +17,7 @@ module.exports = async function videoReply(message, posts) {
   const attachmentPromises = [];
   let content = "";
   posts.forEach(async (post) => {
+    if (!post) return;
     if (post.attachment) {
       attachmentPromises.push(post.attachment);
       return null;
@@ -32,7 +33,7 @@ module.exports = async function videoReply(message, posts) {
   if (attachmentPromises.length !== 0) {
     attachments = await Promise.all(attachmentPromises);
     let attachmentTotal = 0;
-    attachments.filter((attachment) => {
+    attachments = attachments.filter((attachment) => {
       // If this attachment is greater than the Discord upload limit
       if (attachment.attachment.length > MAX_DISCORD_UPLOAD) {
         return false;

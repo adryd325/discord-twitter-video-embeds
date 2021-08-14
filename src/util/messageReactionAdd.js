@@ -19,11 +19,10 @@ module.exports = async function handleReactionAdd(messageReaction, user) {
       if (error instanceof DiscordAPIError) {
         switch (error.code) {
           case APIErrors.UNKNOWN_MESSAGE:
-            console.log("Failed to delete message from reaction delete (Unknown Message)");
-            break;
           case APIErrors.MISSING_PERMISSIONS:
-            console.log("Failed to delete message from reaction delete (Missing Permissions");
             break;
+          default:
+            throw error;
         }
       }
     }

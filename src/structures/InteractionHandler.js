@@ -29,7 +29,6 @@ const interactionHandler = new InteractionHandler(discord);
 
 discord.on("ready", () => {
   discord.application.commands.set(interactionHandler.getCommands());
-  console.log(interactionHandler.getCommands());
 });
 
 module.exports = interactionHandler;

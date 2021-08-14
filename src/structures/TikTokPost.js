@@ -25,7 +25,6 @@ class TikTokPost {
         "User-Agent": GENERIC_USER_AGENT
       }
     }).then((videoResponse) => {
-      console.log(videoResponse);
       return new MessageAttachment(videoResponse.body, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
     });
   }

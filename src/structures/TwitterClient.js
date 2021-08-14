@@ -68,11 +68,9 @@ class TwitterClient {
           throw new ClientError(`Didn't recieve tweet data; ID:${id}`);
         }
         let tweetIndex = tweets[id].retweeted_status_id_str ?? id;
-        // Follow quote retweets,
-        if (options.flags.has(GuildFlags.FLAGS.FOLLOW_QRT) && tweets[id].quoted_status_id_str)
-          tweetIndex = tweets[id].quoted_status_id_str;
         const tweet = new TwitterPost(tweets[tweetIndex]);
         tweet.addUserData(conversation.globalObjects.users[tweet.userID]);
+        if (!tweet.videoUrl) return null;
         return tweet;
       });
   }
