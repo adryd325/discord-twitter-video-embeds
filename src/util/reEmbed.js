@@ -53,7 +53,9 @@ module.exports = async function reEmbed(message, posts) {
   }
 
   if (content.trim() === "") content = undefined;
-  message.suppressEmbeds();
+  // Needs to be awaited to not crash on unknown message
+  // TODO: find an alternative to await to prevent crashes
+  await message.suppressEmbeds();
   return safeReply(message, { files: attachments, embeds, content });
 };
 

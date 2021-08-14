@@ -65,7 +65,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
   if (!content && attachments.length == 0) return null;
 
   // Delete original message
-  message.delete();
+  await message.delete();
 
   try {
     return webhook.send({
