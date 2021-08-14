@@ -2,6 +2,7 @@ const { URLRegexes, EmbedModes, Providers } = require("./Constants");
 const clients = require("./clients");
 const { logChannel } = require("../index.js");
 const ClientError = require("../structures/ClientError");
+const GuildFlags = require("../structures/GuildFlags");
 const TwitterError = require("../structures/TwitterError");
 const TwitterErrorList = require("../structures/TwitterErrorList");
 
@@ -27,6 +28,11 @@ async function getPost(mdMatch, options, spoiler) {
 
   // If we don't have a provider, return null
   if (!provider) return null;
+
+  // TWITTER_ONLY flag
+  if (options.flags.has(GuildFlags.FLAGS.TWITTER_ONLY)) {
+    if (provider !== Providers.TWITTER) return null;
+  }
 
   // If we do have a provider, call getPost
   let post;
