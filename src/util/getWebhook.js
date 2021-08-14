@@ -16,7 +16,7 @@ module.exports = async function getWebhook(channel) {
   } else {
     try {
       // @ts-ignore
-      const webhook = await channel.createWebhook();
+      const webhook = await channel.createWebhook("Video Embeds");
       WebhooksDB.create({
         channelID: channel.id,
         guildID: channel.guild.id,
