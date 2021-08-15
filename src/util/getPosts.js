@@ -68,7 +68,7 @@ async function getPost(mdMatch, options, spoiler) {
   // My poor bandwidth
   let attachment;
   if (needsAttachment) {
-    attachment = post.getDiscordAttachment();
+    attachment = post.getDiscordAttachment(spoiler);
   }
 
   return {
