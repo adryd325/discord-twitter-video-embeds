@@ -1,4 +1,4 @@
-const discord = require("../discord.js");
+const discord = require("../discord");
 
 class InteractionHandler {
   constructor(client) {

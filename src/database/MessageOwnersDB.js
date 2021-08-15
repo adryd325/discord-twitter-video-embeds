@@ -1,6 +1,6 @@
 const sequelize = require("sequelize");
 const { Model, DataTypes } = sequelize;
-const { database, cache } = require("../database.js");
+const { database, cache } = require("../database");
 
 class MessageOwnersDB extends Model {}
 

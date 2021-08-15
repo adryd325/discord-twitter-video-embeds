@@ -1,7 +1,7 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fetch = require("node-fetch");
-const { USER_AGENT, Colors, Favicons } = require("../util/Constants.js");
-const { parseHtmlEntities } = require("../util/Utils.js");
+const { USER_AGENT, Colors, Favicons } = require("../util/Constants");
+const { parseHtmlEntities } = require("../util/Utils");
 
 class TwitterPost {
   constructor(data) {

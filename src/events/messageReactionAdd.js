@@ -1,7 +1,7 @@
 const { DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
 const { APIErrors } = DiscordConstants;
-const { DELETE_EMOJIS } = require("./Constants");
 const MessageOwners = require("../structures/MessageOwners");
+const { DELETE_EMOJIS } = require("../util/Constants");
 
 module.exports = async function handleReactionAdd(messageReaction, user) {
   // If the user reacts with one of the delete message emojis

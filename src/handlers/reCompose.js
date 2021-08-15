@@ -1,10 +1,10 @@
 const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
 const { APIErrors } = DiscordConstants;
-const { MAX_DISCORD_UPLOAD } = require("./Constants");
-const { notifyPermissions } = require("./Utils");
-const { getWebhook, resetWebhook } = require("./getWebhook");
 const videoReply = require("./videoReply");
 const discord = require("../discord");
+const { MAX_DISCORD_UPLOAD } = require("../util/Constants");
+const { notifyPermissions } = require("../util/Utils");
+const { getWebhook, resetWebhook } = require("../util/getWebhook");
 
 const REQUIRED_PERMISSIONS = new Permissions([
   Permissions.FLAGS.EMBED_LINKS,

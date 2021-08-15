@@ -1,6 +1,6 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fetch = require("node-fetch");
-const { TIKTOK_HOME, GENERIC_USER_AGENT, Colors, Favicons } = require("../util/Constants.js");
+const { TIKTOK_HOME, GENERIC_USER_AGENT, Colors, Favicons } = require("../util/Constants");
 
 class TikTokPost {
   constructor(data, cookies) {

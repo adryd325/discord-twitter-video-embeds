@@ -1,5 +1,5 @@
 const sequelize = require("sequelize");
-const { database, cache } = require("../database.js");
+const { database, cache } = require("../database");
 const { Model, DataTypes } = sequelize;
 
 class WebhooksDB extends Model {}

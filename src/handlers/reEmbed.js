@@ -1,8 +1,8 @@
 const { Permissions, GuildChannel } = require("discord.js");
-const { MAX_DISCORD_UPLOAD } = require("./Constants");
-const { notifyPermissions, safeReply } = require("./Utils");
 const videoReply = require("./videoReply");
 const discord = require("../discord");
+const { MAX_DISCORD_UPLOAD } = require("../util/Constants");
+const { notifyPermissions, safeReply } = require("../util/Utils");
 
 const REQUIRED_PERMISSIONS = new Permissions([
   Permissions.FLAGS.EMBED_LINKS,

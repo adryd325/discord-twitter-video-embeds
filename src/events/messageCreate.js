@@ -6,16 +6,16 @@ const {
   Permissions
 } = require("discord.js");
 const { APIErrors, ChannelTypes } = DiscordConstants;
-const { EmbedModes, QRT_UNROLL_BOTS, SAFEST_EMBED_MODE, MAX_DISCORD_MESSAGE_LENGTH } = require("./Constants");
-const getPosts = require("./getPosts");
-const markdownParser = require("./markdownParser");
-const reCompose = require("./reCompose");
-const reEmbed = require("./reEmbed");
-const videoReply = require("./videoReply");
 const discord = require("../discord");
+const reCompose = require("../handlers/reCompose");
+const reEmbed = require("../handlers/reEmbed");
+const videoReply = require("../handlers/videoReply");
 const GuildFlags = require("../structures/GuildFlags");
 const GuildOptions = require("../structures/GuildOptions");
 const MessageOwners = require("../structures/MessageOwners");
+const { EmbedModes, QRT_UNROLL_BOTS, SAFEST_EMBED_MODE, MAX_DISCORD_MESSAGE_LENGTH } = require("../util/Constants");
+const getPosts = require("../util/getPosts");
+const markdownParser = require("../util/markdownParser");
 
 const ignoredErrors = [
   APIErrors.UNKNOWN_CHANNEL, // Race condition if thread is archived before bot replies

@@ -1,8 +1,8 @@
 const { Constants: DiscordConstants, Permissions } = require("discord.js");
-const { EmbedModes } = require("./Constants.js");
 const { ApplicationCommandOptionTypes } = DiscordConstants;
 const Command = require("../structures/Command");
 const GuildOptions = require("../structures/GuildOptions");
+const { EmbedModes } = require("../util/Constants");
 
 module.exports = new Command(
   {
@@ -31,7 +31,7 @@ module.exports = new Command(
     ],
     description: "Switches embed mode"
   },
-  function mode(interaction) {
+  function embedmode(interaction) {
     if (!interaction.inGuild()) {
       interaction.reply("This command only applies to servers");
       return;

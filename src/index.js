@@ -1,14 +1,14 @@
 const fs = require("fs");
 const { TextChannel } = require("discord.js");
+const modeCommand = require("./commands/embedmode");
 const { database } = require("./database");
 const discord = require("./discord");
+const messageCreate = require("./events/messageCreate");
+const messageReactionAdd = require("./events/messageReactionAdd");
+const reEmbed = require("./handlers/reEmbed");
 const GuildOptions = require("./structures/GuildOptions");
 const interactionHandler = require("./structures/InteractionHandler");
 const { TEMP_DIR, EmbedModes } = require("./util/Constants");
-const messageCreate = require("./util/messageCreate");
-const messageReactionAdd = require("./util/messageReactionAdd");
-const modeCommand = require("./util/modeCommand");
-const reEmbed = require("./util/reEmbed");
 
 let logChannel;
 

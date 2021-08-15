@@ -5,8 +5,8 @@ const GuildFlags = require("./GuildFlags");
 const TwitterError = require("./TwitterError");
 const TwitterErrorList = require("./TwitterErrorList");
 const TwitterPost = require("./TwitterPost");
-
 const { USER_AGENT } = require("../util/Constants");
+
 const TWITTER_GUEST_TOKEN =
   "Bearer AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw";
 const GUEST_TOKEN_ENDPOINT = "https://api.twitter.com/1.1/guest/activate.json";

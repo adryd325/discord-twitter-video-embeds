@@ -30,7 +30,7 @@ class GuildOptions {
     }
   }
 
-  setOptions(guildID, options) {
+  async setOptions(guildID, options) {
     const dbUpdate = {};
     if (options.flags) {
       dbUpdate.flags = options.flags;
