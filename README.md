@@ -1,12 +1,12 @@
-# Twitter Video Embeds
+# Discord External Video Embeds
 
-I'm a Discord bot that fixes your broken Twitter videos. You can add me here: https://adryd.co/twitter-embeds.
+I'm a Discord bot that fixes your broken Twitter, TikTok and Reddit videos. You can add me here: https://adryd.co/twitter-embeds.
 
 https://user-images.githubusercontent.com/48024900/126883933-396745dd-806b-4cde-abee-1a5f8b7d5585.mp4
 
 ## Description
 
-Titwter Embeds fixes video embeds from Twitter on Discord with a goal of convinience, seamlessness, and feature-completeness. It parses and obeys Discord's own markdown rules, and allows users to delete their own messages
+Twitter Embeds fixes video embeds from Twitter, TikTok and Reddit on Discord with a goal of convinience, seamlessness, and feature-completeness. It parses and obeys Discord's own markdown rules, and allows users to delete their own messages
 
 ### Special Thanks
 
@@ -21,19 +21,19 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 
 - The video reply mode will reply with a direct link to the twitter video.
 
-  <img src="https://cdn.discordapp.com/attachments/857368936672526356/868639403667488788/unknown.png" width="960">
+  <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289014381019136/unknown.png" width="611">
 
 - Re-embed will remove the embeds on the original message and reply with a new set of embeds, along with video attachments.
 
-  <img src="https://cdn.discordapp.com/attachments/857368936672526356/868639702528446504/unknown.png" width="522">
+  <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289247164907520/unknown.png" width="505">
   
  - Re-compose uses a webhook to recompose the original message with a new set of embeds.  
   
-  <img src="https://cdn.discordapp.com/attachments/857368936672526356/868641645304901672/unknown.png" width="631">
+  <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289391943897158/unknown.png" width="507">
 
 ### Additional Features
 
-- The bot obeys spoilers
+- The bot obeys spoilers, and all of Discord's markdown rules that may prevent a link from embeding (Including quirks)
 - Users can delete their own re-composed messages or bot replies to their messages bt reacting with an "X" emoji.
 - The bot integrates with [HiddenPhox](https://discordapp.com/oauth2/authorize?client_id=173441062243663872&scope=bot) and replies to HiddenPhox's quote-retweet unrolling
 
@@ -70,10 +70,11 @@ The following types of user data are stored
   - **Guild ID**: The server ID the webhooks are in, so server owners can request deletion of all data from their server
 - Mode preference is saved so the bot can remember what type of embeds a server prefers
   - **Mode**: The mode the server prefers embeds be sent in
+  - **Flags**: Additional server options
   - **Guild ID**: The ID of the server
-- Servers the bot joins are logged to a private server with the following information (member count, guild id, name)
+- Servers the bot joins, and leaves are logged to a private server with the following information (member count, guild id, name)
 
-Obviously Tweet information is fetched from Twitter, and information is sent through Discord.  
+Obviously post information is fetched from their respected providers (Twitter, TikTok, Reddit), and information is sent through Discord.  
 You're free to request deletion of data associated with your user or a server you own using the contact info below.
 
 ### Contact Info
@@ -87,3 +88,9 @@ If for any reason you need to contact me, I'm available through the following ch
 ## Hosting Your Own Instance
 
 You're free to host your own instance as long as you link back to this repo, or wherever it moves to.
+
+## Alternatives
+
+If you're unable to add the bot to your server, or you're looking for something different, the following may be of use to you
+ - [TwitFix/fxtwitter](https://github.com/robinuniverse/TwitFix): Fixes Twitter embeds in Discord
+ - [proxy.knotty.dev](https://proxy.knotty.dev/): A proxy for Reddit videos
