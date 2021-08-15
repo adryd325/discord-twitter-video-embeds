@@ -26,10 +26,10 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 - Re-embed will remove the embeds on the original message and reply with a new set of embeds, along with video attachments.
 
   <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289247164907520/unknown.png" width="505">
-  
- - Re-compose uses a webhook to recompose the original message with a new set of embeds.  
-  
-  <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289391943897158/unknown.png" width="507">
+
+ - Re-compose uses a webhook to recompose the original message with a new set of embeds.
+
+   <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289391943897158/unknown.png" width="507">
 
 ### Additional Features
 
