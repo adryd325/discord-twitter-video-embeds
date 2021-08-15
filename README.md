@@ -19,7 +19,7 @@ Twitter Embeds fixes video embeds from Twitter, TikTok and Reddit on Discord wit
 
 You can use the bot by [adding it to your Discord server](https://adryd.co/twitter-embeds), or sending it a direct message. It has 3 different modes that can be changed by a server administrator (Manage Server permission).
 
-- The video reply mode will reply with a direct link to the twitter video.
+- The video reply mode will reply with a file or direct link to a video.
 
   <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289014381019136/unknown.png" width="611">
 
