@@ -64,7 +64,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
   if (!content && attachments.length == 0) return null;
 
   try {
-    const replyPromise = webhook.send({
+    const reply = await webhook.send({
       content,
       embeds,
       files: attachments,
@@ -72,7 +72,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
       allowed_mentions: { parse: ["users"] }
     });
-    const [_deletedMessage, reply] = await Promise.all([message.delete(), replyPromise]);
+    message.delete();
     return reply;
   } catch (error) {
     if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_WEBHOOK) {

@@ -54,9 +54,10 @@ module.exports = async function reEmbed(message, posts) {
   }
 
   if (content.trim() === "") content = undefined;
-
   try {
-    return await safeReply(message, { files: attachments, embeds, content });
+    const reply = await safeReply(message, { files: attachments, embeds, content });
+    message.suppressEmbeds();
+    return reply;
   } catch (error) {
     if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
       return await videoReply(message, posts);
