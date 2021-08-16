@@ -64,16 +64,19 @@ module.exports = async function reEmbed(message, posts, retry = false) {
   if (!content && attachments.length == 0) return null;
 
   try {
-    const reply = await webhook.send({
-      content,
-      embeds,
-      files: attachments,
-      username: message.author.username,
-      avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
-      allowed_mentions: { parse: ["users"] }
-    });
-    message.delete();
-    return reply;
+    return await webhook
+      .send({
+        content,
+        embeds,
+        files: attachments,
+        username: message.author.username,
+        avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
+        allowed_mentions: { parse: ["users"] }
+      })
+      .then((reply) => {
+        message.delete();
+        return reply;
+      });
   } catch (error) {
     if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_WEBHOOK) {
       await resetWebhook(message.channel);
