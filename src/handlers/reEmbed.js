@@ -1,4 +1,5 @@
-const { Permissions, GuildChannel } = require("discord.js");
+const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
+const { APIErrors } = DiscordConstants;
 const videoReply = require("./videoReply");
 const discord = require("../discord");
 const { MAX_DISCORD_UPLOAD } = require("../util/Constants");
@@ -54,12 +55,15 @@ module.exports = async function reEmbed(message, posts) {
 
   if (content.trim() === "") content = undefined;
 
-  const [_suppressedMessage, reply] = await Promise.all([
-    message.suppressEmbeds(),
-    safeReply(message, { files: attachments, embeds, content })
-  ]);
-
-  return reply;
+  try {
+    return await safeReply(message, { files: attachments, embeds, content });
+  } catch (error) {
+    if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
+      return await videoReply(message, posts);
+    } else {
+      throw error;
+    }
+  }
 };
 
 module.exports.REQUIRED_PERMISSIONS = REQUIRED_PERMISSIONS;

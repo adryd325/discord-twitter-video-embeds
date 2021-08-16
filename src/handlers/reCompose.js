@@ -14,7 +14,6 @@ const REQUIRED_PERMISSIONS = new Permissions([
 ]);
 
 module.exports = async function reEmbed(message, posts, retry = false) {
-  console.log("a");
   // To suppress TS errors, even though we already handled that.
   if (!(message.channel instanceof GuildChannel)) return null;
   if (!message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)) {
@@ -81,6 +80,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       if (retry === false) {
         return reEmbed(message, posts, true);
       }
+    } else if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
+      return await videoReply(message, posts);
     } else {
       throw error;
     }
