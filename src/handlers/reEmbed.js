@@ -43,6 +43,7 @@ module.exports = async function reEmbed(message, posts) {
 
     // Get total attachment size
     attachments.forEach((attachment) => {
+      console.log(attachment);
       if (attachment.attachment.length) attachmentTotal += attachment.attachment.length;
     });
 
@@ -59,8 +60,9 @@ module.exports = async function reEmbed(message, posts) {
     message.suppressEmbeds();
     return reply;
   } catch (error) {
+    console.log(error);
     if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
-      return await videoReply(message, posts);
+      return videoReply(message, posts, true);
     } else {
       throw error;
     }

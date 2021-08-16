@@ -81,7 +81,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
         return reEmbed(message, posts, true);
       }
     } else if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
-      return await videoReply(message, posts);
+      return videoReply(message, posts, true);
     } else {
       throw error;
     }

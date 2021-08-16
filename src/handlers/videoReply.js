@@ -5,7 +5,7 @@ const { notifyPermissions, safeReply } = require("../util/Utils");
 
 const REQUIRED_PERMISSIONS = new Permissions([Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.ATTACH_FILES]);
 
-module.exports = async function videoReply(message, posts) {
+module.exports = async function videoReply(message, posts, fallback = false) {
   if (
     message.channel instanceof GuildChannel &&
     !message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)
@@ -18,7 +18,7 @@ module.exports = async function videoReply(message, posts) {
   let content = "";
   posts.forEach(async (post) => {
     if (!post) return;
-    if (post.attachment) {
+    if (post.attachment && !fallback) {
       attachmentPromises.push(post.attachment);
       return null;
     }
