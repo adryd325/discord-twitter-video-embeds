@@ -55,7 +55,7 @@ class TwitterClient {
           throw new ClientError("Error parsing JSON", "Twitter");
         }
         if (parsed.errors) {
-          if (parsed.errors.filter((error) => error.code === 239)) {
+          if (parsed.errors.filter((error) => error.code === 239) && !isRetry) {
             console.log("Renewing Twitter guest token");
             this.guestToken = null;
             return this.getPost(match, options, true);
