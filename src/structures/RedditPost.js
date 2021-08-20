@@ -76,7 +76,7 @@ class RedditPost {
         headers: {
           "User-Agent": USER_AGENT
         }
-      }).then((response) => response.body);
+      }).then((response) => response.buffer());
 
       // If we don't have audio, we can end here
       if (!bestAudio) return video;
@@ -87,7 +87,7 @@ class RedditPost {
         headers: {
           "User-Agent": USER_AGENT
         }
-      }).then((response) => response.body);
+      }).then((response) => response.buffer());
 
       // Then merge the two streams (I hate reddit)
       return mergeStreams(video, audio);

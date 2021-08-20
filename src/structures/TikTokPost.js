@@ -24,9 +24,11 @@ class TikTokPost {
         Referer: `${TIKTOK_HOME}/`,
         "User-Agent": GENERIC_USER_AGENT
       }
-    }).then((videoResponse) => {
-      return new MessageAttachment(videoResponse.body, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
-    });
+    })
+      .then((response) => response.buffer())
+      .then((videoResponse) => {
+        return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
+      });
   }
 
   getDiscordEmbed() {

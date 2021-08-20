@@ -41,7 +41,7 @@ class TikTokClient {
         const match = html.match(DATA_REGEXP);
         if (!match) throw new ClientError("No match when parsing post", "TikTok");
         const pageProps = JSON.parse(match[1]).props.pageProps;
-        if (!pageProps) throw new ClientError("No data", "TikTok");
+        if (!pageProps?.itemInfo?.itemStruct) throw new ClientError("No data", "TikTok");
         const data = pageProps.itemInfo.itemStruct;
         return new TikTokPost(data, cookies);
       });

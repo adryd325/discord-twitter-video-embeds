@@ -60,7 +60,7 @@ class TwitterClient {
             this.guestToken = null;
             return this.getPost(match, options, true);
           }
-          throw new TwitterErrorList(res.errors.map((err) => new TwitterError(err)));
+          throw new TwitterErrorList(parsed.errors.map((err) => new TwitterError(err)));
         }
         return parsed;
       })

@@ -18,7 +18,7 @@ const getPosts = require("../util/getPosts");
 const markdownParser = require("../util/markdownParser");
 
 const ignoredErrors = [
-  APIErrors.UNKNOWN_CHANNEL, // Race condition if thread is archived before bot replies
+  APIErrors.UNKNOWN_CHANNEL, // Race condition if channel is deleted before bot replies
   APIErrors.UNKNOWN_GUILD, // Race condition if kicked from server
   APIErrors.UNKNOWN_MESSAGE, // Race condition if message is deleted quickly
   APIErrors.CANNOT_SEND_EXPLICIT_CONTENT, // We have no way of checking
@@ -26,9 +26,8 @@ const ignoredErrors = [
   APIErrors.MAXIMUM_THREAD_PARICIPANTS,
   APIErrors.INVALID_THREAD_ARCHIVE_STATE, // Race condition if thread is archived before bot replies
   APIErrors.MAXIMUM_WEBHOOKS,
-  APIErrors.UNKNOWN_MESSAGE,
   APIErrors.MISSING_PERMISSIONS,
-  APIErrors.REQUEST_ENTITY_TOO_LARGE
+  APIErrors.REQUEST_ENTITY_TOO_LARGE // Issues with calculating attachment size
 ];
 
 function shouldProcessMessage(message) {
