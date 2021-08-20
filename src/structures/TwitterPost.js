@@ -49,7 +49,7 @@ class TwitterPost {
     })
       .then((response) => response.buffer())
       .then((videoResponse) => {
-        return new MessageAttachment(videoResponse.body, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
+        return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
       });
   }
 
