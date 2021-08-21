@@ -10,7 +10,7 @@
   "dependencies": {
     "bufferutil": "^4.0.3",
     "utf-8-validate": "^5.0.5",
-		"zlib-sync": "^0.1.7",
+    "zlib-sync": "^0.1.7",
     "discord.js": "^13.0.1",
     "node-fetch": "^2.6.1",
     "sequelize": "^6.6.5",
@@ -39,7 +39,7 @@
   "author": "adryd <me@adryd.com>",
   "license": "MIT",
   "bugs": {
-		"url": "https://github.com/adryd325/discord-twitter-video-embeds/issues"
-	},
-	"homepage": "https://github.com/adryd325/discord-twitter-video-embeds#readme"
+    "url": "https://github.com/adryd325/discord-twitter-video-embeds/issues"
+  },
+  "homepage": "https://github.com/adryd325/discord-twitter-video-embeds#readme"
 }

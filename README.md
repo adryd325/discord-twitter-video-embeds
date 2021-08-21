@@ -27,9 +27,9 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 
   <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289247164907520/unknown.png" width="505">
 
- - Re-compose uses a webhook to recompose the original message with a new set of embeds.
+- Re-compose uses a webhook to recompose the original message with a new set of embeds.
 
-   <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289391943897158/unknown.png" width="507">
+  <img src="https://media.discordapp.net/attachments/857368936672526356/878761428302037042/unknown.png" width="507">
 
 ### Additional Features
 
@@ -92,5 +92,6 @@ You're free to host your own instance as long as you link back to this repo, or 
 ## Alternatives
 
 If you're unable to add the bot to your server, or you're looking for something different, the following may be of use to you
- - [TwitFix/fxtwitter](https://github.com/robinuniverse/TwitFix): Fixes Twitter embeds in Discord
- - [proxy.knotty.dev](https://proxy.knotty.dev/): A proxy for Reddit videos
+
+- [TwitFix/fxtwitter](https://github.com/robinuniverse/TwitFix): Fixes Twitter embeds in Discord
+- [proxy.knotty.dev](https://proxy.knotty.dev/): A proxy for Reddit videos

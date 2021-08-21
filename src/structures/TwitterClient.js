@@ -5,7 +5,7 @@ const GuildFlags = require("./GuildFlags");
 const TwitterError = require("./TwitterError");
 const TwitterErrorList = require("./TwitterErrorList");
 const TwitterPost = require("./TwitterPost");
-const { USER_AGENT } = require("../util/Constants");
+const { USER_AGENT, EmbedModes } = require("../util/Constants");
 
 const TWITTER_GUEST_TOKEN =
   "Bearer AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw";
@@ -39,6 +39,7 @@ class TwitterClient {
     const id = match[2];
     const twitfix = match[1];
     if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix === "fx") return;
+    if (twitfix === "fx" && options.mode === EmbedModes.VIDEO_REPLY) return;
     return fetch(TWEET_ENDPOINT(id), {
       headers: {
         "user-agent": USER_AGENT,
