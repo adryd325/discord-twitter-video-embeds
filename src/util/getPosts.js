@@ -1,6 +1,5 @@
 const { URLRegexes, EmbedModes, Providers } = require("./Constants");
 const clients = require("./clients");
-const { logChannel } = require("../index.js");
 const ClientError = require("../structures/ClientError");
 const GuildFlags = require("../structures/GuildFlags");
 const TwitterError = require("../structures/TwitterError");
@@ -42,9 +41,6 @@ async function getPost(mdMatch, options, spoiler) {
     post = await providerClient.getPost(match, options);
   } catch (error) {
     if (error instanceof ClientError || error instanceof TwitterError || error instanceof TwitterErrorList) {
-      if (logChannel && error instanceof TwitterErrorList) {
-        logChannel.send("<@842601826674540574> bitch there a error in da console");
-      }
       console.error(error);
       return null;
     }
