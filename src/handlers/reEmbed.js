@@ -49,7 +49,7 @@ module.exports = async function reEmbed(message, posts) {
     // If it's over the attachment limit, try VIDEO_REPLY for URLs
     // TODO: Add more advanced logic for deciding if VIDEO_REPLY will be able to do anything
     if (attachmentTotal > MAX_DISCORD_UPLOAD) {
-      return videoReply(message, posts);
+      return videoReply(message, posts, true);
     }
   }
 
