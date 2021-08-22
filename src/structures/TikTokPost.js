@@ -13,12 +13,12 @@ class TikTokPost {
     this.avatar = data.author.avatarThumb;
     this.authorUrl = `${TIKTOK_HOME}/@${data.author.uniqueId}`;
     this.url = `${TIKTOK_HOME}/@${data.author.uniqueId}/video/${data.id}`;
-    this.videoUrl = data.video.downloadAddr;
+    this._videoUrl = data.video.downloadAddr;
     this.likes = data.stats.diggCount;
   }
 
   getDiscordAttachment(spoiler) {
-    return fetch(this.videoUrl, {
+    return fetch(this._videoUrl, {
       headers: {
         Cookie: this.cookies,
         Referer: `${TIKTOK_HOME}/`,
