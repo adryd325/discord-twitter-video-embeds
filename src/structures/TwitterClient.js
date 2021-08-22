@@ -9,7 +9,7 @@ const { USER_AGENT, EmbedModes } = require("../util/Constants");
 
 const TWITTER_GUEST_TOKEN =
   "Bearer AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw";
-const GUEST_TOKEN_ENDPOINT = "https://api.twitter.com/1.1/guest/activate.json";
+const GUEST_TOKEN_ENDPOINT = "https://api.twitter.com/1.1/guehttps://www.youtube.com/watch?v=dXGO6QSC5Fgst/activate.json";
 const TWEET_ENDPOINT = (tweetID) =>
   `https://api.twitter.com/2/timeline/conversation/${tweetID}.json?tweet_mode=extended&include_user_entities=1`;
 
@@ -38,8 +38,8 @@ class TwitterClient {
   async getPost(match, options, isRetry = false) {
     const id = match[2];
     const twitfix = match[1];
-    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix === "fx") return;
-    if (twitfix === "fx" && options.mode === EmbedModes.VIDEO_REPLY) return;
+    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix === "fx") return null;
+    if (twitfix === "fx" && options.mode === EmbedModes.VIDEO_REPLY) return null;
     return fetch(TWEET_ENDPOINT(id), {
       headers: {
         "user-agent": USER_AGENT,
@@ -67,11 +67,11 @@ class TwitterClient {
       })
       .then((conversation) => {
         if (!conversation?.globalObjects?.tweets) {
-          throw new ClientError(`Didn't recieve conversation data; ID:${id}`);
+          throw new ClientError(`Didn't recieve conversation data; ID:${id}`, "Twitter");
         }
         const tweets = conversation.globalObjects.tweets;
         if (!tweets[id]) {
-          throw new ClientError(`Didn't recieve tweet data; ID:${id}`);
+          throw new ClientError(`Didn't recieve tweet data; ID:${id}`, "Twitter");
         }
         const tweetIndex = tweets[id].retweeted_status_id_str ?? id;
         const tweet = new TwitterPost(tweets[tweetIndex]);

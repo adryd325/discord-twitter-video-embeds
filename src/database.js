@@ -10,7 +10,7 @@ module.exports.database = new Sequelize({
 });
 
 module.exports.cache = new SequelizeSimpleCache({
-  GuildOptions: { ttl: 6 * 60 * 60 }, // 6 hours
+  GuildOptions: { ttl: 24 * 60 * 60 }, // 24 hours
   Webhooks: { ttl: 60 * 60 }, // 1 hour
   MessageOwners: { ttl: 15 * 60 } // 15 minutes
 });
