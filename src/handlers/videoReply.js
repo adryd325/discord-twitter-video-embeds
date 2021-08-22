@@ -55,7 +55,7 @@ module.exports = async function videoReply(message, posts, fallback = false) {
   if (content.trim() === "") content = undefined;
 
   // If both of these are empty, we can do nothing
-  if (!content && attachments.length == 0) return null;
+  if (!content && attachments?.length == 0) return null;
 
   // Reply to the message
   return safeReply(message, { files: attachments, content });
