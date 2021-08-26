@@ -2,7 +2,7 @@
 
 I'm a Discord bot that fixes your broken Twitter, TikTok and Reddit videos. You can add me here: https://adryd.co/twitter-embeds.
 
-https://user-images.githubusercontent.com/48024900/126883933-396745dd-806b-4cde-abee-1a5f8b7d5585.mp4
+https://user-images.githubusercontent.com/48024900/130885482-45c3828b-a679-4427-9b6f-0210698276b5.mp4
 
 ## Description
 
