@@ -32,6 +32,20 @@ class GuildOptions {
     }
   }
 
+  async getData(messageID) {
+    const dbEntry = await this.db.findOne({ where: { messageID } });
+    if (dbEntry) {
+      return {
+        user: dbEntry.getDataValue("userID"),
+        message: dbEntry.getDataValue("messageID"),
+        originalMessage: dbEntry.getDataValue("originalMessageID"),
+        channel: dbEntry.getDataValue("channelID")
+      };
+    } else {
+      return null;
+    }
+  }
+
   setOwner(originalMessage, message) {
     if (!this._validateMessage(message) || !this._validateMessage(originalMessage)) return null;
     let guildID = null;
