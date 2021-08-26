@@ -1,6 +1,6 @@
 const { DiscordAPIError, Permissions, Constants: DiscordConstants } = require("discord.js");
 const discord = require("../discord");
-const { APIErrors } = DiscordConstants;
+const { APIErrors, ChannelTypes } = DiscordConstants;
 const MessageOwners = require("../structures/MessageOwners");
 const { DELETE_EMOJIS } = require("../util/Constants");
 
@@ -18,8 +18,13 @@ module.exports = async function handleReactionAdd(messageReaction, user) {
       await messageReaction.message.delete();
       // Experiment: Restore embeds on suppressed messages
       if (process.env.NODE_ENV === "development") {
+        // get channel
         const channel = discord.channels.cache.get(dbData.channel);
-        if (channel.isText() && channel.type !== "DM") {
+        // make sure we're in a valid channel
+        // @ts-ignore UGH i hate types
+        if (channel.isText() && channel.type !== ChannelTypes.DM) {
+          // check permissions
+          // @ts-ignore
           if (!channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.MANAGE_MESSAGES)) return;
           const originalMessage = await channel.messages.fetch(dbData.originalMessage);
           await originalMessage.suppressEmbeds(false);

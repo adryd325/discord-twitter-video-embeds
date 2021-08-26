@@ -112,6 +112,11 @@ module.exports = async function handleMessage(message) {
   // Check for links we cannot re-embed
   if (posts.includes(null)) options.mode = SAFEST_EMBED_MODE;
 
+  // at the request of cyn, do not proxy HiddenPhox's messages
+  if (QRT_UNROLL_BOTS.includes(message.author.id) && options.mode === EmbedModes.RE_COMPOSE) {
+    options.mode = EmbedModes.RE_EMBED;
+  }
+
   // No embedable links
   if (!posts.find((post) => post !== null)) return;
 
