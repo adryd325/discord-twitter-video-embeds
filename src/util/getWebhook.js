@@ -41,6 +41,6 @@ module.exports.resetWebhook = async function resetWebhook(channel) {
   const channelID = channel.id;
   const dbWebhookMap = await WebhooksDB.findOne({ where: { channelID } });
   if (dbWebhookMap) {
-    WebhooksDB.delete({ where: { channelID } });
+    WebhooksDB.destroy({ where: { channelID } });
   }
 };
