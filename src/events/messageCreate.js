@@ -90,7 +90,7 @@ module.exports = async function handleMessage(message) {
 
   // Guild options
   let options = { mode: EmbedModes.VIDEO_REPLY, flags: new GuildFlags([]) }; // Default options
-  if (message.channel instanceof GuildChannel) {
+  if (message.channel instanceof GuildChannel || message.channel instanceof ThreadChannel) {
     const dbOptions = await GuildOptions.getOptions(message.guild.id);
     if (dbOptions) {
       options = dbOptions;
