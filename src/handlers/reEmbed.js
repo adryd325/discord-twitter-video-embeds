@@ -1,4 +1,4 @@
-const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
+const { Permissions, GuildChannel, ThreadChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
 const { APIErrors } = DiscordConstants;
 const videoReply = require("./videoReply");
 const discord = require("../discord");
@@ -13,7 +13,7 @@ const REQUIRED_PERMISSIONS = new Permissions([
 
 module.exports = async function reEmbed(message, posts) {
   if (
-    message.channel instanceof GuildChannel &&
+    (message.channel instanceof GuildChannel || message.channel instanceof ThreadChannel) &&
     !message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)
   ) {
     notifyPermissions(message, REQUIRED_PERMISSIONS, "RE_EMBED");
