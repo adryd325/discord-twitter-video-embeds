@@ -1,4 +1,10 @@
-const { Permissions, GuildChannel, ThreadChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
+const {
+  Permissions,
+  GuildChannel,
+  ThreadChannel,
+  DiscordAPIError,
+  Constants: DiscordConstants
+} = require("discord.js");
 const { APIErrors } = DiscordConstants;
 const videoReply = require("./videoReply");
 const discord = require("../discord");
