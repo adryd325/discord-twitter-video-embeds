@@ -57,7 +57,7 @@ function write(content, originalContent) {
 }
 
 function format(args, logType) {
-  if (logType.level < log.level) return;
+  if (log.level > logType.level) return;
   let content, prefix;
   // eg. log.level("hello");
   if (args.length === 1) {
@@ -125,8 +125,8 @@ log.raw = function raw(...args) {
 
 log.addLevel("silly", 500, { fg: "black", bg: "white" }, "sill");
 log.addLevel("verbose", 1000, { fg: "blue", bg: "black" }, "verb");
-log.addLevel("info", 2000, { fg: "green" });
 log.addLevel("sql", 2000, { fg: "cyan" }, "sql!");
+log.addLevel("info", 3000, { fg: "green" });
 log.addLevel("warn", 4000, { fg: "black", bg: "yellow" }, "WARN");
 log.addLevel("error", 5000, { fg: "red", bg: "black", bold: true }, "ERR!");
 

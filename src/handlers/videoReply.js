@@ -58,7 +58,7 @@ module.exports = async function videoReply(message, posts, fallback = false) {
   if (!content && (attachments === undefined || attachments.length == 0)) return null;
 
   // Reply to the message
-  return [safeReply(message, { files: attachments, content }), { mode: "VIDEO_EMBED" }];
+  return [safeReply(message, { files: attachments, content }), { mode: "VIDEO_REPLY" }];
 };
 
 module.exports.REQUIRED_PERMISSIONS = REQUIRED_PERMISSIONS;

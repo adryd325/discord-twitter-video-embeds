@@ -3,6 +3,7 @@ const { ApplicationCommandOptionTypes } = DiscordConstants;
 const Command = require("../structures/Command");
 const GuildOptions = require("../structures/GuildOptions");
 const { EmbedModes } = require("../util/Constants");
+const log = require("../util/log");
 
 module.exports = new Command(
   {
@@ -41,9 +42,11 @@ module.exports = new Command(
       return;
     }
     if (!interaction.options.get("mode")) return;
-    GuildOptions.setOptions(interaction.guild.id, { mode: interaction.options.get("mode").value }).then(() => {
+    const mode = EmbedModes[interaction.options.get("mode").value];
+    log.info(`Handled mode switch to (${mode})`);
+    GuildOptions.setOptions(interaction.guild.id, { mode }).then(() => {
       interaction.reply({
-        content: `Embed mode has been set to ${EmbedModes[interaction.options.get("mode").value]}!`,
+        content: `Embed mode has been set to ${mode}!`,
         ephemeral: true
       });
     });
