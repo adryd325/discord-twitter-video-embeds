@@ -2,11 +2,12 @@ const path = require("path");
 const sequelize = require("sequelize");
 const { Sequelize } = sequelize;
 const SequelizeSimpleCache = require("sequelize-simple-cache");
+const log = require("./util/log");
 
 module.exports.database = new Sequelize({
   dialect: "sqlite",
   storage: path.join(__dirname, "../data/database.db"),
-  logging: console.log
+  logging: (message) => log.sql(message)
 });
 
 module.exports.cache = new SequelizeSimpleCache({

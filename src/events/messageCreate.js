@@ -15,6 +15,7 @@ const GuildOptions = require("../structures/GuildOptions");
 const MessageOwners = require("../structures/MessageOwners");
 const { EmbedModes, QRT_UNROLL_BOTS, SAFEST_EMBED_MODE, MAX_DISCORD_MESSAGE_LENGTH } = require("../util/Constants");
 const getPosts = require("../util/getPosts");
+const log = require("../util/log");
 const markdownParser = require("../util/markdownParser");
 
 const ignoredErrors = [
@@ -42,7 +43,7 @@ function shouldProcessMessage(message) {
   // If we're in a guild
   if (message.channel instanceof GuildChannel) {
     // Check to make sure we have permission to send in the channel we're going to send
-    if (!message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.SEND_MESSAGES)) return false;
+    // if (!message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.SEND_MESSAGES)) return false;
     // Check that the user sending the message has permissions to embed links
     if (!message.channel.permissionsFor(message.author.id).has(Permissions.FLAGS.EMBED_LINKS)) return false;
   }
@@ -63,30 +64,37 @@ async function sendMessage(message, posts, options) {
           !(message.channel instanceof ThreadChannel) &&
           message.content.length < MAX_DISCORD_MESSAGE_LENGTH
         ) {
+          log.verbose("messageCreate sendMessage", "Chose RE_COMPOSE");
           return await reCompose(message, posts);
         }
+        log.verbose("messageCreate sendMessage", "Fell-through RE_COMPOSE");
 
       // eslint-disable-next-line no-fallthrough
       case EmbedModes.RE_EMBED:
         // We can't re-embed in a DM channel
-        if (message.channel instanceof GuildChannel) {
+        if (message.channel instanceof GuildChannel || message.channel instanceof ThreadChannel) {
+          log.verbose("messageCreate sendMessage", "Chose RE_EMBED");
           return await reEmbed(message, posts);
         }
-
+        log.verbose("messageCreate sendMessage", "Fell-through RE_EMBED");
       // eslint-disable-next-line no-fallthrough
       case EmbedModes.VIDEO_REPLY:
+        log.verbose("messageCreate sendMessage", "Chose VIDEO_REPLY");
         return await videoReply(message, posts);
     }
   } catch (error) {
     // @ts-ignore
     if (!(error instanceof DiscordAPIError && ignoredErrors.includes(error.code))) throw error;
-    console.error(error);
+    log.error("messageCreate sendMessage", error);
     return null;
   }
 }
 
 module.exports = async function handleMessage(message) {
+  const startTime = Date.now();
+  log.silly("messageCreate", "Got message");
   if (!shouldProcessMessage(message)) return null;
+  log.verbose("messageCreate", "Passed initial checks");
 
   // Guild options
   let options = { mode: EmbedModes.VIDEO_REPLY, flags: new GuildFlags([]) }; // Default options
@@ -96,34 +104,56 @@ module.exports = async function handleMessage(message) {
       options = dbOptions;
     }
   }
+  log.verbose("messageCreate", "Got options:");
+  log.verbose("messageCreate", options);
 
   const syntaxTree = markdownParser(message.content);
+  log.verbose("messageCreate", "Got syntax tree");
 
   // Get all tweets from message, this starts fetching things in the background
   const postsPromises = getPosts(syntaxTree, options);
+  log.verbose("messageCreate", "Got posts");
 
   // If we have no tweets there's no point in continuing
   // @ts-ignore
-  if (postsPromises.length === 0) return null;
+  if (postsPromises.length === 0) {
+    log.verbose("messageCreate", "No valid posts");
+    return null;
+  }
 
   // Resolve all the posts
   const posts = await Promise.all(postsPromises);
+  log.verbose("messageCreate", "Resolved all posts:");
+  log.verbose("messageCreate", posts);
 
   // Check for links we cannot re-embed
-  if (posts.includes(null)) options.mode = SAFEST_EMBED_MODE;
-
+  if (posts.includes(null)) {
+    options.mode = SAFEST_EMBED_MODE;
+    log.verbose("messageCreate", "Set mode to safest since message includes non-re-embedable content");
+  }
   // at the request of cyn, do not proxy HiddenPhox's messages
   if (QRT_UNROLL_BOTS.includes(message.author.id) && options.mode === EmbedModes.RE_COMPOSE) {
     options.mode = EmbedModes.RE_EMBED;
+    log.verbose("messageCreate", "Set mode to RE_EMBED from RE_COMP0SE for hiddenphox");
   }
 
   // No embedable links
-  if (!posts.find((post) => post !== null)) return;
+  if (!posts.find((post) => post !== null)) {
+    log.verbose("messageCreate", "No embedable links");
+    return null;
+  }
 
   // Finally send the message
   const response = await sendMessage(message, posts, options);
   if (response !== null) {
+    const [responseMessage, details] = response;
+    // Some quick analytics, curiosity and it makes me feel happy when people use the bot
+    log.info(
+      `Handled message with mode (${details.mode}${details.fallback ? "!!" : ""}) with providers (${posts
+        .map((post) => post.provider)
+        .join(",")}) in ${Date.now() - startTime}ms`
+    );
     // Add to message mappings
-    MessageOwners.setOwner(message, response);
+    MessageOwners.setOwner(message, responseMessage);
   }
 };

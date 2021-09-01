@@ -17,7 +17,7 @@ module.exports = async function handleReactionAdd(messageReaction, user) {
     try {
       await messageReaction.message.delete();
       // Experiment: Restore embeds on suppressed messages
-      if (process.env.NODE_ENV === "development") {
+      if (process.env.INSTANCE === "staging") {
         // get channel
         const channel = discord.channels.cache.get(dbData.channel);
         // make sure we're in a valid channel

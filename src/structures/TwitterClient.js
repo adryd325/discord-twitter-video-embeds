@@ -6,6 +6,7 @@ const TwitterError = require("./TwitterError");
 const TwitterErrorList = require("./TwitterErrorList");
 const TwitterPost = require("./TwitterPost");
 const { USER_AGENT, EmbedModes } = require("../util/Constants");
+const log = require("../util/log");
 
 const TWITTER_GUEST_TOKEN =
   "Bearer AAAAAAAAAAAAAAAAAAAAAPYXBAAAAAAACLXUNDekMxqa8h%2F40K4moUkGsoc%3DTYfbDKbT3jJPCEVnMYqilB28NHfOPqkca3qaAxGfsyKCs0wRbw";
@@ -26,8 +27,10 @@ class TwitterClient {
   }
 
   async _getGuestToken() {
-    if (!this.guestToken) {
+    if (!this.guestToken || this.guestTokenAge - Date.now() > 10740000) {
+      log.info("TwitterClient", "Renewing guest token");
       const data = await this._fetchGuestToken();
+      this.guestTokenAge = Date.now();
       this.guestToken = data["guest_token"];
     }
     return this.guestToken;
@@ -57,7 +60,7 @@ class TwitterClient {
         }
         if (parsed.errors) {
           if (parsed.errors.filter((error) => error.code === 239) && !isRetry) {
-            console.log("Renewing Twitter guest token");
+            log.info("TwitterClient", "Renewing Twitter guest token");
             this.guestToken = null;
             return this.getPost(match, options, true);
           }

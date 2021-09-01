@@ -63,7 +63,7 @@ module.exports = async function reEmbed(message, posts) {
   try {
     return await safeReply(message, { files: attachments, embeds, content }).then(async (reply) => {
       await message.suppressEmbeds();
-      return reply;
+      return [reply, { mode: "RE_EMBED" }];
     });
   } catch (error) {
     if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {

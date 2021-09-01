@@ -1,5 +1,6 @@
 const { URLRegexes, EmbedModes, Providers } = require("./Constants");
 const clients = require("./clients");
+const log = require("./log");
 const ClientError = require("../structures/ClientError");
 const GuildFlags = require("../structures/GuildFlags");
 const TwitterError = require("../structures/TwitterError");
@@ -41,7 +42,7 @@ async function getPost(mdMatch, options, spoiler) {
     post = await providerClient.getPost(match, options);
   } catch (error) {
     if (error instanceof ClientError || error instanceof TwitterError || error instanceof TwitterErrorList) {
-      console.error(error);
+      log.error("getPosts", error);
       return null;
     }
     throw error;
@@ -71,6 +72,7 @@ async function getPost(mdMatch, options, spoiler) {
     embed: post.getDiscordEmbed(),
     url: post.url,
     videoUrl: post.videoUrl ?? null,
+    provider,
     spoiler,
     needsAttachment,
     attachment

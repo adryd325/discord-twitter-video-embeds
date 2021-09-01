@@ -9,6 +9,7 @@ const reEmbed = require("./handlers/reEmbed");
 const GuildOptions = require("./structures/GuildOptions");
 const interactionHandler = require("./structures/InteractionHandler");
 const { TEMP_DIR, EmbedModes } = require("./util/Constants");
+const log = require("./util/log");
 
 let logChannel;
 
@@ -35,7 +36,7 @@ discord.on("guildDelete", (guild) => {
 });
 
 discord.on("ready", () => {
-  console.log("Ready!");
+  log.info("index", `Ready! logged in as ${discord.user.username}`);
   discord.user.setPresence({
     status: "online",
     activities: [{ name: process.env.STATUS ?? "adryd.co/twitter-embeds", type: 0 }]
@@ -49,10 +50,14 @@ discord.on("ready", () => {
   }
 });
 
+discord.on("debug", (data) => {
+  log.silly("discord", data);
+});
+
 interactionHandler.registerCommand(modeCommand);
 
 process.on("SIGINT", () => {
-  console.log("Cleanly exiting...");
+  log.info("Cleanly exiting...");
   discord.destroy();
 });
 
