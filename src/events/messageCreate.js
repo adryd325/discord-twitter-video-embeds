@@ -147,7 +147,6 @@ module.exports = async function handleMessage(message) {
   // Finally send the message
   const response = await sendMessage(message, posts, options);
   if (typeof response === "object") {
-    log.raw(response);
     const [responseMessage, details] = response;
     // Some quick analytics, curiosity and it makes me feel happy when people use the bot
     log.info(
