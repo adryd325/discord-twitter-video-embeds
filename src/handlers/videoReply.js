@@ -1,8 +1,8 @@
 const { Permissions, GuildChannel } = require("discord.js");
 const discord = require("../discord");
 const { MAX_DISCORD_UPLOAD } = require("../util/Constants");
-const log = require("../util/log");
 const { notifyPermissions, safeReply } = require("../util/Utils");
+const log = require("../util/log");
 
 const REQUIRED_PERMISSIONS = new Permissions([Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.ATTACH_FILES]);
 
@@ -63,7 +63,7 @@ module.exports = async function videoReply(message, posts, fallback = false) {
 
   // If both of these are empty, we can do nothing
   if (!content && (attachments === undefined || attachments.length == 0)) {
-    log.info("videoReply", "we have no attachments or content, doing nothing");
+    log.verbose("videoReply", "we have no attachments or content, doing nothing");
     return null;
   }
 
