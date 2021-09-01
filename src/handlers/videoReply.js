@@ -1,6 +1,7 @@
 const { Permissions, GuildChannel } = require("discord.js");
 const discord = require("../discord");
 const { MAX_DISCORD_UPLOAD } = require("../util/Constants");
+const log = require("../util/log");
 const { notifyPermissions, safeReply } = require("../util/Utils");
 
 const REQUIRED_PERMISSIONS = new Permissions([Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.ATTACH_FILES]);
@@ -19,10 +20,12 @@ module.exports = async function videoReply(message, posts, fallback = false) {
   posts.forEach(async (post) => {
     if (!post) return;
     if (post.attachment && !fallback) {
+      log.verbose("videoReply", "added attchment");
       attachmentPromises.push(post.attachment);
       return null;
     }
     if (post.videoUrl) {
+      log.verbose("videoReply", "added video url");
       if (post.spoiler) content += ` || ${post.videoUrl} ||`;
       else content += " " + post.videoUrl;
     }
@@ -32,6 +35,7 @@ module.exports = async function videoReply(message, posts, fallback = false) {
   let attachments;
   if (attachmentPromises.length !== 0) {
     attachments = await Promise.all(attachmentPromises);
+    log.verbose("videoReply", "downloaded attachments");
     let attachmentTotal = 0;
     attachments = attachments.filter((attachment) => {
       // We have no easy way to check
@@ -51,14 +55,24 @@ module.exports = async function videoReply(message, posts, fallback = false) {
     });
   }
 
+  // trim content so we have no prepending spaces or anything funky
+  content = content.trim();
+
   // If there's no content, don't send an empty string
-  if (content.trim() === "") content = undefined;
+  if (content === "") content = undefined;
 
   // If both of these are empty, we can do nothing
-  if (!content && (attachments === undefined || attachments.length == 0)) return null;
+  if (!content && (attachments === undefined || attachments.length == 0)) {
+    log.info("videoReply", "we have no attachments or content, doing nothing");
+    return null;
+  }
 
   // Reply to the message
-  return [safeReply(message, { files: attachments, content }), { mode: "VIDEO_REPLY", fallback }];
+  return [
+    // eslint-ignore
+    await safeReply(message, { files: attachments, content }),
+    { mode: "VIDEO_REPLY", fallback }
+  ];
 };
 
 module.exports.REQUIRED_PERMISSIONS = REQUIRED_PERMISSIONS;

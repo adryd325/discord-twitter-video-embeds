@@ -42,11 +42,11 @@ module.exports = new Command(
       return;
     }
     if (!interaction.options.get("mode")) return;
-    const mode = EmbedModes[interaction.options.get("mode").value];
-    log.info(`Handled mode switch to (${mode})`);
+    const mode = interaction.options.get("mode").value;
+    log.info(`Handled mode switch to (${EmbedModes[mode]})`);
     GuildOptions.setOptions(interaction.guild.id, { mode }).then(() => {
       interaction.reply({
-        content: `Embed mode has been set to ${mode}!`,
+        content: `Embed mode has been set to ${EmbedModes[mode]}!`,
         ephemeral: true
       });
     });

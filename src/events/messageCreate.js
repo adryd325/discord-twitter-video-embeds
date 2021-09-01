@@ -79,6 +79,7 @@ async function sendMessage(message, posts, options) {
         log.verbose("messageCreate sendMessage", "Fell-through RE_EMBED");
       // eslint-disable-next-line no-fallthrough
       case EmbedModes.VIDEO_REPLY:
+      default:
         log.verbose("messageCreate sendMessage", "Chose VIDEO_REPLY");
         return await videoReply(message, posts);
     }
@@ -145,7 +146,8 @@ module.exports = async function handleMessage(message) {
 
   // Finally send the message
   const response = await sendMessage(message, posts, options);
-  if (response !== null) {
+  if (typeof response === "object") {
+    log.raw(response);
     const [responseMessage, details] = response;
     // Some quick analytics, curiosity and it makes me feel happy when people use the bot
     log.info(
