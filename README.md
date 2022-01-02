@@ -1,6 +1,6 @@
 # Discord External Video Embeds
 
-I'm a Discord bot that fixes your broken Twitter, TikTok and Reddit videos. You can add me here: https://adryd.co/twitter-embeds.
+I'm a Discord bot that fixes your broken Twitter, TikTok and Reddit videos. You can find a list of public instances here: https://adryd.co/twitter-embeds.
 
 https://user-images.githubusercontent.com/48024900/130885482-45c3828b-a679-4427-9b6f-0210698276b5.mp4
 
@@ -43,13 +43,32 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 - re-embed and re-compose attach a file sepperately since [Discord doesn't allow bots to add videos to embeds](https://github.com/discord/discord-api-docs/discussions/3456).
 - By following Discord's markdown rules exactly, it also has some of the same quirks; such as spoilers needing to be spaced out.
 
-## Official Instance
+## Hosting Your Own Instance
 
-The information in this section only applies to [the official instance](https://adryd.co/twitter-embeds). This section is made to be easy to understand as nobody likes reading legaleese.
+I'd encourage you host your own instances as Discord refuses to approve message content intent for this bot.
+
+A quick installation script is available. As root run:
+```sh
+wget https://raw.githubusercontent.com/adryd325/discord-twitter-video-embeds/main/debian-11-quick-setup.sh
+# review the contents and make sure this won't break existing node programs
+nano ./debian-11-quick-setup.sh
+chmod +x /debian-11-quick-setup.sh
+./debian-11-quick-setup.sh
+```
+
+The bot requires the following permissions/intents when being added
+bot, application.commands
+Manage Webhooks, Send Messages, Send Messages in Threads, Manage Messages, Embed Links, Attach Files
+
+## Ari's Instance
+
+The information in this section only applies to [ari's instance](https://adryd.co/twitter-embeds). This section is made to be easy to understand as nobody likes reading legaleese.
+
+This instance will be sunset on April 30, 2022 after Discord's enforcement of the message content intent. Discord has refused to approve use of the intent. I encourage people to start up their own instances or integrate into their bot.
 
 ### Terms of Service
 
-- Do not intentionally break or crash the official instance
+- Do not intentionally break or crash the instance
 - If you find a critical bug with the bot you are to report it using the contact info below
 - Usage of the bot must obey the laws in the United States (where Discord and Twitter are owned), Canada (where the bot is hosted) and the country of the end user.
 
@@ -85,13 +104,9 @@ If for any reason you need to contact me, I'm available through the following ch
 - Email: [me@adryd.com](mailto:me@adryd.com); Please include Twitter Embeds in the subject line
 - Github: You can create an issue on this repository if you've found a bug not already mentioned in TODO.txt
 
-## Hosting Your Own Instance
-
-You're free to host your own instance as long as you link back to this repo, or wherever it moves to.
-
 ## Alternatives
 
 If you're unable to add the bot to your server, or you're looking for something different, the following may be of use to you
 
-- [TwitFix/fxtwitter](https://github.com/robinuniverse/TwitFix): Fixes Twitter embeds in Discord
+- [TwitFix/fxtwitter](https://github.com/robinuniverse/TwitFix): Fixes Twitter embeds in Discord for mobile users
 - [proxy.knotty.dev](https://proxy.knotty.dev/): A proxy for Reddit videos
