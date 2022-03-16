@@ -18,7 +18,7 @@ discord.on("messageReactionAdd", messageReactionAdd);
 discord.on("interactionCreate", (intercation) => interactionHandler.handle(intercation));
 
 discord.on("guildCreate", (guild) => {
-  if (process.env.GUILD_ALLOWLIST_ENABLED == "true") {
+  if (process.env.GUILD_ALLOWLIST_ENABLED === "true") {
     if (!process.env.GUILD_ALLOWLIST.split(",").includes(guild.id)) {
       guild.leave();
       return;
@@ -55,7 +55,7 @@ discord.on("ready", () => {
     logChannel.send("Ready!");
   }
 
-  if (process.env.GUILD_ALLOWLIST_AUTOLEAVE) {
+  if (process.env.GUILD_ALLOWLIST_AUTOLEAVE === "true") {
     discord.guilds.cache.forEach((guild) => {
       if (!process.env.GUILD_ALLOWLIST.split(",").includes(guild.id)) {
         guild.leave();
