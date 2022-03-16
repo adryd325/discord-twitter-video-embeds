@@ -21,7 +21,7 @@ discord.on("guildCreate", (guild) => {
   if (process.env.GUILD_ALLOWLIST_ENABLED == "true") {
     if (!process.env.GUILD_ALLOWLIST.split(",").includes(guild.id)) {
       guild.leave();
-      return
+      return;
     }
   }
   if (logChannel) {
@@ -53,6 +53,14 @@ discord.on("ready", () => {
     logChannel = channel;
     module.exports.logChannel = logChannel;
     logChannel.send("Ready!");
+  }
+
+  if (process.env.GUILD_ALLOWLIST_AUTOLEAVE) {
+    discord.guilds.cache.forEach((guild) => {
+      if (!process.env.GUILD_ALLOWLIST.split(",").includes(guild.id)) {
+        guild.leave();
+      }
+    });
   }
 });
 
