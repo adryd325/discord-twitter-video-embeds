@@ -1,19 +1,10 @@
-const { exec } = require("child_process");
 const fs = require("fs");
 const path = require("path");
 const { v4: uuidv4 } = require("uuid");
 const { TEMP_DIR } = require("./Constants");
+const { sh } = require("./Utils");
 
 const tempDir = path.join(TEMP_DIR);
-
-function sh(command) {
-  return new Promise((resolve, reject) => {
-    exec(command, (error) => {
-      if (error) reject(error);
-      resolve();
-    });
-  });
-}
 
 // I really hate reddit.
 module.exports = async function mergeStreams(video, audio) {

@@ -18,8 +18,14 @@ discord.on("messageReactionAdd", messageReactionAdd);
 discord.on("interactionCreate", (intercation) => interactionHandler.handle(intercation));
 
 discord.on("guildCreate", (guild) => {
+  if (process.env.GUILD_ALLOWLIST_ENABLED == "true") {
+    if (!process.env.GUILD_ALLOWLIST.split(",").includes(guild.id)) {
+      guild.leave();
+      return
+    }
+  }
   if (logChannel) {
-    const safeName = guild.name.replace(/(@everyone|@here|<|>)/g, "\\$&");
+    const safeName = guild.name.replace(/(@everyone|@here|[<>*_`])/g, "\\$&");
     logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${safeName}`);
   }
   // Most popular mode, even though my poor bandwidth hates it ;-;
@@ -30,7 +36,7 @@ discord.on("guildCreate", (guild) => {
 
 discord.on("guildDelete", (guild) => {
   if (logChannel) {
-    const safeName = guild.name.replace(/(@everyone|@here|<|>)/g, "\\$&");
+    const safeName = guild.name.replace(/(@everyone|@here|[<>*_`])/g, "\\$&");
     logChannel.send(`:cry: Gone guild: ${guild.id}:${safeName}`);
   }
 });

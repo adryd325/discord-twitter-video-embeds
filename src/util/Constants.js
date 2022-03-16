@@ -25,7 +25,7 @@ const INVITE_URL = process.env.INVITE_URL || "https://adryd.co/twitter-embeds";
 
 module.exports.USER_AGENT = `Mozilla/5.0 (compatible; ${Package.name}/${Package.version}; +${Package.homepage}; +${INVITE_URL}; Node.js/${process.version})`;
 module.exports.GENERIC_USER_AGENT =
-  "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/92.0.4515.131 Safari/537.36";
+  "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.0.0 Safari/537.36";
 
 module.exports.TIKTOK_HOME = "https://www.tiktok.com";
 
@@ -47,8 +47,8 @@ module.exports.URLRegexes = {
   INSTAGRAM: /https?:\/\/(?:www\.)?instagram\.com\/(?:p|tv|reel)\/[^/?#&]+/,
   REDDIT: /https?:\/\/(?:[^/]+\.)?reddit\.com(\/r\/[^/]+\/comments\/([^/?#&]+))/,
   REDDIT_VIDEO: /https?:\/\/v\.redd\.it\/([^/?#&]+)/,
-  TIKTOK: /https?:\/\/(?:www\.)?tiktok\.com\/@[^/]+\/video\/(\d+)/,
-  TIKTOK_REDIRECT: /https?:\/\/vm\.tiktok\.com\/(t\/)?([^/?#&]+)/,
+  TIKTOK: /https?:\/\/(?:www\.)?tiktok\.com\/@[0-9a-zA-Z._]+\/video\/(\d+)/,
+  TIKTOK_REDIRECT: /https?:\/\/vm\.tiktok\.com\/(t\/)?([^A-Za-z0-9]+)/,
   TWITTER: /https?:\/\/(?:(?:www|m(?:obile)?)\.)?(fx)?twitter\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/
 };
 

@@ -1,29 +1,30 @@
 const { MessageEmbed, MessageAttachment } = require("discord.js");
 const fetch = require("node-fetch");
-const { TIKTOK_HOME, GENERIC_USER_AGENT, Colors, Favicons } = require("../util/Constants");
+const { TIKTOK_HOME, MAX_DISCORD_UPLOAD, Colors, Favicons } = require("../util/Constants");
 
 class TikTokPost {
-  constructor(data, cookies) {
+  constructor(data) {
     this.id = data.id;
-    this.createdAt = new Date(parseInt(data.createTime.toString() + "000"));
-    this.cookies = cookies;
-    this.content = data.desc.split("#").join(" #").trim();
-    this.displayName = data.author.nickname;
-    this.username = data.author.uniqueId;
-    this.avatar = data.author.avatarThumb;
-    this.authorUrl = `${TIKTOK_HOME}/@${data.author.uniqueId}`;
-    this.url = `${TIKTOK_HOME}/@${data.author.uniqueId}/video/${data.id}`;
-    this._videoUrl = data.video.downloadAddr;
-    this.likes = data.stats.diggCount;
+    this.createdAt = new Date(parseInt(data.timestamp.toString() + "000"));
+    this.content = data.description;
+    this.displayName = data.creator;
+    this.username = data.uploader;
+    this.authorUrl = data.uploader_url;
+    this.url = `${TIKTOK_HOME}/@${data.uploader}/video/${data.id}`;
+    this.likes = data.like_count;
+
+    // filter best quality
+    const chosenFile = data.formats
+      .filter((media) => media.filesize < MAX_DISCORD_UPLOAD && media.format.includes("watermarked"))
+      .sort((a, b) => b.quality - a.quality)?.[0];
+
+    this._headers = chosenFile.http_headers;
+    this._videoUrl = chosenFile.url;
   }
 
   getDiscordAttachment(spoiler) {
     return fetch(this._videoUrl, {
-      headers: {
-        Cookie: this.cookies,
-        Referer: `${TIKTOK_HOME}/`,
-        "User-Agent": GENERIC_USER_AGENT
-      }
+      headers: this._headers
     })
       .then((response) => response.buffer())
       .then((videoResponse) => {
@@ -38,7 +39,7 @@ class TikTokPost {
     embed.setURL(this.url);
     embed.setTimestamp(this.createdAt);
     embed.setTitle(this.content);
-    embed.setAuthor(`${this.displayName} (@${this.username})`, this.avatar, this.authorUrl);
+    embed.setAuthor(`${this.displayName} (@${this.username})`, null, this.authorUrl);
     if (this.likes) {
       embed.addField("Likes", this.likes.toString(), true);
     }

@@ -1,3 +1,4 @@
+const { exec } = require("child_process");
 const { Permissions, GuildChannel, DiscordAPIError } = require("discord.js");
 const discord = require("../discord");
 
@@ -83,9 +84,19 @@ function parseHtmlEntities(str) {
   });
 }
 
+function sh(command) {
+  return new Promise((resolve, reject) => {
+    exec(command, (error, stdout) => {
+      if (error) reject(error);
+      resolve(stdout);
+    });
+  });
+}
+
 module.exports = {
   safeReply,
   notifyPermissions,
   parseHtmlEntities,
-  tempMsg
+  tempMsg,
+  sh
 };
