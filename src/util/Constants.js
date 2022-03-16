@@ -48,7 +48,7 @@ module.exports.URLRegexes = {
   REDDIT: /https?:\/\/(?:[^/]+\.)?reddit\.com(\/r\/[^/]+\/comments\/([^/?#&]+))/,
   REDDIT_VIDEO: /https?:\/\/v\.redd\.it\/([^/?#&]+)/,
   TIKTOK: /https?:\/\/(?:www\.)?tiktok\.com\/@[0-9a-zA-Z._]+\/video\/(\d+)/,
-  TIKTOK_REDIRECT: /https?:\/\/vm\.tiktok\.com\/(t\/)?([^A-Za-z0-9]+)/,
+  TIKTOK_REDIRECT: /https?:\/\/vm\.tiktok\.com\/(t\/)?([^A-Za-z0-9]+)(\/.+)?/,
   TWITTER: /https?:\/\/(?:(?:www|m(?:obile)?)\.)?(fx)?twitter\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/
 };
 
