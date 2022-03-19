@@ -15,6 +15,8 @@
             pkg-config
             nodejs-slim-16_x
             nodePackages.pnpm
+            ffmpeg
+            yt-dlp
           ];
         };
       });

@@ -1,7 +1,8 @@
 FROM node:16-bullseye
 
+RUN sed -i "s:^deb http://ftp.debian.org/debian ([^\s]*) main contrib$:deb http://ftp.debian.org/debian ([^\s]*) main contrib backports:g" /etc/apt/sources.list
 RUN apt-get update
-RUN apt-get install -y ffmpeg git sudo gcc g++ make
+RUN apt-get install -y ffmpeg git sudo gcc g++ make yt-dlp
 RUN npm install -g pnpm
 
 RUN mkdir -p /bot

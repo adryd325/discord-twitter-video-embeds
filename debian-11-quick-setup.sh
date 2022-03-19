@@ -17,8 +17,10 @@ if [[ ${confirm,,} != "y" ]]; then
   exit 1
 fi
 wget -qO- https://deb.nodesource.com/setup_16.x | bash -
+# done this way so we 100% dont break things
+sed -i "s:^deb http://ftp.debian.org/debian ([^\s]*) main contrib$:deb http://ftp.debian.org/debian ([^\s]*) main contrib backports:g" /etc/apt/sources.list
 apt-get update
-apt-get install -y nodejs ffmpeg git sudo gcc g++ make
+apt-get install -y nodejs ffmpeg git sudo gcc g++ make yt-dlp
 npm install -g pnpm
 id discord-twitter-video-embeds &> /dev/null || useradd -m discord-twitter-video-embeds
 mkdir -p /opt/discord-twitter-video-embeds
