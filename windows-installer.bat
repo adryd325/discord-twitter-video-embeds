@@ -124,4 +124,4 @@ echo.
 goto end
 
 :end
-
+pause >nul
