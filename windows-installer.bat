@@ -96,14 +96,20 @@ start /w pnpm install
 mkdir C:\tmp
 
 :: edit .env using notepad
-echo add your token and log channel id on notepad window
+echo.
+echo Add your token and LOG_CHANNEL ID on the notepad
+echo Don't forget to save the file and then exit the notepad
 notepad windows-runner.bat
 
 :: make link for windows-runner.bat to startup folder
 :: make sure you have edited windows-runner.bat
+echo.
+echo. Making link for windows-runner.bat to startup folder...
 mklink /H C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\windows-runner.bat C:\git\discord-twitter-video-embeds\windows-runner.bat
 :: make shortcut for windows-runner.bat to desktop folder
 :: make sure you have edited windows-runner.bat
+echo.
+echo. Making shortcut for windows-runner.bat as dtve-runner.bat to desktop folder...
 mklink /H C:\Users\%username%\Desktop\dtve-runner.bat C:\git\discord-twitter-video-embeds\windows-runner.bat
 goto done
 
@@ -124,4 +130,5 @@ echo.
 goto end
 
 :end
+echo Press any key to exit
 pause >nul

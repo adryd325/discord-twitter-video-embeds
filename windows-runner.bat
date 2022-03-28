@@ -1,6 +1,9 @@
 @echo off
+title discord-twitter-video-embed runner
 echo discord-twitter-video-embed runner
-echo make sure you have edited the bat file to add TOKEN and LOG_CHANNEL
+echo This script will run discord-twitter-video-embed bot instance and restart it if it crashes
+echo.
+echo Make sure you have edited the bat file to add TOKEN and LOG_CHANNEL
 
 :: set TOKEN and LOG_CHANNEL environment
 set TOKEN={your token}
