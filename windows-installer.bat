@@ -4,9 +4,7 @@ echo Script made by bagusnl with GitHub Copilot :P
 echo.
 echo Make sure chocolatey is installed
 echo and script running as administrator
-
-:: store current directory
-set CURRENT_DIR=%~dp0
+echo.
 
 :: check batch running as administrator
 :: https://stackoverflow.com/questions/4051883/batch-script-how-to-check-for-admin-rights
@@ -29,6 +27,7 @@ set CURRENT_DIR=%~dp0
 :chococheck
 :: check chocolatey installed
 :: https://stackoverflow.com/questions/5696907/how-to-check-if-a-program-is-installed-on-windows
+echo.
 echo Checking if chocolatey is installed...
 choco >nul 2>&1
 if %errorLevel% == 1 (
@@ -52,6 +51,7 @@ cd /D C:\git
 :: install dependencies
 :: dependencies: git, ffmpeg, yt-dlp, nodejs
 :: if error, goto dep_error
+echo.
 echo Installing dependencies...
 choco install git ffmpeg yt-dlp nodejs -y
 if %errorlevel% == 1 (
@@ -70,7 +70,13 @@ if %errorlevel% == 1 (
 :: clone repo
 :gitclone
 :: delete git repo and clone again
-rmdir /s C:\git\discord-twitter-video-embeds
+echo.
+echo Cleaning up previous installation...
+del /Q /F C:\Users\%username%\Desktop\dtve-runner.bat
+del /Q /F C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\windows-runner.bat
+rmdir /s /q C:\git\discord-twitter-video-embeds
+echo.
+echo Cloning repo...
 git clone https://github.com/bagusnl/discord-twitter-video-embeds
 goto gitclone_end
 
@@ -79,10 +85,33 @@ goto gitclone_end
 cd discord-twitter-video-embeds
 
 :npmprep
+echo.
 echo Preparing npm...
-echo Due to unknown reasons, script exited after npm install
-echo Run windows-postinstall.bat after this part
-npm install -g pnpm
+echo npm and pnpm is funny, exit the corresponding new console window after they're finished
+echo and say no (type n and enter) when asked to terminate batch job
+start /w npm install -g pnpm
+start /w pnpm install
+
+:: make tmp directory at C:\
+mkdir C:\tmp
+
+:: edit .env using notepad
+echo add your token and log channel id on notepad window
+notepad windows-runner.bat
+
+:: make link for windows-runner.bat to startup folder
+:: make sure you have edited windows-runner.bat
+mklink /H C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\windows-runner.bat C:\git\discord-twitter-video-embeds\windows-runner.bat
+:: make shortcut for windows-runner.bat to desktop folder
+:: make sure you have edited windows-runner.bat
+mklink /H C:\Users\%username%\Desktop\dtve-runner.bat C:\git\discord-twitter-video-embeds\windows-runner.bat
+goto done
+
+:done
+echo Setup complete
+echo you can try to start the bot by running windows-runner.bat or dtve-runner.bat in your desktop
+echo.
+goto end 
 
 :notchoco
 echo Chocolatey is not installed
@@ -94,12 +123,5 @@ echo You must run this script as administrator
 echo.
 goto end
 
-:done
-echo Setup complete
-echo you can try to start the bot by running windows-runner.bat or dtve-runner.bat in your desktop
-echo.
-goto end 
-
 :end
-:: go back to current directory
-cd /D %CURRENT_DIR%
+
