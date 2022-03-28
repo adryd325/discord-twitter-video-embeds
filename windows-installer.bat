@@ -5,6 +5,8 @@ echo.
 echo Make sure chocolatey is installed
 echo and script running as administrator
 
+:: store current directory
+set CURRENT_DIR=%~dp0
 
 :: check batch running as administrator
 :: https://stackoverflow.com/questions/4051883/batch-script-how-to-check-for-admin-rights
@@ -67,44 +69,20 @@ if %errorlevel% == 1 (
 
 :: clone repo
 :gitclone
-:: check if git repo already exists
-echo Checking if git repo already exists...
-if exist C:\git\discord-twitter-video-embed\discord-twitter-video-embed.exe (
-    echo Success: git repo already exists.
-    :: delete git repo and clone again
-    rmdir /s /q C:\git\discord-twitter-video-embed
-    git clone https://github.com/bagusnl/discord-twitter-video-embeds
-    goto gitclone_end
-) else (
-    echo Failure: git repo does not exist.
-    echo.
-    echo Cloning git repo...
-    git clone https://github.com/bagusnl/discord-twitter-video-embeds
-    goto gitclone_end
-)
+:: delete git repo and clone again
+rmdir /s C:\git\discord-twitter-video-embeds
+git clone https://github.com/bagusnl/discord-twitter-video-embeds
+goto gitclone_end
 
 :gitclone_end
 :: goto discord-twitter-video-embeds
 cd discord-twitter-video-embeds
 
 :npmprep
+echo Preparing npm...
+echo Due to unknown reasons, script exited after npm install
+echo Run windows-postinstall.bat after this part
 npm install -g pnpm
-pnpm install
-
-:: make tmp directory at C:\
-mkdir C:\tmp
-
-:: edit .env using notepad
-echo add your token and log channel id
-notepad windows-runner.bat
-
-:: make link for windows-runner.bat to startup folder
-:: make sure you have edited windows-runner.bat
-mklink C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\Startup\windows-runner.bat windows-runner.bat
-:: make shortcut for windows-runner.bat to desktop folder
-:: make sure you have edited windows-runner.bat
-mklink C:\Users\%username%\Desktop\dtve-runner.bat windows-runner.bat
-goto done
 
 :notchoco
 echo Chocolatey is not installed
@@ -123,3 +101,5 @@ echo.
 goto end 
 
 :end
+:: go back to current directory
+cd /D %CURRENT_DIR%
