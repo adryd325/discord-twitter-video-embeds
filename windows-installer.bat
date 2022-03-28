@@ -73,13 +73,13 @@ if exist C:\git\discord-twitter-video-embed\discord-twitter-video-embed.exe (
     echo Success: git repo already exists.
     :: delete git repo and clone again
     rmdir /s /q C:\git\discord-twitter-video-embed
-    git clone https://github.com/adryd325/discord-twitter-video-embeds
+    git clone https://github.com/bagusnl/discord-twitter-video-embeds
     goto gitclone_end
 ) else (
     echo Failure: git repo does not exist.
     echo.
     echo Cloning git repo...
-    git clone https://github.com/adryd325/discord-twitter-video-embeds
+    git clone https://github.com/bagusnl/discord-twitter-video-embeds
     goto gitclone_end
 )
 
