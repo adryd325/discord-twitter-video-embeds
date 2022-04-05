@@ -1,4 +1,0 @@
-TODO:
-(windows) - Find why npm and pnpm stall the script
-(windows) - Add functionality to clean old temporary files regularly
-

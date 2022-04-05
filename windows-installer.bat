@@ -18,8 +18,6 @@ echo.
     ) else (
         echo Failure: Current permissions inadequate.
     )
-    
-    pause >nul
     goto :end
 
 
@@ -39,7 +37,6 @@ if %errorLevel% == 1 (
     echo Install chocolatey using this guide:
     echo https://chocolatey.org/install
     echo.
-    pause >nul
     goto end
 )
 
@@ -50,7 +47,6 @@ cd /D C:\git
 
 :: install dependencies
 :: dependencies: git, ffmpeg, yt-dlp, nodejs
-:: if error, goto dep_error
 echo.
 echo Installing dependencies...
 choco install git ffmpeg yt-dlp nodejs -y
@@ -60,7 +56,6 @@ if %errorlevel% == 1 (
     echo Install dependencies using this guide:
     echo https://chocolatey.org/install
     echo.
-    pause >nul
     goto end
 ) else (
     echo Success: Dependencies installed.
@@ -81,16 +76,13 @@ git clone https://github.com/bagusnl/discord-twitter-video-embeds
 goto gitclone_end
 
 :gitclone_end
-:: goto discord-twitter-video-embeds
 cd discord-twitter-video-embeds
 
 :npmprep
 echo.
 echo Preparing npm...
-echo npm and pnpm is funny, exit the corresponding new console window after they're finished
-echo and say no (type n and enter) when asked to terminate batch job
-start /w npm install -g pnpm
-start /w pnpm install
+call npm install -g pnpm
+call /w pnpm install
 
 :: make tmp directory at C:\
 mkdir C:\tmp
@@ -114,8 +106,10 @@ mklink /H C:\Users\%username%\Desktop\dtve-runner.bat C:\git\discord-twitter-vid
 goto done
 
 :done
+echo.
+echo.
 echo Setup complete
-echo you can try to start the bot by running windows-runner.bat or dtve-runner.bat in your desktop
+echo you can try to start the bot by running windows-runner.bat in C:\git\discord-twitter-video-embeds or dtve-runner.bat in your desktop
 echo.
 goto end 
 
