@@ -72,7 +72,7 @@ del /Q /F C:\Users\%username%\AppData\Roaming\Microsoft\Windows\Start Menu\Progr
 rmdir /s /q C:\git\discord-twitter-video-embeds
 echo.
 echo Cloning repo...
-git clone https://github.com/bagusnl/discord-twitter-video-embeds
+git clone https://github.com/adryd325/discord-twitter-video-embeds
 goto gitclone_end
 
 :gitclone_end
