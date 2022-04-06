@@ -55,6 +55,9 @@ nano ./debian-11-quick-setup.sh
 chmod +x /debian-11-quick-setup.sh
 ./debian-11-quick-setup.sh
 ```
+### Windows Installation
+
+Quick install for Windows is available. Download windows-installer.bat and run it as administrator.
 
 The bot requires the following permissions/intents when being added
 bot, application.commands
