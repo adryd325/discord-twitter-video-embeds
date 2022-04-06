@@ -14,7 +14,7 @@ class TikTokRedirect {
     }).then((response) => {
       if (response.status === 301 || response.status === 302) {
         const locationURL = new URL(response.headers.get("location"), response.url);
-        return TikTokClient.getPost([locationURL]);
+        return TikTokClient.getPost([locationURL.href]);
       }
     });
   }
