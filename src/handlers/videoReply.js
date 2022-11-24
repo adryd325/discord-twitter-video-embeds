@@ -1,7 +1,6 @@
 const { Permissions, GuildChannel } = require("discord.js");
 const discord = require("../discord");
-const { MAX_DISCORD_UPLOAD } = require("../util/Constants");
-const { notifyPermissions, safeReply } = require("../util/Utils");
+const { notifyPermissions, safeReply, getUploadLimit } = require("../util/Utils");
 const log = require("../util/log");
 
 const REQUIRED_PERMISSIONS = new Permissions([Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.ATTACH_FILES]);
@@ -42,11 +41,11 @@ module.exports = async function videoReply(message, posts, fallback = false) {
       if (!attachment.attachment.length) return true;
 
       // If this attachment is greater than the Discord upload limit
-      if (attachment.attachment.length > MAX_DISCORD_UPLOAD) {
+      if (attachment.attachment.length > getUploadLimit(message.guild)) {
         return false;
       }
       // If this attachment would send the message over the Discord upload limit
-      if (attachmentTotal + attachment.attachment.length > MAX_DISCORD_UPLOAD) {
+      if (attachmentTotal + attachment.attachment.length > getUploadLimit(message.guild)) {
         return false;
       }
       // Add to the current attachment limit

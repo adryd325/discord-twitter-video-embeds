@@ -14,6 +14,7 @@ class TikTokPost {
     this.likes = data.like_count;
 
     // filter best quality
+    // FIXME: pass guild into here somehow for upload limit
     const chosenFile = data.formats
       .filter((media) => media.filesize < MAX_DISCORD_UPLOAD && media.format.includes("watermarked"))
       .sort((a, b) => b.quality - a.quality)?.[0];
