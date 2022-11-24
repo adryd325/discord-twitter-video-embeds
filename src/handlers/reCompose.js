@@ -2,8 +2,7 @@ const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants 
 const { APIErrors } = DiscordConstants;
 const videoReply = require("./videoReply");
 const discord = require("../discord");
-const { MAX_DISCORD_UPLOAD } = require("../util/Constants");
-const { notifyPermissions } = require("../util/Utils");
+const { notifyPermissions, getUploadLimit } = require("../util/Utils");
 const { getWebhook, resetWebhook } = require("../util/getWebhook");
 
 const REQUIRED_PERMISSIONS = new Permissions([
@@ -50,7 +49,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
 
     // If it's over the attachment limit, try VIDEO_REPLY for URLs
     // TODO: Add more advanced logic for deciding if VIDEO_REPLY will be able to do anything
-    if (attachmentTotal > MAX_DISCORD_UPLOAD) {
+    if (attachmentTotal > getUploadLimit(message.guild)) {
       return videoReply(message, posts, true);
     }
   }

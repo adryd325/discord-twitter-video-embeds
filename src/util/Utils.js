@@ -1,6 +1,7 @@
 const { exec } = require("child_process");
 const { Permissions, GuildChannel, DiscordAPIError } = require("discord.js");
 const discord = require("../discord");
+const { MAX_DISCORD_UPLOAD, MAX_DISCORD_UPLOAD_TIER_2, MAX_DISCORD_UPLOAD_TIER_3 } = require("./Constants");
 
 // Cannot reply to messages without READ_MESSAGE_HISTORY
 function safeReply(message, newMessage) {
@@ -18,7 +19,11 @@ function notifyPermissions(message, permissions, mode) {
   const reply = safeReply(
     message,
     // eslint-disable-next-line prettier/prettier
-    `For the bot to use ${mode} mode, it needs the following permissions: ${permissions.toArray().join(", ")}. An administrator can switch mode using /embedmode or grant the required permissions in server settings. This message will self-destruct in 30 seconds.`
+    `For the bot to use ${mode} mode, it needs the following permissions: ${permissions
+      .toArray()
+      .join(
+        ", "
+      )}. An administrator can switch mode using /embedmode or grant the required permissions in server settings. This message will self-destruct in 30 seconds.`
   );
   setTimeout(async () => {
     reply.then((replyResolved) => {
@@ -93,10 +98,21 @@ function sh(command) {
   });
 }
 
+function getUploadLimit(guild) {
+  if (!guild) return MAX_DISCORD_UPLOAD;
+
+  if (guild.premiumTier == 2) return MAX_DISCORD_UPLOAD_TIER_2;
+
+  if (guild.premiumTier == 3) return MAX_DISCORD_UPLOAD_TIER_3;
+
+  return MAX_DISCORD_UPLOAD;
+}
+
 module.exports = {
   safeReply,
   notifyPermissions,
   parseHtmlEntities,
   tempMsg,
-  sh
+  sh,
+  getUploadLimit
 };
