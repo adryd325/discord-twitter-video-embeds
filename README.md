@@ -10,10 +10,11 @@ Twitter Embeds fixes video embeds from Twitter, TikTok and Reddit on Discord wit
 
 ### Special Thanks
 
-- **[Brecert](https://github.com/Brecert)**: Twitter Client Implementation
+- **[Brecert](https://github.com/Brecert)**: Twitter Client Implementation.
 - **[Youtube DL](https://github.com/ytdl-org/youtube-dl)**: Reference for Instagram, Reddit, Tiktok and Twitter Clients.
 - **[general-programming](https://generalprogramming.org/)**: Allowing me to use proxy.knotty.dev as a fallback for oversized reddit videos.
 - **BLOCKLETTER Discord**: Initially pushing me to make this
+- **[Cynthia](https://c7.pm/)**: Implementing seperate upload limits for boosted servers. Various other small features/improvements.
 
 ## Usage
 
@@ -45,7 +46,11 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 
 ## Hosting Your Own Instance
 
-I'd encourage you host your own instances as Discord refuses to approve message content intent for this bot.
+I'd encourage you host your own instances as it reduces load on my server
+
+The bot requires the following permissions/intents when being added
+bot, application.commands
+Manage Webhooks, Send Messages, Send Messages in Threads, Manage Messages, Embed Links, Attach Files
 
 A quick installation script is available. As root run:
 ```sh
@@ -59,9 +64,10 @@ chmod +x /debian-11-quick-setup.sh
 
 Quick install for Windows is available. Download windows-installer.bat and run it as administrator.
 
-The bot requires the following permissions/intents when being added
-bot, application.commands
-Manage Webhooks, Send Messages, Send Messages in Threads, Manage Messages, Embed Links, Attach Files
+## FAQ
+
+What's the bot icon?  
+The bot icon is an abstract interpretation of a user replying to another user with a video or image.
 
 ## Ari's Instance
 
