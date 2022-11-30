@@ -67,7 +67,9 @@ Manage Webhooks, Send Messages, Send Messages in Threads, Manage Messages, Embed
 
 The information in this section only applies to [ari's instance](https://adryd.co/twitter-embeds). This section is made to be easy to understand as nobody likes reading legaleese.
 
-This instance will be sunset on April 30, 2022 after Discord's enforcement of the message content intent. Discord has refused to approve use of the intent. I encourage people to start up their own instances or integrate into their bot.
+### Features
+
+- TikTok embeds are disabled in the official instace because I get IP banned from TikTok for requesting too frequently. If you'd like TikTok embeds, you should self-host your own instance
 
 ### Terms of Service
 
