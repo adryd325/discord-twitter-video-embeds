@@ -75,7 +75,7 @@ The information in this section only applies to [ari's instance](https://adryd.c
 
 ### Features
 
-- TikTok embeds are disabled in the official instace because I get IP banned from TikTok for requesting too frequently. If you'd like TikTok embeds, you should self-host your own instance
+- TikTok embeds are disabled in the official instace because I get rate-limited from TikTok for requesting too frequently. If you'd like TikTok embeds, you should self-host your own instance
 
 ### Terms of Service
 
