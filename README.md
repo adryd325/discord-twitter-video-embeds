@@ -22,15 +22,15 @@ You can use the bot by [adding it to your Discord server](https://adryd.co/twitt
 
 - The video reply mode will reply with a file or direct link to a video.
 
-  <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289014381019136/unknown.png" width="611">
+  <img src="https://adryd.co/public/twitter-video-embeds/video_reply.png" width="611">
 
 - Re-embed will remove the embeds on the original message and reply with a new set of embeds, along with video attachments.
 
-  <img src="https://cdn.discordapp.com/attachments/876097649240051712/876289247164907520/unknown.png" width="505">
+  <img src="https://adryd.co/public/twitter-video-embeds/re_embed.png" width="505">
 
 - Re-compose uses a webhook to recompose the original message with a new set of embeds.
 
-  <img src="https://media.discordapp.net/attachments/857368936672526356/878761428302037042/unknown.png" width="507">
+  <img src="https://adryd.co/public/twitter-video-embeds/re_compose.png" width="507">
 
 ### Additional Features
 
