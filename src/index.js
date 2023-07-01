@@ -17,6 +17,8 @@ discord.on("messageCreate", messageCreate);
 discord.on("messageReactionAdd", messageReactionAdd);
 discord.on("interactionCreate", (intercation) => interactionHandler.handle(intercation));
 
+const bannedGuilds = [];
+
 discord.on("guildCreate", (guild) => {
   if (process.env.GUILD_ALLOWLIST_ENABLED === "true") {
     if (!process.env.GUILD_ALLOWLIST.split(",").includes(guild.id)) {
@@ -24,6 +26,15 @@ discord.on("guildCreate", (guild) => {
       return;
     }
   }
+  if (bannedGuilds.includes(guild.id)) {
+    guild.leave();
+    if (logChannel) {
+      const safeName = guild.name.replace(/(@everyone|@here|[<>*_`])/g, "\\$&");
+      logChannel.send(`:hammer: Banned guild: ${guild.id}:${safeName}`);
+    }
+    return;
+  }
+
   if (logChannel) {
     const safeName = guild.name.replace(/(@everyone|@here|[<>*_`])/g, "\\$&");
     logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${safeName}`);
@@ -62,6 +73,17 @@ discord.on("ready", () => {
       }
     });
   }
+
+  bannedGuilds.forEach((guildId) => {
+    if (discord.guilds.cache.has(guildId)) {
+      const guild = discord.guilds.cache.get(guildId);
+      if (logChannel) {
+        const safeName = guild.name.replace(/(@everyone|@here|[<>*_`])/g, "\\$&");
+        logChannel.send(`:hammer: Banned guild: ${guild.id}:${safeName}`);
+      }
+      guild.leave();
+    }
+  });
 });
 
 discord.on("debug", (data) => {
