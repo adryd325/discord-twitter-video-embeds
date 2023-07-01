@@ -64,8 +64,12 @@ async function getPost(mdMatch, options, spoiler) {
   // Only fetch attachment if needed
   // My poor bandwidth
   let attachment;
-  if (needsAttachment) {
-    attachment = post.getDiscordAttachment(spoiler);
+  if (needsAttachment || provider == Providers.TWITTER) {
+    if (post.getDiscordAttachments) {
+      attachment = post.getDiscordAttachments(spoiler);
+    } else {
+      attachment = [post.getDiscordAttachment(spoiler)];
+    }
   }
 
   return {

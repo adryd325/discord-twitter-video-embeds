@@ -32,7 +32,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       embeds.push(post.embed);
     }
     if (post.attachment) {
-      attachmentPromises.push(post.attachment);
+      post.attachment.forEach(attachment => (attachmentPromises.push(attachment)));
     }
   });
 

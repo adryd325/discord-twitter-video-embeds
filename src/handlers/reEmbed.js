@@ -33,7 +33,7 @@ module.exports = async function reEmbed(message, posts) {
       embeds.push(post.embed);
     }
     if (post.attachment) {
-      attachmentPromises.push(post.attachment);
+      post.attachment.forEach(attachment => (attachmentPromises.push(attachment)));
     }
     if (post.spoiler) {
       content += ` || ${post.url} ||`;

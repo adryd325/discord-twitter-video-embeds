@@ -20,7 +20,7 @@ module.exports = async function videoReply(message, posts, fallback = false) {
     if (!post) return;
     if (post.attachment && !fallback) {
       log.verbose("videoReply", "added attchment");
-      attachmentPromises.push(post.attachment);
+      post.attachment.forEach(attachment => (attachmentPromises.push(attachment)));
       return null;
     }
     if (post.videoUrl) {

@@ -38,7 +38,7 @@ module.exports.DELETE_EMOJIS = ["\u2716", "\u274E", "\u274C", "\u264D", "\u{1F6A
 // I really don't give a shit if this is insecure or whatever, should be good enough to avoid collisions
 module.exports.TEMP_DIR = `/tmp/${Package.name}_${Date.now()}_${process.pid}`;
 
-module.exports.MAX_DISCORD_UPLOAD = 8388608;
+module.exports.MAX_DISCORD_UPLOAD = 26214400;
 module.exports.MAX_DISCORD_UPLOAD_TIER_2 = 52428800;
 module.exports.MAX_DISCORD_UPLOAD_TIER_3 = 104857600;
 module.exports.MAX_DISCORD_MESSAGE_LENGTH = 2000;
