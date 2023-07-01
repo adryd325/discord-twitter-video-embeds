@@ -33,15 +33,17 @@ class TwitterPost {
 
   getDiscordAttachments(spoiler) {
     if (this.videoUrl) {
-      return fetch(this.videoUrl, {
-        headers: {
-          "User-Agent": USER_AGENT
-        }
-      })
-        .then((response) => response.buffer())
-        .then((videoResponse) => {
-          return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
-        });
+      return [
+        fetch(this.videoUrl, {
+          headers: {
+            "User-Agent": USER_AGENT
+          }
+        })
+          .then((response) => response.buffer())
+          .then((videoResponse) => {
+            return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
+          })
+      ];
     } else if (this.imageUrls) {
       return this.imageUrls.map((url) => {
         return fetch(url, {
