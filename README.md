@@ -1,6 +1,6 @@
 # Discord External Video Embeds
 
-** NOW WORKS WITH TEXT AND IMAGE TWITTER POSTS **
+**NOW WORKS WITH TEXT AND IMAGE TWITTER POSTS**
 
 I'm a Discord bot that fixes your broken Twitter, TikTok and Reddit videos. You can find a list of public instances here: https://adryd.co/twitter-embeds.
 
