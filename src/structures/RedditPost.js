@@ -104,7 +104,7 @@ class RedditPost {
     embed.setFooter("reddit", Favicons.REDDIT);
     embed.setURL(this.url);
     embed.setTimestamp(this.createdAt);
-    embed.setTitle(this.content);
+    embed.setTitle(this.content.substring(0, 200));
     embed.setAuthor(`${this.username}`, null, this.authorUrl);
     if (this.subreddit) {
       embed.setTitle(`${this.content} (${this.subreddit})`);

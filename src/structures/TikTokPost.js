@@ -39,7 +39,7 @@ class TikTokPost {
     embed.setFooter("TikTok", Favicons.TIKTOK);
     embed.setURL(this.url);
     embed.setTimestamp(this.createdAt);
-    embed.setTitle(this.content);
+    embed.setTitle(this.content.substring(0, 200));
     embed.setAuthor(`${this.displayName} (@${this.username})`, null, this.authorUrl);
     if (this.likes) {
       embed.addField("Likes", this.likes.toString(), true);

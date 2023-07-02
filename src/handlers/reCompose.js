@@ -32,7 +32,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       embeds.push(post.embed);
     }
     if (post.attachment) {
-      post.attachment.forEach(attachment => (attachmentPromises.push(attachment)));
+      post.attachment.forEach((attachment) => attachmentPromises.push(attachment));
     }
   });
 
@@ -84,6 +84,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       }
     } else if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
       return videoReply(message, posts, true);
+    } else if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_MESSAGE) {
+      //do nothing
     } else {
       throw error;
     }

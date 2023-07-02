@@ -16,7 +16,6 @@ class TwitterPost {
     this.retweets = data.retweet_count;
     this.likes = data.favorite_count;
     this.imageUrls = data.photos?.map((photo) => photo.url);
-    console.log(data);
     this.videoUrl = data.video?.variants
       // Make sure it's a valid video
       .filter((video) => video.type == "video/mp4")?.[0]?.src;
