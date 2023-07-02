@@ -14,7 +14,7 @@ module.exports = async function videoReply(message, posts, fallback = false) {
     return;
   }
 
-  const attachmentPromises = [];
+  let attachmentPromises = [];
   let content = "";
   posts.forEach(async (post) => {
     if (!post) return;
@@ -29,6 +29,8 @@ module.exports = async function videoReply(message, posts, fallback = false) {
       else content += " " + post.videoUrl;
     }
   });
+
+  attachmentPromises = attachmentPromises.slice(0, 10);
 
   // Download all attachments and check for oversize attachments
   let attachments;

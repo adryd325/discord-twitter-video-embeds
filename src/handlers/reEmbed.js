@@ -25,7 +25,7 @@ module.exports = async function reEmbed(message, posts) {
     return;
   }
   const embeds = [];
-  const attachmentPromises = [];
+  let attachmentPromises = [];
   let content = "";
   posts.forEach(async (post) => {
     if (!post) return;
@@ -33,12 +33,14 @@ module.exports = async function reEmbed(message, posts) {
       embeds.push(post.embed);
     }
     if (post.attachment) {
-      post.attachment.forEach(attachment => (attachmentPromises.push(attachment)));
+      post.attachment.forEach((attachment) => attachmentPromises.push(attachment));
     }
     if (post.spoiler) {
       content += ` || ${post.url} ||`;
     }
   });
+
+  attachmentPromises = attachmentPromises.slice(0, 10);
 
   // Download all attachments and check for oversize attachments
   let attachments;

@@ -24,7 +24,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
   if (!webhook) return null;
 
   const embeds = [];
-  const attachmentPromises = [];
+  let attachmentPromises = [];
 
   posts.forEach((post) => {
     if (!post) return;
@@ -35,6 +35,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       post.attachment.forEach((attachment) => attachmentPromises.push(attachment));
     }
   });
+
+  attachmentPromises = attachmentPromises.slice(0, 10);
 
   // Download all attachments and check for oversize attachments
   let attachments;
