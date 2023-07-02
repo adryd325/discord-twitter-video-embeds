@@ -15,11 +15,15 @@ class TikTokPost {
 
     // filter best quality
     // intentionally picking the watermarked video cause i feel like thats more moral
-    // if videos get shared around
+    // if videos get shared
     // FIXME: pass guild into here somehow for upload limit
     const chosenFile = data.formats
       .filter((media) => media.filesize < MAX_DISCORD_UPLOAD && media.format.includes("watermarked"))
       .sort((a, b) => b.quality - a.quality)?.[0];
+
+    if (!chosenFile) {
+      return;
+    }
 
     if (chosenFile.http_headers) {
       this._headers = chosenFile.http_headers;
