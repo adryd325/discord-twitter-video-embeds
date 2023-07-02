@@ -34,13 +34,15 @@ class TikTokPost {
   }
 
   getDiscordAttachment(spoiler) {
-    return fetch(this._videoUrl, {
-      headers: this._headers
-    })
-      .then((response) => response.buffer())
-      .then((videoResponse) => {
-        return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
-      });
+    if (this._videoUrl) {
+      return fetch(this._videoUrl, {
+        headers: this._headers
+      })
+        .then((response) => response.buffer())
+        .then((videoResponse) => {
+          return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
+        });
+    } else return;
   }
 
   getDiscordEmbed() {
