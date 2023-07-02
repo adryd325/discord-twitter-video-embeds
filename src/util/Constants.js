@@ -57,7 +57,7 @@ module.exports.URLRegexes = {
 module.exports.Favicons = {
   INSTAGRAM: "https://www.instagram.com/static/images/ico/favicon-192.png/68d99ba29cc8.png",
   REDDIT: "https://www.redditstatic.com/desktop2x/img/favicon/android-icon-192x192.png",
-  TIKTOK: "https://s16.tiktokcdn.com/musical/resource/mtact/static/pwa/icon_192x192.png",
+  TIKTOK: "https://sf-tb-sg.ibytedtos.com/obj/eden-sg/uhtyvueh7nulogpoguhm/tiktok-icon2.png",
   TWITTER: "https://abs.twimg.com/icons/apple-touch-icon-192x192.png"
 };
 
