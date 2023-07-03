@@ -75,7 +75,11 @@ module.exports = async function reEmbed(message, posts, retry = false) {
         allowed_mentions: { parse: ["users"] }
       })
       .then((reply) => {
-        message.delete();
+        try {
+          message.delete();
+        } catch (ignored) {
+          //ignored
+        }
         return reply;
       });
   } catch (error) {
