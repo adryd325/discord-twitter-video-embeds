@@ -1,17 +1,30 @@
 const { exec } = require("child_process");
-const { Permissions, GuildChannel, DiscordAPIError } = require("discord.js");
-const discord = require("../discord");
+const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
+const { APIErrors } = DiscordConstants;
 const { MAX_DISCORD_UPLOAD, MAX_DISCORD_UPLOAD_TIER_2, MAX_DISCORD_UPLOAD_TIER_3 } = require("./Constants");
+const log = require("./log");
+const discord = require("../discord");
 
 // Cannot reply to messages without READ_MESSAGE_HISTORY
 function safeReply(message, newMessage) {
-  if (
-    message.channel instanceof GuildChannel &&
-    !message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.READ_MESSAGE_HISTORY)
-  ) {
-    return message.channel.send(newMessage);
-  } else {
-    return message.reply(newMessage);
+  try {
+    if (
+      message.channel instanceof GuildChannel &&
+      !message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.READ_MESSAGE_HISTORY)
+    ) {
+      return message.channel.send(newMessage);
+    } else {
+      return message.reply(newMessage);
+    }
+  } catch (exception) {
+    if (exception instanceof DiscordAPIError && exception.code == APIErrors.INVALID_FORM_BODY) {
+      if (exception.message == "message_reference: Unknown message") {
+        // Temporary log
+        log.info("Unknown message form body error caught");
+      }
+      return;
+    }
+    throw exception;
   }
 }
 

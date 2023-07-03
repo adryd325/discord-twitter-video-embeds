@@ -17,7 +17,11 @@ module.exports = async function handleReactionAdd(messageReaction, user) {
   if (dbData.user === user.id) {
     try {
       log.info("Handled delete request");
-      await messageReaction.message.delete();
+      try {
+        await messageReaction.message.delete();
+      } catch (ignoed) {
+        // ignored
+      }
       // Experiment: Restore embeds on suppressed messages
       if (process.env.INSTANCE === "staging") {
         // get channel
