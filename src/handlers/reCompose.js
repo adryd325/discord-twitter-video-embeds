@@ -41,7 +41,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
   // Download all attachments and check for oversize attachments
   let attachments;
   if (attachmentPromises.length !== 0) {
-    attachments = await Promise.all(attachmentPromises);
+    attachments = (await Promise.all(attachmentPromises)).filter((attachment) => attachment != undefined);
     let attachmentTotal = 0;
 
     // Get total attachment size
