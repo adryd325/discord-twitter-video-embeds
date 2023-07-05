@@ -8,7 +8,7 @@ const log = require("../util/log");
 
 const TWEET_ENDPOINT = (tweetID) => `https://cdn.syndication.twimg.com/tweet-result?id=${tweetID}`;
 
-class TwitterClient {
+class TwitterSyndicateClient {
   // TODO: Renew client token when errors
   // eslint-disable-next-line no-unused-vars
   async getPost(match, options, isRetry = false) {
@@ -37,9 +37,10 @@ class TwitterClient {
       })
       .then((tweetData) => {
         const tweet = new TwitterPost(tweetData);
+        if (!tweet.videoUrl) return null;
         return tweet;
       });
   }
 }
 
-module.exports = new TwitterClient();
+module.exports = new TwitterSyndicateClient();

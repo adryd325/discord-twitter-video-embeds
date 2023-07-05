@@ -3,7 +3,7 @@ const fetch = require("node-fetch");
 const { USER_AGENT, Colors, Favicons } = require("../util/Constants");
 const { parseHtmlEntities } = require("../util/Utils");
 
-class TwitterPost {
+class TwitterSyndicatePost {
   constructor(data) {
     this.id = data.id_str ?? data.id;
     this.createdAt = new Date(data.created_at);
@@ -76,4 +76,4 @@ class TwitterPost {
   }
 }
 
-module.exports = TwitterPost;
+module.exports = TwitterSyndicatePost;
