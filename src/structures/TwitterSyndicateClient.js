@@ -14,7 +14,7 @@ class TwitterSyndicateClient {
   async getPost(match, options, isRetry = false) {
     const id = match[2];
     const twitfix = match[1];
-    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix === "fx") return null;
+    if (!options.flags.has(GuildFlags.Flags.PARSE_TWITFIX) && twitfix === "fx") return null;
     if (twitfix === "fx" && options.mode === EmbedModes.VIDEO_REPLY) return null;
 
     return fetch(TWEET_ENDPOINT(id), {

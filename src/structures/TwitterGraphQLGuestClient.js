@@ -65,7 +65,7 @@ class TwitterGuestClient {
   async getPost(match, options, isRetry = false) {
     const id = match[2];
     const twitfix = match[1] ? match[1] : "";
-    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix != "") return "FX";
+    if (!options.flags.has(GuildFlags.Flags.PARSE_TWITFIX) && twitfix != "") return "FX";
     if (twitfix != "" && options.mode === EmbedModes.VIDEO_REPLY) return "FX";
     if (this.guestToken == null) {
       await this._fetchGuestToken(id);
@@ -127,7 +127,7 @@ class TwitterGuestClient {
         const user = parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy;
         const tweet = new TwitterPost(tweetData);
         tweet.addUserData(user);
-        if (!tweet.videoUrl && options.flags.has(GuildFlags.FLAGS.TWITTER_ONLY_VIDEO)) return null;
+        if (!tweet.videoUrl && options.flags.has(GuildFlags.Flags.TWITTER_ONLY_VIDEO)) return null;
         return tweet;
       });
   }

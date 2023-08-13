@@ -30,7 +30,7 @@ async function getPost(mdMatch, options, spoiler) {
   if (!provider) return null;
 
   // TWITTER_ONLY flag
-  if (options.flags.has(GuildFlags.FLAGS.TWITTER_ONLY)) {
+  if (options.flags.has(GuildFlags.Flags.TWITTER_ONLY)) {
     if (!(provider == Providers.TWITTER || provider == Providers.X_DOT_COM)) return null;
   }
 
