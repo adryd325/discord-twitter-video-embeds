@@ -93,7 +93,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
     } else if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_MESSAGE) {
       //do nothing
     } else {
-      throw error;
+      // i give up
     }
   }
 };

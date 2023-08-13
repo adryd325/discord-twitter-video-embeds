@@ -35,7 +35,7 @@ module.exports = async function videoReply(message, posts, fallback = false) {
   // Download all attachments and check for oversize attachments
   let attachments;
   if (attachmentPromises.length !== 0) {
-    attachments = await Promise.all(attachmentPromises);
+    attachments = (await Promise.all(attachmentPromises)).filter((attachment) => attachment != undefined);
     log.verbose("videoReply", "downloaded attachments");
     let attachmentTotal = 0;
     attachments = attachments.filter((attachment) => {

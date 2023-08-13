@@ -36,9 +36,12 @@ class TwitterSyndicateClient {
         return parsed;
       })
       .then((tweetData) => {
-        const tweet = new TwitterPost(tweetData);
-        if (!tweet.videoUrl) return null;
-        return tweet;
+        try {
+          return new TwitterPost(tweetData);
+        } catch (error) {
+          log.error(error);
+          throw new ClientError("Failed to create TwitterPost, likely missing feilds", "Twitter");
+        }
       });
   }
 }

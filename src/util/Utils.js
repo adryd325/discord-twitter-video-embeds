@@ -12,16 +12,15 @@ function safeReply(message, newMessage) {
       message.channel instanceof GuildChannel &&
       !message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.READ_MESSAGE_HISTORY)
     ) {
-      return message.channel.send(newMessage);
+      if (message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.SEND_MESSAGES)) {
+        return message.channel.send(newMessage);
+      }
     } else {
       return message.reply(newMessage);
     }
   } catch (exception) {
-    if (exception instanceof DiscordAPIError && exception.code == APIErrors.INVALID_FORM_BODY) {
-      if (exception.message == "message_reference: Unknown message") {
-        // Temporary log
-        log.info("Unknown message form body error caught");
-      }
+    if (exception instanceof DiscordAPIError) {
+      log.error(exception);
       return;
     }
     throw exception;

@@ -17,6 +17,7 @@ class TwitterSyndicatePost {
     this.likes = data.favorite_count;
     this.imageUrls = data.photos?.map((photo) => photo.url);
     this.videoUrl = data.video?.variants
+      .reverse()
       // Make sure it's a valid video
       .filter((video) => video.type == "video/mp4")?.[0]?.src;
   }
