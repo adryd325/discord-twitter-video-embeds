@@ -75,10 +75,10 @@ module.exports = new Command(
       case "evaluate":
         try {
           const result = await eval(interaction.options.getString("content"));
-          interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: true });
+          await interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: true });
         } catch (e) {
           try {
-            interaction.reply({ content: `\`\`\`${inspect(e).substring(0, 1990)}\`\`\``, ephemeral: true });
+            await interaction.reply({ content: `\`\`\`${inspect(e).substring(0, 1990)}\`\`\``, ephemeral: true });
           } catch (e) {
             //noop
           }
