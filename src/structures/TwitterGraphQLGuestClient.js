@@ -63,8 +63,8 @@ class TwitterGuestClient {
   async getPost(match, options, isRetry = false) {
     const id = match[2];
     const twitfix = match[1];
-    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix === "fx") return null;
-    if (twitfix === "fx" && options.mode === EmbedModes.VIDEO_REPLY) return null;
+    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix != "") return null;
+    if (twitfix != "" && options.mode === EmbedModes.VIDEO_REPLY) return null;
     if (this.guestToken == null) {
       await this._fetchGuestToken(id);
     }
@@ -77,7 +77,7 @@ class TwitterGuestClient {
         "user-agent": GENERIC_USER_AGENT,
         cookie: this.cookie,
         "x-guest-token": this.guestToken
-      },
+      }
     })
       .catch((a) => {
         if (a.type == "max-redirect") {

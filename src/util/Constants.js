@@ -51,7 +51,7 @@ module.exports.URLRegexes = {
   REDDIT_VIDEO: /https?:\/\/v\.redd\.it\/([^/?#&]+)/,
   TIKTOK: /https?:\/\/(?:www\.)?tiktok\.com\/@[0-9a-zA-Z._]+\/video\/(\d+)/,
   TIKTOK_REDIRECT: /https?:\/\/([a-z]{2,3})\.tiktok\.com\/(t\/)?([A-Za-z0-9]+)/,
-  TWITTER: /https?:\/\/(?:(?:www|m(?:obile)?)\.)?(fx)?twitter\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/
+  TWITTER: /https?:\/\/(?:(?:www|m(?:obile)?)\.)?(fx|vx)?twitter\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/
 };
 
 module.exports.Favicons = {
