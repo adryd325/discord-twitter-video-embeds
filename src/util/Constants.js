@@ -1,5 +1,3 @@
-const { Constants: DiscordConstants } = require("discord.js");
-
 // eslint-disable-next-line no-unused-vars
 function keyMirror(arr) {
   const tmp = Object.create(null);
@@ -71,7 +69,6 @@ module.exports.Favicons = {
 };
 
 module.exports.Colors = {
-  ...DiscordConstants.Colors,
   INSTAGRAM: 0xe1306c,
   REDDIT: 0xff4500,
   TWITTER: 0x1da1f2,

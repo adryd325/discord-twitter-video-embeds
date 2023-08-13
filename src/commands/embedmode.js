@@ -1,5 +1,4 @@
-const { Constants: DiscordConstants, Permissions } = require("discord.js");
-const { ApplicationCommandOptionTypes } = DiscordConstants;
+const { PermissionFlagsBits, ApplicationCommandOptionType } = require("discord.js");
 const Command = require("../structures/Command");
 const GuildOptions = require("../structures/GuildOptions");
 const { EmbedModes } = require("../util/Constants");
@@ -10,7 +9,7 @@ module.exports = new Command(
     name: "embedmode",
     options: [
       {
-        type: ApplicationCommandOptionTypes.INTEGER,
+        type: ApplicationCommandOptionType.Integer,
         name: "mode",
         description: "Mode to switch to",
         choices: [
@@ -37,7 +36,7 @@ module.exports = new Command(
       interaction.reply("This command only applies to servers");
       return;
     }
-    if (!interaction.member.permissions.has(Permissions.FLAGS.MANAGE_GUILD)) {
+    if (!interaction.member.permissions.has(PermissionFlagsBits.ManageGuild)) {
       interaction.reply({ content: "You do not have permission to use this command", ephemeral: true });
       return;
     }

@@ -1,6 +1,5 @@
 const { exec } = require("child_process");
-const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
-const { APIErrors } = DiscordConstants;
+const { PermissionFlagsBits, DiscordAPIError, BaseGuildTextChannel } = require("discord.js");
 const { MAX_DISCORD_UPLOAD, MAX_DISCORD_UPLOAD_TIER_2, MAX_DISCORD_UPLOAD_TIER_3 } = require("./Constants");
 const log = require("./log");
 const discord = require("../discord");
@@ -9,10 +8,10 @@ const discord = require("../discord");
 function safeReply(message, newMessage) {
   try {
     if (
-      message.channel instanceof GuildChannel &&
-      !message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.READ_MESSAGE_HISTORY)
+      message.channel instanceof BaseGuildTextChannel &&
+      !message.channel.permissionsFor(discord.user.id).has(PermissionFlagsBits.ReadMessageHistory)
     ) {
-      if (message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.SEND_MESSAGES)) {
+      if (message.channel.permissionsFor(discord.user.id).has(PermissionFlagsBits.SendMessages)) {
         return message.channel.send(newMessage);
       }
     } else {

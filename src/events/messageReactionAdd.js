@@ -1,6 +1,10 @@
-const { DiscordAPIError, Permissions, Constants: DiscordConstants } = require("discord.js");
+const {
+  DiscordAPIError,
+  PermissionFlagsBits,
+  BaseGuildTextChannel,
+  RESTJSONErrorCodes
+} = require("discord.js");
 const discord = require("../discord");
-const { APIErrors, ChannelTypes } = DiscordConstants;
 const MessageOwners = require("../structures/MessageOwners");
 const { DELETE_EMOJIS } = require("../util/Constants");
 const log = require("../util/log");
@@ -30,10 +34,10 @@ module.exports = async function handleReactionAdd(messageReaction, user) {
         // technically if someone runs this on a bot old enough to get added to group dms we have problems
         // do i care? no.
         // @ts-ignore UGH i hate types
-        if (channel.isText() && channel.type !== ChannelTypes.DM) {
+        if (channel instanceof BaseGuildTextChannel) {
           // check permissions
           // @ts-ignore
-          if (!channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.MANAGE_MESSAGES)) return;
+          if (!channel.permissionsFor(discord.user.id).has(PermissionFlagsBits.ManageMessages)) return;
           const originalMessage = await channel.messages.fetch(dbData.originalMessage);
           await originalMessage.suppressEmbeds(false);
         }
@@ -41,8 +45,8 @@ module.exports = async function handleReactionAdd(messageReaction, user) {
     } catch (error) {
       if (error instanceof DiscordAPIError) {
         switch (error.code) {
-          case APIErrors.UNKNOWN_MESSAGE:
-          case APIErrors.MISSING_PERMISSIONS:
+          case RESTJSONErrorCodes.UnknownMessage:
+          case RESTJSONErrorCodes.MissingPermissions:
             break;
           default:
             throw error;

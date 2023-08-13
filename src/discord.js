@@ -1,19 +1,18 @@
-const { Client, Intents } = require("discord.js");
+const { Client, GatewayIntentBits, Partials } = require("discord.js");
 
 module.exports = new Client({
   intents: [
-    Intents.FLAGS.GUILDS,
-    Intents.FLAGS.GUILD_WEBHOOKS,
-    Intents.FLAGS.GUILD_MESSAGES,
-    Intents.FLAGS.GUILD_MESSAGE_REACTIONS,
-    Intents.FLAGS.DIRECT_MESSAGES
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildWebhooks,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.GuildMessageReactions,
+    GatewayIntentBits.DirectMessages,
+    GatewayIntentBits.DirectMessageReactions,
+    GatewayIntentBits.MessageContent
   ],
   allowedMentions: {
     parse: [],
     repliedUser: false
   },
-  partials: ["MESSAGE", "CHANNEL", "USER", "REACTION"],
-  http: {
-    api: "https://canary.discord.com/api"
-  }
+  partials: [Partials.Channel, Partials.Message, Partials.User, Partials.Reaction]
 });

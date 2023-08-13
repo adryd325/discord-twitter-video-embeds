@@ -4,7 +4,7 @@ const ClientError = require("./ClientError");
 const GuildFlags = require("./GuildFlags");
 const TwitterError = require("./TwitterError");
 const TwitterErrorList = require("./TwitterErrorList");
-const TwitterPost = require("./TwitterPost");
+const TwitterPost = require("./TwitterGuestPost");
 const { USER_AGENT, EmbedModes } = require("../util/Constants");
 const log = require("../util/log");
 

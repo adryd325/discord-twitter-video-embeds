@@ -1,11 +1,11 @@
 const {
   DiscordAPIError,
-  Constants: DiscordConstants,
   GuildChannel,
   ThreadChannel,
-  Permissions
+  ChannelType,
+  PermissionFlagsBits,
+  RESTJSONErrorCodes
 } = require("discord.js");
-const { APIErrors, ChannelTypes } = DiscordConstants;
 const discord = require("../discord");
 const reCompose = require("../handlers/reCompose");
 const reEmbed = require("../handlers/reEmbed");
@@ -19,16 +19,17 @@ const log = require("../util/log");
 const markdownParser = require("../util/markdownParser");
 
 const ignoredErrors = [
-  APIErrors.UNKNOWN_CHANNEL, // Race condition if channel is deleted before bot replies
-  APIErrors.UNKNOWN_GUILD, // Race condition if kicked from server
-  APIErrors.UNKNOWN_MESSAGE, // Race condition if message is deleted quickly
-  APIErrors.CANNOT_SEND_EXPLICIT_CONTENT, // We have no way of checking
-  APIErrors.SLOWMODE_RATE_LIMIT,
-  APIErrors.MAXIMUM_THREAD_PARICIPANTS,
-  APIErrors.INVALID_THREAD_ARCHIVE_STATE, // Race condition if thread is archived before bot replies
-  APIErrors.MAXIMUM_WEBHOOKS,
-  APIErrors.MISSING_PERMISSIONS,
-  APIErrors.REQUEST_ENTITY_TOO_LARGE // Issues with calculating attachment size
+  RESTJSONErrorCodes.UnknownChannel, // Race condition if channel is deleted before bot replies
+  RESTJSONErrorCodes.UnknownGuild, // Race condition if kicked from server
+  RESTJSONErrorCodes.UnknownMessage, // Race condition if message is deleted quickly
+  RESTJSONErrorCodes.ExplicitContentCannotBeSentToTheDesiredRecipient, // We have no way of checking
+  RESTJSONErrorCodes.ActionCannotBePerformedDueToSlowmodeRateLimit,
+  RESTJSONErrorCodes.MaximumThreadParticipantsReached,
+  RESTJSONErrorCodes.InvalidActionOnArchivedThread, // Race condition if thread is archived before bot replies
+  RESTJSONErrorCodes.MaximumNumberOfWebhooksReached,
+  RESTJSONErrorCodes.MaximumNumberOfWebhooksPerGuildReached,
+  RESTJSONErrorCodes.MissingPermissions,
+  RESTJSONErrorCodes.RequestEntityTooLarge // Issues with calculating attachment size
 ];
 
 function shouldProcessMessage(message) {
@@ -45,10 +46,10 @@ function shouldProcessMessage(message) {
     // Check to make sure we have permission to send in the channel we're going to send
     // if (!message.channel.permissionsFor(discord.user.id).has(Permissions.FLAGS.SEND_MESSAGES)) return false;
     // Check that the user sending the message has permissions to embed links
-    if (!message.channel.permissionsFor(message.author.id).has(Permissions.FLAGS.EMBED_LINKS)) return false;
+    if (!message.channel.permissionsFor(message.author.id).has(PermissionFlagsBits.EmbedLinks)) return false;
   }
   // Don't touch announcement channels
-  if (message.channel.type === ChannelTypes.GUILD_NEWS) return false;
+  if (message.channel.type === ChannelType.GuildAnnouncement) return false;
   // All checks passed
   return true;
 }
@@ -93,7 +94,6 @@ async function sendMessage(message, posts, options) {
 
 module.exports = async function handleMessage(message) {
   const startTime = Date.now();
-  log.silly("messageCreate", "Got message");
   if (!shouldProcessMessage(message)) return null;
   log.verbose("messageCreate", "Passed initial checks");
 

@@ -1,9 +1,9 @@
-const { Permissions, GuildChannel } = require("discord.js");
+const { PermissionsBitField, GuildChannel, PermissionFlagsBits } = require("discord.js");
 const discord = require("../discord");
 const { notifyPermissions, safeReply, getUploadLimit } = require("../util/Utils");
 const log = require("../util/log");
 
-const REQUIRED_PERMISSIONS = new Permissions([Permissions.FLAGS.EMBED_LINKS, Permissions.FLAGS.ATTACH_FILES]);
+const REQUIRED_PERMISSIONS = new PermissionsBitField([PermissionFlagsBits.EmbedLinks, PermissionFlagsBits.AttachFiles]);
 
 module.exports = async function videoReply(message, posts, fallback = false) {
   if (

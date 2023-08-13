@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const fetch = require("node-fetch");
 const { USER_AGENT, Colors, Favicons } = require("../util/Constants");
 const mergeStreams = require("../util/mergeStreams");
@@ -95,25 +95,30 @@ class RedditPost {
   }
 
   getDiscordAttachment(spoiler) {
-    return this.video.then((video) => new MessageAttachment(video, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`));
+    return this.video.then(
+      (video) => new AttachmentBuilder(video, { name: `${spoiler ? "SPOILER_" : ""}${this.id}.mp4` })
+    );
   }
 
   getDiscordEmbed() {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setColor(Colors.REDDIT);
-    embed.setFooter("reddit", Favicons.REDDIT);
+    embed.setFooter({ text: "reddit", iconURL: Favicons.REDDIT });
     embed.setURL(this.url);
     embed.setTimestamp(this.createdAt);
     embed.setTitle(this.content.substring(0, 200));
-    embed.setAuthor(`${this.username}`, null, this.authorUrl);
+    embed.setAuthor({
+      name: `${this.username}`,
+      iconURL: this.authorUrl
+    });
     if (this.subreddit) {
       embed.setTitle(`${this.content} (${this.subreddit})`);
     }
     if (this.points && this.points > 0) {
-      embed.addField("Points", this.points.toString(), true);
+      embed.addFields({ name: "Points", value: this.points.toString(), inline: true });
     }
     if (this.replies && this.replies > 0) {
-      embed.addField("Points", this.points.toString(), true);
+      embed.addFields({ name: "Replies", value: this.replies.toString(), inline: true });
     }
     return embed;
   }

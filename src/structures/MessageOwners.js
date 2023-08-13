@@ -1,4 +1,4 @@
-const { GuildChannel, Guild, Message, Channel, User } = require("discord.js");
+const { GuildChannel, Guild, Message, BaseChannel, User } = require("discord.js");
 const MessageOwnersDB = require("../database/MessageOwnersDB");
 
 class GuildOptions {
@@ -18,7 +18,7 @@ class GuildOptions {
 
   _validateMessage(message) {
     if (!(message instanceof Message)) return false;
-    if (!(message.channel instanceof Channel)) return false;
+    if (!(message.channel instanceof BaseChannel)) return false;
     if (!(message.author instanceof User)) return false;
     return true;
   }

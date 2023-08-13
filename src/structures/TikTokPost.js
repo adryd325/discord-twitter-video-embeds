@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const fetch = require("node-fetch");
 const { TIKTOK_HOME, MAX_DISCORD_UPLOAD, Colors, Favicons } = require("../util/Constants");
 
@@ -40,21 +40,27 @@ class TikTokPost {
       })
         .then((response) => response.buffer())
         .then((videoResponse) => {
-          return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
+          return new AttachmentBuilder(videoResponse, { name: `${spoiler ? "SPOILER_" : ""}${this.id}.mp4` });
         });
     } else return;
   }
 
   getDiscordEmbed() {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setColor(Colors.TIKTOK);
-    embed.setFooter("TikTok", Favicons.TIKTOK);
+    embed.setFooter({
+      text: "TikTok",
+      iconURL: Favicons.TIKTOK
+    });
     embed.setURL(this.url);
     embed.setTimestamp(this.createdAt);
     embed.setTitle(this.content.substring(0, 200));
-    embed.setAuthor(`${this.displayName} (@${this.username})`, null, this.authorUrl);
+    embed.setAuthor({
+      name: `${this.displayName} (@${this.username})`,
+      url: this.authorUrl
+    });
     if (this.likes) {
-      embed.addField("Likes", this.likes.toString(), true);
+      embed.addFields({ name: "Likes", value: this.likes.toString(), inline: true });
     }
     return embed;
   }

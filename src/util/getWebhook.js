@@ -1,5 +1,4 @@
-const { Webhook, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
-const { APIErrors } = DiscordConstants;
+const { Webhook, DiscordAPIError, RESTJSONErrorCodes } = require("discord.js");
 const { tempMsg } = require("./Utils");
 const WebhooksDB = require("../database/WebhooksDB");
 const discord = require("../discord");
@@ -25,12 +24,18 @@ module.exports.getWebhook = async function getWebhook(channel) {
       });
       return webhook;
     } catch (error) {
-      if (error instanceof DiscordAPIError && error.code === APIErrors.MAXIMUM_WEBHOOKS) {
-        tempMsg(
-          channel,
-          "An error occured creating a webhook for this channel. You've reached Discord's limit on webhooks per channel. You can resolve this problem by deleting unused webhooks in this channel, or switching the bot to another mode using /embedmode. This message will self-destruct in 30 seconds."
-        );
-        return null;
+      if (error instanceof DiscordAPIError) {
+        switch (error.code) {
+          case RESTJSONErrorCodes.MaximumNumberOfWebhooksPerGuildReached:
+          case RESTJSONErrorCodes.MaximumNumberOfWebhooksReached:
+            tempMsg(
+              channel,
+              "An error occured creating a webhook for this channel. You've reached Discord's limit on webhooks per channel. You can resolve this problem by deleting unused webhooks in this channel, or switching the bot to another mode using /embedmode. This message will self-destruct in 30 seconds."
+            );
+            return null;
+          default:
+          // noop
+        }
       }
       throw error;
     }

@@ -2,6 +2,7 @@ const fs = require("fs");
 const { TextChannel } = require("discord.js");
 const modeCommand = require("./commands/embedmode");
 const twitterVideoEmbedCommand = require("./commands/twitterembedall");
+const adminCommand = require("./commands/admin");
 const { database } = require("./database");
 const discord = require("./discord");
 const messageCreate = require("./events/messageCreate");
@@ -11,6 +12,8 @@ const GuildOptions = require("./structures/GuildOptions");
 const interactionHandler = require("./structures/InteractionHandler");
 const { TEMP_DIR, EmbedModes } = require("./util/Constants");
 const log = require("./util/log");
+
+Error.stackTraceLimit = 100;
 
 let logChannel;
 
@@ -41,7 +44,7 @@ discord.on("guildCreate", (guild) => {
     logChannel.send(`:tada: New guild: ${guild.memberCount} members; ${guild.id}:${safeName}`);
   }
   // Most popular mode, even though my poor bandwidth hates it ;-;
-  if (guild.me.permissions.has(reEmbed.REQUIRED_PERMISSIONS)) {
+  if (guild.members.me.permissions.has(reEmbed.REQUIRED_PERMISSIONS)) {
     GuildOptions.setOptions(guild.id, { mode: EmbedModes.RE_EMBED });
   }
 });
@@ -93,6 +96,7 @@ discord.on("debug", (data) => {
 
 interactionHandler.registerCommand(modeCommand);
 interactionHandler.registerCommand(twitterVideoEmbedCommand);
+interactionHandler.registerCommand(adminCommand);
 
 process.on("SIGINT", () => {
   log.info("Cleanly exiting...");

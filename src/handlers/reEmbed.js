@@ -1,19 +1,19 @@
 const {
-  Permissions,
   GuildChannel,
   ThreadChannel,
   DiscordAPIError,
-  Constants: DiscordConstants
+  PermissionsBitField,
+  PermissionFlagsBits,
+  RESTJSONErrorCodes
 } = require("discord.js");
-const { APIErrors } = DiscordConstants;
 const videoReply = require("./videoReply");
 const discord = require("../discord");
 const { notifyPermissions, safeReply, getUploadLimit } = require("../util/Utils");
 
-const REQUIRED_PERMISSIONS = new Permissions([
-  Permissions.FLAGS.EMBED_LINKS,
-  Permissions.FLAGS.ATTACH_FILES,
-  Permissions.FLAGS.MANAGE_MESSAGES
+const REQUIRED_PERMISSIONS = new PermissionsBitField([
+  PermissionFlagsBits.EmbedLinks,
+  PermissionFlagsBits.AttachFiles,
+  PermissionFlagsBits.ManageMessages
 ]);
 
 module.exports = async function reEmbed(message, posts) {
@@ -67,7 +67,7 @@ module.exports = async function reEmbed(message, posts) {
       return [reply, { mode: "RE_EMBED" }];
     });
   } catch (error) {
-    if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
+    if (error instanceof DiscordAPIError && error.code === RESTJSONErrorCodes.RequestEntityTooLarge) {
       return videoReply(message, posts, true);
     } else {
       // throw error;

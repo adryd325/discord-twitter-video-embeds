@@ -33,6 +33,7 @@ class TwitterGuestClient {
         cookies.forEach((setCookie) => {
           this.cookie += setCookie.split(";")[0] + "; ";
         });
+        log.verbose("twitterClient", "got cookies");
         return fetch(WEB_TWEET_ENDPOINT(id), {
           headers: {
             "user-agent": GENERIC_USER_AGENT,
@@ -46,6 +47,7 @@ class TwitterGuestClient {
         if (match != null && match[1] != null) {
           this.guestToken = match[1];
         }
+        log.verbose("twitterClient", "got guest token");
         this.cookie += `gt=${this.guestToken}; `;
       });
   }
@@ -62,9 +64,9 @@ class TwitterGuestClient {
   // eslint-disable-next-line no-unused-vars
   async getPost(match, options, isRetry = false) {
     const id = match[2];
-    const twitfix = match[1];
-    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix != "") return null;
-    if (twitfix != "" && options.mode === EmbedModes.VIDEO_REPLY) return null;
+    const twitfix = match[1] ? match[1] : "";
+    if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix != "") return "FX";
+    if (twitfix != "" && options.mode === EmbedModes.VIDEO_REPLY) return "FX";
     if (this.guestToken == null) {
       await this._fetchGuestToken(id);
     }

@@ -1,15 +1,20 @@
-const { Permissions, GuildChannel, DiscordAPIError, Constants: DiscordConstants } = require("discord.js");
-const { APIErrors } = DiscordConstants;
+const {
+  PermissionsBitField,
+  PermissionFlagsBits,
+  GuildChannel,
+  DiscordAPIError,
+  RESTJSONErrorCodes
+} = require("discord.js");
 const videoReply = require("./videoReply");
 const discord = require("../discord");
 const { notifyPermissions, getUploadLimit } = require("../util/Utils");
 const { getWebhook, resetWebhook } = require("../util/getWebhook");
 
-const REQUIRED_PERMISSIONS = new Permissions([
-  Permissions.FLAGS.EMBED_LINKS,
-  Permissions.FLAGS.ATTACH_FILES,
-  Permissions.FLAGS.MANAGE_MESSAGES,
-  Permissions.FLAGS.MANAGE_WEBHOOKS
+const REQUIRED_PERMISSIONS = new PermissionsBitField([
+  PermissionFlagsBits.EmbedLinks,
+  PermissionFlagsBits.AttachFiles,
+  PermissionFlagsBits.ManageMessages,
+  PermissionFlagsBits.ManageWebhooks
 ]);
 
 module.exports = async function reEmbed(message, posts, retry = false) {
@@ -83,17 +88,21 @@ module.exports = async function reEmbed(message, posts, retry = false) {
         return reply;
       });
   } catch (error) {
-    if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_WEBHOOK) {
-      await resetWebhook(message.channel);
-      if (retry === false) {
-        return reEmbed(message, posts, true);
+    if (error instanceof DiscordAPIError) {
+      switch (error.code) {
+        case RESTJSONErrorCodes.UnknownWebhook:
+          await resetWebhook(message.channel);
+          if (retry === false) {
+            return reEmbed(message, posts, true);
+          }
+          break;
+        case RESTJSONErrorCodes.RequestEntityTooLarge:
+          return videoReply(message, posts, true);
+        case RESTJSONErrorCodes.UnknownMessage:
+          break;
+        default:
+        // throw error;
       }
-    } else if (error instanceof DiscordAPIError && error.code === APIErrors.REQUEST_ENTITY_TOO_LARGE) {
-      return videoReply(message, posts, true);
-    } else if (error instanceof DiscordAPIError && error.code === APIErrors.UNKNOWN_MESSAGE) {
-      //do nothing
-    } else {
-      // i give up
     }
   }
 };

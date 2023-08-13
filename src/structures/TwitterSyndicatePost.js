@@ -1,4 +1,4 @@
-const { MessageEmbed, MessageAttachment } = require("discord.js");
+const { AttachmentBuilder, EmbedBuilder } = require("discord.js");
 const fetch = require("node-fetch");
 const { USER_AGENT, Colors, Favicons } = require("../util/Constants");
 const { parseHtmlEntities } = require("../util/Utils");
@@ -41,7 +41,7 @@ class TwitterSyndicatePost {
         })
           .then((response) => response.buffer())
           .then((videoResponse) => {
-            return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
+            return new AttachmentBuilder(videoResponse, { name: `${spoiler ? "SPOILER_" : ""}${this.id}.mp4` });
           })
       ];
     } else if (this.imageUrls) {
@@ -53,25 +53,32 @@ class TwitterSyndicatePost {
         })
           .then((response) => response.buffer())
           .then((image) => {
-            return new MessageAttachment(image, `${spoiler ? "SPOILER_" : ""}${this.id}.jpg`);
+            return new AttachmentBuilder(image, { name: `${spoiler ? "SPOILER_" : ""}${this.id}.jpg` });
           });
       });
     }
   }
 
   getDiscordEmbed() {
-    const embed = new MessageEmbed();
+    const embed = new EmbedBuilder();
     embed.setColor(Colors.TWITTER);
-    embed.setFooter("Twitter", Favicons.TWITTER);
+    embed.setFooter({
+      text: "Twitter",
+      iconURL: Favicons.TWITTER
+    });
     embed.setURL(this.url);
     embed.setTimestamp(this.createdAt);
     embed.setDescription(this.content);
-    embed.setAuthor(`${this.displayName} (@${this.username})`, this.avatar, this.authorUrl);
+    embed.setAuthor({
+      name: `${this.displayName} (@${this.username})`,
+      iconURL: this.avatar,
+      url: this.authorUrl
+    });
     if (this.retweets && this.retweets > 0) {
-      embed.addField("Retweets", this.retweets.toString(), true);
+      embed.addFields({ name: "Retweets", value: this.retweets.toString(), inline: true });
     }
     if (this.likes && this.likes > 0) {
-      embed.addField("Likes", this.likes.toString(), true);
+      embed.addFields({ name: "Likes", value: this.likes.toString(), inline: true });
     }
     return embed;
   }
