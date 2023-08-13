@@ -75,7 +75,10 @@ module.exports = new Command(
     let guildId;
     switch (interaction.options.getSubcommand()) {
       case "evaluate":
-        const public = interaction.options.getBoolean("public");
+        let public = !interaction.options.getBoolean("public");
+        if (public == null) {
+          public = true;
+        }
         try {
           const result = await eval(interaction.options.getString("content"));
           await interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: public });
