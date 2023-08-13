@@ -1,6 +1,7 @@
 const fs = require("fs");
 const { TextChannel } = require("discord.js");
 const modeCommand = require("./commands/embedmode");
+const twitterVideoEmbedCommand = require("./commands/twitterembedall");
 const { database } = require("./database");
 const discord = require("./discord");
 const messageCreate = require("./events/messageCreate");
@@ -91,6 +92,7 @@ discord.on("debug", (data) => {
 });
 
 interactionHandler.registerCommand(modeCommand);
+interactionHandler.registerCommand(twitterVideoEmbedCommand);
 
 process.on("SIGINT", () => {
   log.info("Cleanly exiting...");

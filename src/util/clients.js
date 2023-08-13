@@ -2,7 +2,7 @@ const RedditClient = require("../structures/RedditClient");
 const RedditVideo = require("../structures/RedditVideo");
 const TikTokClient = require("../structures/TikTokClient");
 const TikTokRedirect = require("../structures/TikTokRedirect");
-const TwitterSyndcateClient = require("../structures/TwitterSyndcateClient");
+const TwitterSyndcateClient = require("../structures/TwitterGraphQLGuestClient");
 
 const clients = new Map();
 

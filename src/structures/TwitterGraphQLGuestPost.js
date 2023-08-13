@@ -13,9 +13,6 @@ class TwitterPost {
     this.entities = data.entities;
     this.retweets = data.retweet_count;
     this.likes = data.favorite_count;
-    this.imageUrls = this.extendedEntities?.media
-      .filter((media) => media.type === "photo")
-      .map((photo) => photo.media_url_https);
     this.videoUrl = this.extendedEntities?.media
       // Make sure it's actually a video
       .filter((media) => media.type === "video" || media.type === "animated_gif")
@@ -44,32 +41,16 @@ class TwitterPost {
     return `https://twitter.com/i/user/${this.userID}`;
   }
 
-  getDiscordAttachments(spoiler) {
-    if (this.videoUrl) {
-      return [
-        fetch(this.videoUrl, {
-          headers: {
-            "User-Agent": USER_AGENT
-          }
-        })
-          .then((response) => response.buffer())
-          .then((videoResponse) => {
-            return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
-          })
-      ];
-    } else if (this.imageUrls) {
-      return this.imageUrls.map((url) => {
-        return fetch(url, {
-          headers: {
-            "User-Agent": USER_AGENT
-          }
-        })
-          .then((response) => response.buffer())
-          .then((image) => {
-            return new MessageAttachment(image, `${spoiler ? "SPOILER_" : ""}${this.id}.jpg`);
-          });
+  getDiscordAttachment(spoiler) {
+    return fetch(this.videoUrl, {
+      headers: {
+        "User-Agent": USER_AGENT
+      }
+    })
+      .then((response) => response.buffer())
+      .then((videoResponse) => {
+        return new MessageAttachment(videoResponse, `${spoiler ? "SPOILER_" : ""}${this.id}.mp4`);
       });
-    }
   }
 
   getDiscordEmbed() {
