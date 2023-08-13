@@ -33,9 +33,9 @@ module.exports = new Command(
     GuildOptions.getOptions(interaction.guild.id).then((options) => {
       let flags;
       if (!mode) {
-        flags = options.flags.add(GuildFlags.FLAGS.TWITTER_ONLY_VIDEO);
+        flags = options.flags.add(GuildFlags.Flags.TWITTER_ONLY_VIDEO);
       } else {
-        flags = options.flags.remove(GuildFlags.FLAGS.TWITTER_ONLY_VIDEO);
+        flags = options.flags.remove(GuildFlags.Flags.TWITTER_ONLY_VIDEO);
       }
       GuildOptions.setOptions(interaction.guild.id, { flags }).then(() => {
         interaction.reply({
