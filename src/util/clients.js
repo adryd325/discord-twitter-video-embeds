@@ -11,5 +11,6 @@ clients.set("REDDIT_VIDEO", RedditVideo);
 clients.set("TIKTOK", TikTokClient);
 clients.set("TIKTOK_REDIRECT", TikTokRedirect);
 clients.set("TWITTER", TwitterSyndcateClient);
+clients.set("X_DOT_COM", TwitterSyndcateClient);
 
 module.exports = clients;

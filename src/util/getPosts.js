@@ -31,7 +31,7 @@ async function getPost(mdMatch, options, spoiler) {
 
   // TWITTER_ONLY flag
   if (options.flags.has(GuildFlags.FLAGS.TWITTER_ONLY)) {
-    if (provider !== Providers.TWITTER) return null;
+    if (!(provider == Providers.TWITTER || provider == Providers.X_DOT_COM)) return null;
   }
 
   // If we do have a provider, call getPost
@@ -64,7 +64,7 @@ async function getPost(mdMatch, options, spoiler) {
   // Only fetch attachment if needed
   // My poor bandwidth
   let attachment;
-  if (needsAttachment || provider == Providers.TWITTER) {
+  if (needsAttachment || provider == Providers.TWITTER || provider == Providers.X_DOT_COM) {
     if (post.getDiscordAttachments) {
       attachment = post.getDiscordAttachments(spoiler);
     } else {
