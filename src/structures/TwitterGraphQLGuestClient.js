@@ -2,9 +2,9 @@ const fetch = require("node-fetch");
 // const ClientError = require("./ClientError");
 const ClientError = require("./ClientError");
 const GuildFlags = require("./GuildFlags");
-const TwitterPost = require("./TwitterGuestPost");
 const TwitterError = require("./TwitterError");
 const TwitterErrorList = require("./TwitterErrorList");
+const TwitterPost = require("./TwitterGuestPost");
 const { EmbedModes, GENERIC_USER_AGENT } = require("../util/Constants");
 const log = require("../util/log");
 
@@ -37,7 +37,8 @@ class TwitterGuestClient {
           headers: {
             "user-agent": GENERIC_USER_AGENT,
             cookie: this.cookie
-          }
+          },
+          redirect: "manual"
         });
       })
       .then((res) => res.text())
@@ -77,7 +78,8 @@ class TwitterGuestClient {
         "user-agent": GENERIC_USER_AGENT,
         cookie: this.cookie,
         "x-guest-token": this.guestToken
-      }
+      },
+      redirect: "manual"
     })
       .then((res) => res.text())
       .then((res) => {
