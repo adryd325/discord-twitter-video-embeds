@@ -5,7 +5,8 @@ const {
   SlashCommandStringOption,
   InteractionResponse,
   CommandInteraction,
-  SlashCommandSubcommandGroupBuilder
+  SlashCommandSubcommandGroupBuilder,
+  SlashCommandBooleanOption
 } = require("discord.js");
 const Command = require("../structures/Command");
 const GuildFlags = require("../structures/GuildFlags");
@@ -47,6 +48,7 @@ const command = new SlashCommandBuilder()
       .addStringOption(
         new SlashCommandStringOption().setName("content").setDescription("Javascript to evaluate").setRequired(true)
       )
+      .addBooleanOption(new SlashCommandBooleanOption().setName("public").setDescription("Post results publicly"))
   );
 
 function getGuild(interaction) {
@@ -73,12 +75,13 @@ module.exports = new Command(
     let guildId;
     switch (interaction.options.getSubcommand()) {
       case "evaluate":
+        const public = interaction.options.getBoolean("public");
         try {
           const result = await eval(interaction.options.getString("content"));
-          await interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: true });
+          await interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: public });
         } catch (e) {
           try {
-            await interaction.reply({ content: `\`\`\`${inspect(e).substring(0, 1990)}\`\`\``, ephemeral: true });
+            await interaction.reply({ content: `\`\`\`${inspect(e).substring(0, 1990)}\`\`\``, ephemeral: public });
           } catch (e) {
             //noop
           }
