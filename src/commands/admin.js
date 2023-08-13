@@ -77,7 +77,11 @@ module.exports = new Command(
           const result = await eval(interaction.options.getString("content"));
           interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: true });
         } catch (e) {
-          interaction.reply({ content: `\`\`\`${inspect(e).substring(0, 1990)}\`\`\``, ephemeral: true });
+          try {
+            interaction.reply({ content: `\`\`\`${inspect(e).substring(0, 1990)}\`\`\``, ephemeral: true });
+          } catch (e) {
+            //noop
+          }
         }
         break;
       case "setflag":
@@ -86,7 +90,6 @@ module.exports = new Command(
           interaction.reply({ content: "No guildid specified and command not run in guild", ephemeral: true });
           break;
         }
-        console.log(interaction.options.getInteger("flags"));
         const flags = new GuildFlags(interaction.options.getInteger("flags"));
         GuildOptions.setOptions(guildId, { flags }).then(() => {
           interaction.reply({
@@ -102,11 +105,10 @@ module.exports = new Command(
           interaction.reply({ content: "No guildid specified and command not run in guild", ephemeral: true });
           break;
         }
-        console.log(interaction.options.getInteger("mode"));
-        const mode = EmbedModes[interaction.options.getInteger("mode")];
+        const mode = interaction.options.getInteger("mode");
         GuildOptions.setOptions(guildId, { mode }).then(() => {
           interaction.reply({
-            content: `mode: \`${mode}\``,
+            content: `mode: \`${EmbedModes[mode]}\``,
             ephemeral: true
           });
         });
