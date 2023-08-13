@@ -37,8 +37,7 @@ class TwitterGuestClient {
           headers: {
             "user-agent": GENERIC_USER_AGENT,
             cookie: this.cookie
-          },
-          redirect: "manual"
+          }
         });
       })
       .then((res) => res.text())
@@ -79,8 +78,15 @@ class TwitterGuestClient {
         cookie: this.cookie,
         "x-guest-token": this.guestToken
       },
-      redirect: "manual"
     })
+      .catch((a) => {
+        if (a.type == "max-redirect") {
+          this._fetchGuestToken(id);
+          if (!isRetry) return this.getPost(match, options, true);
+        } else {
+          throw a;
+        }
+      })
       .then((res) => res.text())
       .then((res) => {
         let parsed;
