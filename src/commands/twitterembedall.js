@@ -40,7 +40,7 @@ module.exports = new Command(
       }
       GuildOptions.setOptions(interaction.guild.id, { flags }).then(() => {
         interaction.reply({
-          content: !mode ? "Embedding all posts" : "Embedding only video posts",
+          content: !mode ? "Embedding only video tweets" : "Embedding all tweets",
           ephemeral: true
         });
       });

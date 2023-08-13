@@ -55,6 +55,7 @@ bot, application.commands
 Manage Webhooks, Send Messages, Send Messages in Threads, Manage Messages, Embed Links, Attach Files
 
 A quick installation script is available. As root run:
+
 ```sh
 wget https://raw.githubusercontent.com/adryd325/discord-twitter-video-embeds/main/debian-11-quick-setup.sh
 # review the contents and make sure this won't break existing node programs
@@ -62,6 +63,7 @@ nano ./debian-11-quick-setup.sh
 chmod +x /debian-11-quick-setup.sh
 ./debian-11-quick-setup.sh
 ```
+
 ### Windows Installation
 
 Quick install for Windows is available. Download windows-installer.bat and run it as administrator.

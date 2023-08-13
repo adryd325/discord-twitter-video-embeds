@@ -36,7 +36,7 @@ class TwitterGuestClient {
         return fetch(WEB_TWEET_ENDPOINT(id), {
           headers: {
             "user-agent": GENERIC_USER_AGENT,
-            cookie: this.cookie,
+            cookie: this.cookie
           }
         });
       })

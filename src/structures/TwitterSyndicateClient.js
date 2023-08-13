@@ -16,7 +16,7 @@ class TwitterSyndicateClient {
     const twitfix = match[1];
     if (!options.flags.has(GuildFlags.FLAGS.PARSE_TWITFIX) && twitfix === "fx") return null;
     if (twitfix === "fx" && options.mode === EmbedModes.VIDEO_REPLY) return null;
-    
+
     return fetch(TWEET_ENDPOINT(id), {
       headers: {
         "User-Agent": "Googlebot/2.1 (+http://www.google.com/bot.html)"
@@ -24,7 +24,7 @@ class TwitterSyndicateClient {
     })
       .then((res) => {
         if (res.status !== 200) throw new ClientError(`HTTP ${res.status} while fetching post`, "Twitter");
-        return res.text()
+        return res.text();
       })
       .then((res) => {
         let parsed;
