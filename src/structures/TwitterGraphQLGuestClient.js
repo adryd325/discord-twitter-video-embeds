@@ -75,7 +75,7 @@ class TwitterGuestClient {
     }
     let res;
     try {
-      res = fetch(GRAPHQL_TWEET_ENDPOINT(id, this.flags), {
+      res = await fetch(GRAPHQL_TWEET_ENDPOINT(id, this.flags), {
         headers: {
           authorization: TWITTER_GUEST_TOKEN,
           "user-agent": GENERIC_USER_AGENT,
@@ -91,6 +91,7 @@ class TwitterGuestClient {
         throw e;
       }
     }
+
     return res.text().then((res) => {
       let parsed;
       try {
