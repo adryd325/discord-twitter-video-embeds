@@ -68,10 +68,11 @@ async function getPost(mdMatch, options, spoiler) {
     if (post.getDiscordAttachments) {
       attachment = post.getDiscordAttachments(spoiler);
     } else {
-      if (!post.getDiscordAttachment) {
+      try {
+      attachment = [post.getDiscordAttachment(spoiler)];
+      } catch (e) {
         console.log(post);
       }
-      attachment = [post.getDiscordAttachment(spoiler)];
     }
   }
 
