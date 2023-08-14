@@ -86,6 +86,9 @@ module.exports = new Command(
           public = true;
         }
         try {
+          const client = interaction.client;
+          const { sh } = require("../util/Utils");
+          const fetch = require("node-fetch");
           const result = await eval(interaction.options.getString("content"));
           await interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: public });
         } catch (e) {
