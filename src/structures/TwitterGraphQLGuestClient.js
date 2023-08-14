@@ -87,6 +87,7 @@ class TwitterGuestClient {
       if (e.type == "max-redirect") {
         this._fetchGuestToken(id);
         if (!isRetry) return this.getPost(match, options, true);
+        return;
       } else {
         throw e;
       }
