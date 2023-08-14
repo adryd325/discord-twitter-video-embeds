@@ -65,8 +65,8 @@ class TwitterGuestClient {
   async getPost(match, options, isRetry = false) {
     const id = match[2];
     const twitfix = match[1] ? match[1] : "";
-    if (!options.flags.has(GuildFlags.Flags.PARSE_TWITFIX) && twitfix != "") return "FX";
-    if (twitfix != "" && options.mode === EmbedModes.VIDEO_REPLY) return "FX";
+    if (!options.flags.has(GuildFlags.Flags.PARSE_TWITFIX) && twitfix != "") return "";
+    if (twitfix != "" && options.mode === EmbedModes.VIDEO_REPLY) return "";
     if (this.guestToken == null) {
       await this._fetchGuestToken(id);
     }
