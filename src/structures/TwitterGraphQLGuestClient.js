@@ -73,63 +73,64 @@ class TwitterGuestClient {
     if (this.flags == null) {
       this.flags = {};
     }
-    return fetch(GRAPHQL_TWEET_ENDPOINT(id, this.flags), {
-      headers: {
-        authorization: TWITTER_GUEST_TOKEN,
-        "user-agent": GENERIC_USER_AGENT,
-        cookie: this.cookie,
-        "x-guest-token": this.guestToken
-      }
-    })
-      .catch((a) => {
-        if (a.type == "max-redirect") {
-          this._fetchGuestToken(id);
-          if (!isRetry) return this.getPost(match, options, true);
-        } else {
-          throw a;
+    let res;
+    try {
+      res = fetch(GRAPHQL_TWEET_ENDPOINT(id, this.flags), {
+        headers: {
+          authorization: TWITTER_GUEST_TOKEN,
+          "user-agent": GENERIC_USER_AGENT,
+          cookie: this.cookie,
+          "x-guest-token": this.guestToken
         }
-      })
-      .then((res) => res.text())
-      .then((res) => {
-        let parsed;
-        try {
-          parsed = JSON.parse(res);
-        } catch (error) {
-          if (!isRetry) {
-            this.guestToken = "";
-            this.cookie = "";
-            return this.getPost(match, options, true);
-          }
-          throw new ClientError("Error parsing JSON", "Twitter");
-        }
-
-        if (parsed.errors) {
-          const validationError = parsed.errors.filter((error) => error.code === 336);
-          if (
-            validationError[0] &&
-            validationError[0].message.startsWith("The following features cannot be null") &&
-            !isRetry
-          ) {
-            log.info("TwitterClient", "Updating features");
-            this._setFlags(validationError[0]);
-            return this.getPost(match, options, true);
-          }
-          throw new TwitterErrorList(parsed.errors.map((err) => new TwitterError(err)));
-        }
-
-        if (!parsed?.data?.tweetResult?.result?.legacy) {
-          throw new ClientError(`Didn't recieve conversation data; ID:${id}`, "Twitter");
-        }
-        const tweetData = parsed?.data?.tweetResult?.result?.legacy;
-        if (!parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy) {
-          throw new ClientError(`Didn't recieve user data; ID:${id}`, "Twitter");
-        }
-        const user = parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy;
-        const tweet = new TwitterPost(tweetData);
-        tweet.addUserData(user);
-        if (!tweet.videoUrl && options.flags.has(GuildFlags.Flags.TWITTER_ONLY_VIDEO)) return null;
-        return tweet;
       });
+    } catch (e) {
+      if (e.type == "max-redirect") {
+        this._fetchGuestToken(id);
+        if (!isRetry) return this.getPost(match, options, true);
+      } else {
+        throw e;
+      }
+    }
+    return res.text().then((res) => {
+      let parsed;
+      try {
+        parsed = JSON.parse(res);
+      } catch (error) {
+        if (!isRetry) {
+          this.guestToken = "";
+          this.cookie = "";
+          return this.getPost(match, options, true);
+        }
+        throw new ClientError("Error parsing JSON", "Twitter");
+      }
+
+      if (parsed.errors) {
+        const validationError = parsed.errors.filter((error) => error.code === 336);
+        if (
+          validationError[0] &&
+          validationError[0].message.startsWith("The following features cannot be null") &&
+          !isRetry
+        ) {
+          log.info("TwitterClient", "Updating features");
+          this._setFlags(validationError[0]);
+          return this.getPost(match, options, true);
+        }
+        throw new TwitterErrorList(parsed.errors.map((err) => new TwitterError(err)));
+      }
+
+      if (!parsed?.data?.tweetResult?.result?.legacy) {
+        throw new ClientError(`Didn't recieve conversation data; ID:${id}`, "Twitter");
+      }
+      const tweetData = parsed?.data?.tweetResult?.result?.legacy;
+      if (!parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy) {
+        throw new ClientError(`Didn't recieve user data; ID:${id}`, "Twitter");
+      }
+      const user = parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy;
+      const tweet = new TwitterPost(tweetData);
+      tweet.addUserData(user);
+      if (!tweet.videoUrl && options.flags.has(GuildFlags.Flags.TWITTER_ONLY_VIDEO)) return null;
+      return tweet;
+    });
   }
 }
 

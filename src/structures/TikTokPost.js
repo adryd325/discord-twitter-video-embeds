@@ -54,6 +54,9 @@ class TikTokPost {
     });
     embed.setURL(this.url);
     embed.setTimestamp(this.createdAt);
+    if (this.content == "") {
+      this.content = "...";
+    }
     embed.setTitle(this.content.substring(0, 200));
     embed.setAuthor({
       name: `${this.displayName} (@${this.username})`,
