@@ -1,4 +1,4 @@
-const { PermissionsBitField, GuildChannel, PermissionFlagsBits } = require("discord.js");
+const { PermissionsBitField, GuildChannel, PermissionFlagsBits, DiscordAPIError } = require("discord.js");
 const discord = require("../discord");
 const { notifyPermissions, safeReply, getUploadLimit } = require("../util/Utils");
 const log = require("../util/log");
@@ -68,10 +68,21 @@ module.exports = async function videoReply(message, posts, fallback = false) {
     return null;
   }
 
+  let response;
+  try {
+    response = await safeReply(message, { files: attachments, content });
+  } catch (e) {
+    if (e instanceof DiscordAPIError) {
+      //noop
+    } else {
+      throw e;
+    }
+  }
+
   // Reply to the message
   return [
     // eslint-ignore
-    await safeReply(message, { files: attachments, content }),
+    response,
     { mode: "VIDEO_REPLY", fallback }
   ];
 };

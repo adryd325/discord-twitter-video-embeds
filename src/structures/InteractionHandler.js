@@ -18,17 +18,33 @@ class InteractionHandler {
     }
   }
 
-  getCommands() {
-    const commandMeta = [];
-    this.commands.forEach((command) => commandMeta.push(command.meta));
-    return commandMeta;
+  _registerCommands() {
+    const globalCommands = [];
+    const guildCommands = new Map();
+    this.commands.forEach((command) => {
+      if (command.guilds) {
+        command.guilds.forEach((guildid) => {
+          if (guildCommands.has(guildid)) {
+            const arr = guildCommands.get(guildid);
+            arr.push(command.meta);
+            guildCommands.set(guildid, arr);
+          } else {
+            guildCommands.set(guildid, [command.meta]);
+          }
+        });
+      } else {
+        globalCommands.push(command.meta);
+      }
+    });
+    guildCommands.forEach((command, guild) => discord.guilds.cache.get(guild).commands.set(command));
+    discord.application.commands.set(globalCommands);
   }
 }
 
 const interactionHandler = new InteractionHandler(discord);
 
 discord.on("ready", () => {
-  discord.application.commands.set(interactionHandler.getCommands());
+  interactionHandler._registerCommands();
 });
 
 module.exports = interactionHandler;

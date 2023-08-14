@@ -13,11 +13,12 @@ const GuildFlags = require("../structures/GuildFlags");
 const GuildOptions = require("../structures/GuildOptions");
 const { EmbedModes } = require("../util/Constants");
 const { inspect } = require("util");
+const { database } = require("../database");
+const log = require("../util/log");
 
 const command = new SlashCommandBuilder()
   .setName("admin")
   .setDescription("Bot management command")
-  .setDMPermission(true)
   .addSubcommand(
     new SlashCommandSubcommandBuilder()
       .setName("setflag")
@@ -49,6 +50,11 @@ const command = new SlashCommandBuilder()
         new SlashCommandStringOption().setName("content").setDescription("Javascript to evaluate").setRequired(true)
       )
       .addBooleanOption(new SlashCommandBooleanOption().setName("public").setDescription("Post results publicly"))
+  )
+  .addSubcommand(
+    new SlashCommandSubcommandBuilder()
+      .setName("reset-application")
+      .setDescription("Reset all command states and restart the bot")
   );
 
 function getGuild(interaction) {
@@ -120,6 +126,19 @@ module.exports = new Command(
         });
 
         break;
+      case "reset-application":
+        await interaction.reply({ content: "Resetting application and safely shutting down", ephemeral: true });
+        log.info("unregistering guild commands");
+        await Promise.all(interaction.client.guilds.cache.map((guild) => guild.commands.set([])));
+        log.info("unregistering application commands");
+        await interaction.client.application.commands.set([]);
+        log.info("closing discord client");
+        await interaction.client.destroy();
+        log.info("syncing database");
+        await database.sync();
+        log.info(":wave:");
+        await process.exit();
     }
-  }
+  },
+  ["825498121625665536"]
 );

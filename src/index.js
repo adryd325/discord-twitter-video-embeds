@@ -98,9 +98,14 @@ interactionHandler.registerCommand(modeCommand);
 interactionHandler.registerCommand(twitterVideoEmbedCommand);
 interactionHandler.registerCommand(adminCommand);
 
+let exiting = false;
 process.on("SIGINT", () => {
+  if (exiting == true) {
+    process.exit();
+  }
   log.info("Cleanly exiting...");
   discord.destroy();
+  exiting = true;
 });
 
 (async function init() {
