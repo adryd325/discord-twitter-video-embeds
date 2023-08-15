@@ -20,6 +20,8 @@ const GUEST_TOKEN_REGEX = /gt=(\d+); Max-Age=\d+;/;
 // https://github.com/ytdl-org/youtube-dl/blob/master/youtube_dl/extractor/twitter.py
 class TwitterGuestClient {
   _fetchGuestToken(id) {
+    this.guestToken = "";
+    this.cookie = "";
     return fetch(WEB_TWEET_ENDPOINT(id), {
       headers: {
         "user-agent": GENERIC_USER_AGENT
@@ -99,14 +101,16 @@ class TwitterGuestClient {
         parsed = JSON.parse(res);
       } catch (error) {
         if (!isRetry) {
-          this.guestToken = "";
-          this.cookie = "";
-          return this.getPost(match, options, true);
+          return this._fetchGuestToken().then(() => this.getPost(match, options, true));
         }
         throw new ClientError("Error parsing JSON", "Twitter");
       }
 
       if (parsed.errors) {
+        const isGuestTokenError = parsed.errors.filter(error => error.code === 239).length > 0;
+        if (isGuestTokenError) {
+          return this._fetchGuestToken().then(() => this.getPost(match, options, true));
+        }
         const validationError = parsed.errors.filter((error) => error.code === 336);
         if (
           validationError[0] &&

@@ -95,7 +95,7 @@ module.exports = new Command(
           try {
             await interaction.reply({ content: `\`\`\`${inspect(e).substring(0, 1990)}\`\`\``, ephemeral: public });
           } catch (e) {
-            //noop
+            await interaction.reply({ content: "Failed to respond with content", ephemeral: public });
           }
         }
         break;
