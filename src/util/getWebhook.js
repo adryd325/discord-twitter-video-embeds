@@ -15,7 +15,10 @@ module.exports.getWebhook = async function getWebhook(channel) {
   } else {
     try {
       // @ts-ignore
-      const webhook = await channel.createWebhook("Video Embeds");
+      const webhook = await channel.createWebhook({
+        name: "Embeds Bot",
+        reason: "Required for RE_COMPOSE mode"
+      });
       WebhooksDB.create({
         channelID: channel.id,
         guildID: channel.guild.id,
