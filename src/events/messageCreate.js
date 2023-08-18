@@ -145,7 +145,11 @@ module.exports = async function handleMessage(message) {
   }
 
   // Finally send the message
-  const response = await sendMessage(message, posts, options);
+  const response = await sendMessage(
+    message,
+    posts.filter((a) => a != null),
+    options
+  );
   if (typeof response === "object" && response instanceof Array) {
     const [responseMessage, details] = response;
     // Some quick analytics, curiosity and it makes me feel happy when people use the bot

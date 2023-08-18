@@ -37,15 +37,17 @@ function notifyPermissions(message, permissions, mode) {
       )}. An administrator can switch mode using /embedmode or grant the required permissions in server settings. This message will self-destruct in 30 seconds.`
   );
   setTimeout(async () => {
-    reply.then((replyResolved) => {
-      try {
-        replyResolved.delete();
-      } catch (error) {
-        if (error instanceof DiscordAPIError) {
-          return;
+    if (reply != undefined) {
+      reply.then((replyResolved) => {
+        try {
+          replyResolved.delete();
+        } catch (error) {
+          if (error instanceof DiscordAPIError) {
+            return;
+          }
         }
-      }
-    });
+      });
+    }
   }, 30 * 1000);
   return message;
 }
