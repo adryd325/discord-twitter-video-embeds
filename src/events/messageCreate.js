@@ -98,7 +98,7 @@ module.exports = async function handleMessage(message) {
   log.verbose("messageCreate", "Passed initial checks");
 
   // Guild options
-  let options = { mode: EmbedModes.VIDEO_REPLY, flags: new GuildFlags([]) }; // Default options
+  let options = { mode: EmbedModes.VIDEO_REPLY, flags: new GuildFlags([GuildFlags.Flags.TWITTER_ONLY_VIDEO]) }; // Default options
   if (message.channel instanceof GuildChannel || message.channel instanceof ThreadChannel) {
     const dbOptions = await GuildOptions.getOptions(message.guild.id);
     if (dbOptions) {
