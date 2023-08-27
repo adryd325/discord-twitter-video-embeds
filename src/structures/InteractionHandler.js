@@ -36,7 +36,11 @@ class InteractionHandler {
         globalCommands.push(command.meta);
       }
     });
-    guildCommands.forEach((command, guild) => discord.guilds.cache.get(guild).commands.set(command));
+    guildCommands.forEach((command, guild) => {
+      if (discord.guilds.cache.has(guild)) {
+        discord.guilds.cache.get(guild).commands.set(command);
+      }
+    });
     discord.application.commands.set(globalCommands);
   }
 }
