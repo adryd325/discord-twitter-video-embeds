@@ -11,5 +11,5 @@ services:
       - .env
     volumes:
      - /etc/localtime:/etc/localtime:ro
-     - ./data:/bot/data
-     - ./binaries/yt-dlp:/usr/bin/yt-dlp
+     - ./data:/bot/data # Add cookies.txt for Instagram Support Firefox Add-on: https://github.com/hrdl-github/cookies-txt
+     - ./binaries/yt-dlp:/usr/bin/yt-dlp # For Instagram/Facebook Support
