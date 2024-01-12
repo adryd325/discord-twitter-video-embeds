@@ -28,7 +28,7 @@ class TwitterGuestClient {
 
   async _getGuestToken() {
     if (!this.guestToken || this.guestTokenAge - Date.now() > 10740000) {
-      log.info("TwitterClient", "Renewing guest token");
+      log.info("TwitterGuestClient", "Renewing guest token");
       const data = await this._fetchGuestToken();
       this.guestTokenAge = Date.now();
       this.guestToken = data["guest_token"];
@@ -54,13 +54,14 @@ class TwitterGuestClient {
       .then((res) => {
         let parsed;
         try {
+          log.verbose("TwitterGuestClient", "res: \n" + res);
           parsed = JSON.parse(res);
         } catch (error) {
           throw new ClientError("Error parsing JSON", "Twitter");
         }
         if (parsed.errors) {
           if (parsed.errors.filter((error) => error.code === 239) && !isRetry) {
-            log.info("TwitterClient", "Renewing Twitter guest token");
+            log.info("TwitterGuestClient", "Renewing Twitter guest token");
             this.guestToken = null;
             return this.getPost(match, options, true);
           }
@@ -73,6 +74,7 @@ class TwitterGuestClient {
           throw new ClientError(`Didn't recieve conversation data; ID:${id}`, "Twitter");
         }
         const tweets = conversation.globalObjects.tweets;
+        log.verbose("TwitterGuestClient", "tweets: \n" + JSON.stringify(tweets, null, 2));
         if (!tweets[id]) {
           throw new ClientError(`Didn't recieve tweet data; ID:${id}`, "Twitter");
         }
