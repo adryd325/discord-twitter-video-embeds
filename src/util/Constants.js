@@ -26,6 +26,7 @@ module.exports.GENERIC_USER_AGENT =
   "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.0.0 Safari/537.36";
 
 module.exports.TIKTOK_HOME = "https://www.tiktok.com";
+module.exports.INSTAGRAM_HOME = "https://www.instagram.com";
 
 module.exports.EmbedModes = createEnum([null, "VIDEO_REPLY", "RE_EMBED", "RE_COMPOSE"]);
 module.exports.SAFEST_EMBED_MODE = this.EmbedModes.VIDEO_REPLY;
@@ -52,7 +53,7 @@ module.exports.Providers = keyMirror([
 ]);
 
 module.exports.URLRegexes = {
-  INSTAGRAM: /https?:\/\/(?:www\.)?instagram\.com\/(?:p|tv|reel)\/[^/?#&]+/,
+  INSTAGRAM: /https?:\/\/(?:www\.)?(instagram|facebook)\.com\/(?:p|tv|reels|reel)\/[^/?#&]+/,
   REDDIT: /https?:\/\/(?:[^/]+\.)?reddit\.com(\/r\/[^/]+\/comments\/([^/?#&]+))/,
   REDDIT_VIDEO: /https?:\/\/v\.redd\.it\/([^/?#&]+)/,
   TIKTOK: /https?:\/\/(?:www\.)?tiktok\.com\/@[0-9a-zA-Z._]+\/video\/(\d+)/,

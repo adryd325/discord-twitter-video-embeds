@@ -8,6 +8,7 @@
     "prettier": "^2.3.2"
   },
   "dependencies": {
+    "@bochilteam/scraper": "^4.2.4",
     "bufferutil": "^4.0.3",
     "discord.js": "^14.12.1",
     "node-fetch": "^2.6.1",

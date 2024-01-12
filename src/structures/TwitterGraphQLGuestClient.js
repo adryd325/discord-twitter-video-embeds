@@ -35,7 +35,7 @@ class TwitterGuestClient {
         cookies.forEach((setCookie) => {
           this.cookie += setCookie.split(";")[0] + "; ";
         });
-        log.verbose("twitterClient", "got cookies");
+        log.verbose("TwitterGraphQLGuestClient", "got cookies");
         return fetch(WEB_TWEET_ENDPOINT(id), {
           headers: {
             "user-agent": GENERIC_USER_AGENT,
@@ -49,7 +49,7 @@ class TwitterGuestClient {
         if (match != null && match[1] != null) {
           this.guestToken = match[1];
         }
-        log.verbose("twitterClient", "got guest token");
+        log.verbose("TwitterGraphQLGuestClient", "got guest token");
         this.cookie += `gt=${this.guestToken}; `;
       });
   }
@@ -98,6 +98,7 @@ class TwitterGuestClient {
     return res.text().then((res) => {
       let parsed;
       try {
+        log.verbose("TwitterGraphQLGuestClient", "res: \n" + res);
         parsed = JSON.parse(res);
       } catch (error) {
         if (!isRetry) {
@@ -117,7 +118,7 @@ class TwitterGuestClient {
           validationError[0].message.startsWith("The following features cannot be null") &&
           !isRetry
         ) {
-          log.info("TwitterClient", "Updating features");
+          log.info("TwitterGraphQLGuestClient", "Updating features");
           this._setFlags(validationError[0]);
           return this.getPost(match, options, true);
         }
@@ -128,10 +129,22 @@ class TwitterGuestClient {
         throw new ClientError(`Didn't recieve conversation data; ID:${id}`, "Twitter");
       }
       const tweetData = parsed?.data?.tweetResult?.result?.legacy;
+      if(tweetData?.is_quote_status) {
+        if(!parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.legacy){
+          throw new ClientError(`Didn't recieve quote data; ID:${id}`, "Twitter");
+        }
+        tweetData.quote_data = parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.legacy;
+      }
       if (!parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy) {
         throw new ClientError(`Didn't recieve user data; ID:${id}`, "Twitter");
       }
       const user = parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy;
+      if(tweetData?.is_quote_status) {
+        if(!parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.core?.user_results?.result?.legacy){
+          throw new ClientError(`Didn't recieve quote user data; ID:${id}`, "Twitter");
+        }
+        user.quote_data = parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.core?.user_results?.result?.legacy;
+      }
       const tweet = new TwitterPost(tweetData);
       tweet.addUserData(user);
       if (!tweet.videoUrl && options.flags.has(GuildFlags.Flags.TWITTER_ONLY_VIDEO)) return null;
