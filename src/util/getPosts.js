@@ -11,7 +11,9 @@ async function getPost(mdMatch, options, spoiler) {
   let url;
   try {
     url = new URL(mdMatch.content);
+    log.verbose("getPosts", `Got URL: ${url.href}`);
   } catch (error) {
+    log.error("getPosts", error);
     return null;
   }
 
@@ -21,8 +23,11 @@ async function getPost(mdMatch, options, spoiler) {
   for (const [tmpProvider, regex] of Object.entries(URLRegexes)) {
     const tmpMatch = url.href.match(regex);
     if (tmpMatch) {
+      log.verbose("getPosts", `Matched tmpProvider:${tmpProvider} and tmpMatch:${tmpMatch} with regex:${regex}`)
       provider = tmpProvider;
       match = tmpMatch;
+    }else{
+      log.verbose("getPosts", `Did not match for for url: ${url.href} with regex:${regex}`);
     }
   }
 

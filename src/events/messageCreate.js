@@ -126,9 +126,10 @@ module.exports = async function handleMessage(message) {
   const posts = await Promise.all(postsPromises);
   log.verbose("messageCreate", "Resolved all posts:");
   log.verbose("messageCreate", posts);
+  log.verbose("messageCreate", typeof posts);
 
   // Check for links we cannot re-embed
-  if (posts.includes(null)) {
+  if (posts.includes(null) || posts.find((post) => post.provider == 'INSTAGRAM')) {
     options.mode = SAFEST_EMBED_MODE;
     log.verbose("messageCreate", "Set mode to safest since message includes non-re-embedable content");
   }
@@ -143,6 +144,7 @@ module.exports = async function handleMessage(message) {
     log.verbose("messageCreate", "No embedable links");
     return null;
   }
+
 
   // Finally send the message
   const response = await sendMessage(
