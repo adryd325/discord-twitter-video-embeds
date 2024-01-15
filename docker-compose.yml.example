@@ -1,0 +1,15 @@
+services:
+  discord-twitter-video-embeds:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: discord-twitter-video-embeds
+    container_name: discord-twitter-video-embeds
+    hostname: discord-twitter-video-embeds
+    # restart: unless-stopped
+    env_file:
+      - .env
+    volumes:
+     - /etc/localtime:/etc/localtime:ro
+     - ./data:/bot/data # Add cookies.txt for Instagram Support Firefox Add-on: https://github.com/hrdl-github/cookies-txt
+     - ./binaries/yt-dlp:/usr/bin/yt-dlp # For Instagram/Facebook Support

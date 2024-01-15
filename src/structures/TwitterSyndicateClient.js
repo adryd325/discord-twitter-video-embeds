@@ -29,6 +29,7 @@ class TwitterSyndicateClient {
       .then((res) => {
         let parsed;
         try {
+          log.verbose("TwitterSyndicateClient", "res: \n" + res);
           parsed = JSON.parse(res);
         } catch (error) {
           throw new ClientError("Error parsing JSON", "Twitter");
