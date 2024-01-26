@@ -57,7 +57,7 @@ function write(content, originalContent) {
 }
 
 function format(args, logType) {
-  if (log.level > logType.level) return;
+  if (log.level > logType.level) return null;
   let content, prefix;
   // eg. log.level("hello");
   if (args.length === 1) {

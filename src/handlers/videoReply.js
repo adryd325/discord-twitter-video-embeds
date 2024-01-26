@@ -11,24 +11,26 @@ module.exports = async function videoReply(message, posts, fallback = false) {
     !message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)
   ) {
     notifyPermissions(message, REQUIRED_PERMISSIONS, "VIDEO_REPLY");
-    return;
+    return null;
   }
 
   let attachmentPromises = [];
   let content = "";
-  posts.forEach(async (post) => {
-    if (!post) return;
+
+  for (const post of posts) {
+    if (!post) continue;
+
     if (post.attachment && !fallback) {
       log.verbose("videoReply", "added attchment");
       post.attachment.forEach((attachment) => attachmentPromises.push(attachment));
-      return null;
+      continue;
     }
     if (post.videoUrl) {
       log.verbose("videoReply", "added video url");
       if (post.spoiler) content += ` || ${post.videoUrl} ||`;
       else content += " " + post.videoUrl;
     }
-  });
+  }
 
   attachmentPromises = attachmentPromises.slice(0, 10);
 
@@ -79,12 +81,10 @@ module.exports = async function videoReply(message, posts, fallback = false) {
     }
   }
 
+  if (!response) return null;
+
   // Reply to the message
-  return [
-    // eslint-ignore
-    response,
-    { mode: "VIDEO_REPLY", fallback }
-  ];
+  return [response, { mode: "VIDEO_REPLY", fallback }];
 };
 
 module.exports.REQUIRED_PERMISSIONS = REQUIRED_PERMISSIONS;

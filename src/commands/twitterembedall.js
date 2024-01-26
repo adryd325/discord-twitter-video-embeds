@@ -2,7 +2,6 @@ const { ApplicationCommandOptionType, PermissionFlagsBits } = require("discord.j
 const Command = require("../structures/Command");
 const GuildFlags = require("../structures/GuildFlags");
 const GuildOptions = require("../structures/GuildOptions");
-const { EmbedModes } = require("../util/Constants");
 const log = require("../util/log");
 
 module.exports = new Command(

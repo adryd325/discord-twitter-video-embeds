@@ -55,11 +55,13 @@ module.exports.Providers = keyMirror([
 module.exports.URLRegexes = {
   INSTAGRAM: /https?:\/\/(?:www\.)?(instagram|facebook)\.com\/(?:p|tv|reels|reel|share\/r)\/[^/?#&]+/,
   REDDIT: /https?:\/\/(?:[^/]+\.)?reddit\.com(\/r\/[^/]+\/comments\/([^/?#&]+))/,
-  REDDIT_VIDEO: /https?:\/\/v\.redd\.it\/([^/?#&]+)/,
+  //REDDIT_VIDEO: /https?:\/\/v\.redd\.it\/([^/?#&]+)/,
+  REDDIT_VIDEO:
+    /https?:\/\/v\.redd\.it\/([^/?#&]{1,10})|https?:\/\/(?:[^/]+\.)?reddit\.com(?:\/r\/[^/]+\/s\/([^/?#&]{1,10}))/,
   TIKTOK: /https?:\/\/(?:www\.)?tiktok\.com\/@[0-9a-zA-Z._]+\/video\/(\d+)/,
   TIKTOK_REDIRECT: /https?:\/\/([a-z]{2,3})\.tiktok\.com\/(t\/)?([A-Za-z0-9]+)/,
   TWITTER: /https?:\/\/(?:(?:www|m(?:obile)?)\.)?(fx|vx)?twitter\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/,
-  X_DOT_COM: /https?:\/\/(?:(?:www|m(?:obile)?)\.)?()x\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/
+  X_DOT_COM: /https?:\/\/(?:(?:www|m(?:obile)?)\.)?(fixup|fixv)?x\.com\/(?:(?:i\/web|[^/]+)\/status|statuses)\/(\d+)/
 };
 
 module.exports.Favicons = {

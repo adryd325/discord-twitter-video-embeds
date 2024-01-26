@@ -1,19 +1,17 @@
+const { inspect } = require("util");
 const {
   SlashCommandBuilder,
   SlashCommandSubcommandBuilder,
   SlashCommandIntegerOption,
   SlashCommandStringOption,
-  InteractionResponse,
-  CommandInteraction,
-  SlashCommandSubcommandGroupBuilder,
   SlashCommandBooleanOption
 } = require("discord.js");
+const { database } = require("../database");
 const Command = require("../structures/Command");
 const GuildFlags = require("../structures/GuildFlags");
 const GuildOptions = require("../structures/GuildOptions");
+const PlatformFlags = require("../structures/PlatformFlags");
 const { EmbedModes } = require("../util/Constants");
-const { inspect } = require("util");
-const { database } = require("../database");
 const log = require("../util/log");
 
 const command = new SlashCommandBuilder()
@@ -75,20 +73,21 @@ module.exports = new Command(
    * @param {CommandInteraction} interaction - The title of the book.
    */
   async function execute(interaction) {
-    if (interaction.user.id != "298475055141355520") {
+    if (interaction.user.id !== "298475055141355520") {
       interaction.reply({ content: "You do not have permission to execute this command", ephemeral: true });
+      return;
     }
     let guildId;
     switch (interaction.options.getSubcommand()) {
-      case "evaluate":
+      case "evaluate": {
         let public = !interaction.options.getBoolean("public");
         if (public == null) {
           public = true;
         }
         try {
-          const client = interaction.client;
-          const { sh } = require("../util/Utils");
-          const fetch = require("node-fetch");
+          const _client = interaction.client;
+          const { _sh } = require("../util/Utils");
+          const _fetch = require("node-fetch");
           const result = await eval(interaction.options.getString("content"));
           await interaction.reply({ content: `\`\`\`${inspect(result).substring(0, 1990)}\`\`\``, ephemeral: public });
         } catch (e) {
@@ -99,7 +98,8 @@ module.exports = new Command(
           }
         }
         break;
-      case "setflag":
+      }
+      case "setflag": {
         guildId = getGuild(interaction);
         if (!guildId) {
           interaction.reply({ content: "No guildid specified and command not run in guild", ephemeral: true });
@@ -114,7 +114,24 @@ module.exports = new Command(
         });
 
         break;
-      case "setmode":
+      }
+      case "setplatformflag": {
+        guildId = getGuild(interaction);
+        if (!guildId) {
+          interaction.reply({ content: "No guildid specified and command not run in guild", ephemeral: true });
+          break;
+        }
+        const flags = new PlatformFlags(interaction.options.getInteger("flags"));
+        GuildOptions.setOptions(guildId, { flags }).then(() => {
+          interaction.reply({
+            content: `bitfield: \`${flags.bitfield}\`\nvalues: \`${flags.toArray().join(", ")}\``,
+            ephemeral: true
+          });
+        });
+
+        break;
+      }
+      case "setmode": {
         guildId = getGuild(interaction);
         if (!guildId) {
           interaction.reply({ content: "No guildid specified and command not run in guild", ephemeral: true });
@@ -129,10 +146,11 @@ module.exports = new Command(
         });
 
         break;
-      case "reset-application":
+      }
+      case "reset-application": {
         await interaction.reply({ content: "Resetting application and safely shutting down", ephemeral: true });
         log.info("unregistering guild commands");
-        await Promise.all(interaction.client.guilds.cache.map((guild) => guild.commands.set([])));
+        await interaction.client.shard.broadcastEval((c) => c.guilds.cache.map((guild) => guild.commands.set([])));
         log.info("unregistering application commands");
         await interaction.client.application.commands.set([]);
         log.info("closing discord client");
@@ -141,6 +159,7 @@ module.exports = new Command(
         await database.sync();
         log.info(":wave:");
         await process.exit();
+      }
     }
   },
   ["825498121625665536"]

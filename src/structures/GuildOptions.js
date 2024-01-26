@@ -1,6 +1,7 @@
 const { GuildChannel, Guild } = require("discord.js");
 const GuildFlags = require("./GuildFlags");
 const GuildOptionsDB = require("../database/GuildOptionsDB");
+const PlatformFlags = require("./PlatformFlags");
 
 class GuildOptions {
   constructor() {
@@ -23,7 +24,19 @@ class GuildOptions {
       const mode = dbEntry.getDataValue("mode");
       // @ts-ignore
       const flags = new GuildFlags(dbEntry.getDataValue("flags") ?? 0);
-      const options = { mode, flags };
+      const platformsRawVal = dbEntry.getDataValue("platforms");
+      let platforms;
+      // DB Migration
+      if (flags.has(GuildFlags.Flags.TWITTER_ONLY) && platformsRawVal != null) {
+        // Only twitter
+        platforms = new PlatformFlags();
+        platforms.add(PlatformFlags.Flags.TWITTER);
+        flags.remove(GuildFlags.Flags.TWITTER_ONLY);
+        this.setOptions(guildID, { flags });
+      } else {
+        platforms = new PlatformFlags(platformsRawVal ?? (1 << 24) - 1);
+      }
+      const options = { mode, flags, platforms };
       return options;
     } else {
       return null;
@@ -37,6 +50,13 @@ class GuildOptions {
       // @ts-ignore
       if (options.flags instanceof GuildFlags) {
         dbUpdate.flags = options.flags.valueOf();
+      }
+    }
+    if (options.platforms) {
+      dbUpdate.platforms = options.platforms;
+      // @ts-ignore
+      if (options.platforms instanceof PlatformFlags) {
+        dbUpdate.platforms = options.platforms.valueOf();
       }
     }
     if (options.mode) {

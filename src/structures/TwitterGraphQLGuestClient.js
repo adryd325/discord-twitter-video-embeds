@@ -94,7 +94,6 @@ class TwitterGuestClient {
         throw e;
       }
     }
-
     return res.text().then((res) => {
       let parsed;
       try {
@@ -108,7 +107,7 @@ class TwitterGuestClient {
       }
 
       if (parsed.errors) {
-        const isGuestTokenError = parsed.errors.filter(error => error.code === 239).length > 0;
+        const isGuestTokenError = parsed.errors.filter((error) => error.code === 239).length > 0;
         if (isGuestTokenError) {
           return this._fetchGuestToken().then(() => this.getPost(match, options, true));
         }
@@ -129,8 +128,8 @@ class TwitterGuestClient {
         throw new ClientError(`Didn't recieve conversation data; ID:${id}`, "Twitter");
       }
       const tweetData = parsed?.data?.tweetResult?.result?.legacy;
-      if(tweetData?.is_quote_status) {
-        if(!parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.legacy){
+      if (tweetData?.is_quote_status) {
+        if (!parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.legacy) {
           throw new ClientError(`Didn't recieve quote data; ID:${id}`, "Twitter");
         }
         tweetData.quote_data = parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.legacy;
@@ -139,11 +138,12 @@ class TwitterGuestClient {
         throw new ClientError(`Didn't recieve user data; ID:${id}`, "Twitter");
       }
       const user = parsed?.data?.tweetResult?.result?.core?.user_results?.result?.legacy;
-      if(tweetData?.is_quote_status) {
-        if(!parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.core?.user_results?.result?.legacy){
+      if (tweetData?.is_quote_status) {
+        if (!parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.core?.user_results?.result?.legacy) {
           throw new ClientError(`Didn't recieve quote user data; ID:${id}`, "Twitter");
         }
-        user.quote_data = parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.core?.user_results?.result?.legacy;
+        user.quote_data =
+          parsed?.data?.tweetResult?.result?.quoted_status_result?.result?.core?.user_results?.result?.legacy;
       }
       const tweet = new TwitterPost(tweetData);
       tweet.addUserData(user);

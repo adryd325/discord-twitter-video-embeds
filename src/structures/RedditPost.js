@@ -27,77 +27,72 @@ class RedditPost {
     this.replies = data.num_replies;
   }
 
-  _getVideo(dashUrl) {
-    return fetch(dashUrl, {
+  async _getVideo(dashUrl) {
+    const dashResponse = await fetch(dashUrl, {
       headers: {
         "User-Agent": USER_AGENT
       }
-    }).then(async (dashResponse) => {
-      const xml = await dashResponse.text();
+    });
 
-      // Get all video options
-      const videoOptions = xml.match(dashVideoGlobalRegExp);
-      dashVideoGlobalRegExp.lastIndex = 0;
+    const xml = await dashResponse.text();
 
-      // If we got nothing, exit
-      if (!videoOptions) return null;
+    // Get all video options
+    const videoOptions = xml.match(dashVideoGlobalRegExp);
+    dashVideoGlobalRegExp.lastIndex = 0;
 
-      // Get all audio options
-      const audioOptions = xml.match(dashAudioGlobalRegExp);
-      dashAudioGlobalRegExp.lastIndex = 0;
+    // If we got nothing, exit
+    if (!videoOptions) return null;
 
-      let bestVideo;
-      let bestAudio;
+    // Get all audio options
+    const audioOptions = xml.match(dashAudioGlobalRegExp);
+    dashAudioGlobalRegExp.lastIndex = 0;
 
-      // Find best video
-      videoOptions.forEach((video) => {
-        const [_match, bitrate, url] = video.match(dashVideoRegExp);
-        if (!bestVideo || bestVideo?.bitrate < bitrate) {
-          bestVideo = { bitrate, url: `${this.shortUrl}/${url}` };
+    let bestVideo;
+    let bestAudio;
+
+    // Find best video
+    videoOptions.forEach((video) => {
+      const [_match, bitrate, url] = video.match(dashVideoRegExp);
+      if (!bestVideo || bestVideo?.bitrate < bitrate) {
+        bestVideo = { bitrate, url: `${this.shortUrl}/${url}` };
+      }
+    });
+
+    if (!bestVideo) return null;
+
+    // Find best audio
+    if (audioOptions !== null) {
+      audioOptions.forEach((audio) => {
+        const [_match, bitrate, url] = audio.match(dashAudioRegExp);
+        if (!bestAudio || bestVideo?.bitrate < bitrate) {
+          bestAudio = { bitrate, url: `${this.shortUrl}/${url}` };
         }
       });
+    }
 
-      // To shut up typescript parser in vscode
-      if (!bestVideo) return null;
-
-      // Find best audio
-      if (audioOptions !== null) {
-        audioOptions.forEach((audio) => {
-          const [_match, bitrate, url] = audio.match(dashAudioRegExp);
-          if (!bestAudio || bestVideo?.bitrate < bitrate) {
-            bestAudio = { bitrate, url: `${this.shortUrl}/${url}` };
-          }
-        });
+    // Download best video
+    const video = await fetch(bestVideo.url, {
+      headers: {
+        "User-Agent": USER_AGENT
       }
+    }).then((response) => response.buffer());
 
-      // Download best video
-      // @ts-ignore
-      const video = fetch(bestVideo.url, {
-        headers: {
-          "User-Agent": USER_AGENT
-        }
-      }).then((response) => response.buffer());
+    // If we don't have audio, we can end here
+    if (!bestAudio) return video;
 
-      // If we don't have audio, we can end here
-      if (!bestAudio) return video;
+    // If we do have audio let's download it
+    const audio = await fetch(bestAudio.url, {
+      headers: {
+        "User-Agent": USER_AGENT
+      }
+    }).then((response) => response.buffer());
 
-      // If we do have audio let's download it
-      // @ts-ignore
-      const audio = fetch(bestAudio.url, {
-        headers: {
-          "User-Agent": USER_AGENT
-        }
-      }).then((response) => response.buffer());
-
-      // Then merge the two streams (I hate reddit)
-      return mergeStreams(video, audio);
-    });
+    // Then merge the two streams (I hate reddit)
+    return mergeStreams(video, audio);
   }
 
-  getDiscordAttachment(spoiler) {
-    return this.video.then(
-      (video) => new AttachmentBuilder(video, { name: `${spoiler ? "SPOILER_" : ""}${this.id}.mp4` })
-    );
+  async getDiscordAttachment(spoiler) {
+    return new AttachmentBuilder(await this.video, { name: `${spoiler ? "SPOILER_" : ""}${this.id}.mp4` });
   }
 
   getDiscordEmbed() {

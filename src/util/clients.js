@@ -1,8 +1,8 @@
+const InstagramClient = require("../structures/InstagramClient");
 const RedditClient = require("../structures/RedditClient");
 const RedditVideo = require("../structures/RedditVideo");
 const TikTokClient = require("../structures/TikTokClient");
 const TikTokRedirect = require("../structures/TikTokRedirect");
-const InstagramClient = require("../structures/InstagramClient");
 const TwitterSyndcateClient = require("../structures/TwitterGraphQLGuestClient");
 
 const clients = new Map();

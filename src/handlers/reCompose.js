@@ -3,7 +3,8 @@ const {
   PermissionFlagsBits,
   GuildChannel,
   DiscordAPIError,
-  RESTJSONErrorCodes
+  RESTJSONErrorCodes,
+  ThreadChannel
 } = require("discord.js");
 const videoReply = require("./videoReply");
 const discord = require("../discord");
@@ -17,7 +18,7 @@ const REQUIRED_PERMISSIONS = new PermissionsBitField([
   PermissionFlagsBits.ManageWebhooks
 ]);
 
-module.exports = async function reEmbed(message, posts, retry = false) {
+module.exports = async function reCompose(message, posts, retry = false) {
   // To suppress TS errors, even though we already handled that.
   if (!(message.channel instanceof GuildChannel)) return null;
   if (!message.channel.permissionsFor(discord.user.id).has(REQUIRED_PERMISSIONS)) {
@@ -35,6 +36,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
     if (!post) return;
     if (post.embed) {
       embeds.push(post.embed);
+    } else if (post.embeds) {
+      embeds.push(...post.embeds);
     }
     if (post.attachment) {
       post.attachment.forEach((attachment) => attachmentPromises.push(attachment));
@@ -77,7 +80,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
         files: attachments,
         username: message.author.username,
         avatarURL: message.author.avatarURL({ format: "webp", size: 256 }),
-        allowed_mentions: { parse: ["users"] }
+        allowed_mentions: { parse: ["users"] },
+        threadId: message.channel instanceof ThreadChannel ? message.channel.id : null
       })
       .then((reply) => {
         try {
@@ -93,7 +97,7 @@ module.exports = async function reEmbed(message, posts, retry = false) {
         case RESTJSONErrorCodes.UnknownWebhook:
           await resetWebhook(message.channel);
           if (retry === false) {
-            return reEmbed(message, posts, true);
+            return reCompose(message, posts, true);
           }
           break;
         case RESTJSONErrorCodes.RequestEntityTooLarge:
@@ -105,6 +109,8 @@ module.exports = async function reEmbed(message, posts, retry = false) {
       }
     }
   }
+
+  return null;
 };
 
 module.exports.REQUIRED_PERMISSIONS = REQUIRED_PERMISSIONS;

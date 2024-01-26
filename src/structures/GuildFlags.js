@@ -5,7 +5,7 @@ class GuildFlags extends BitField {}
 GuildFlags.Flags = {
   MANUALLY_SET_MODE: 1, // DB entry was manually made and mode was set to RE_EMBED or VIDEO_REPLY depending on permissions
   PARSE_TWITFIX: 1 << 1, // For Cyn
-  TWITTER_ONLY: 1 << 2, // Only parse Twitter links
+  TWITTER_ONLY: 1 << 2, // Only parse Twitter links (Deprecated)
   TWITTER_ONLY_VIDEO: 1 << 3 // Only embed videos
 };
 

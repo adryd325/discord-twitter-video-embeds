@@ -31,6 +31,8 @@ module.exports = async function reEmbed(message, posts) {
     if (!post) return;
     if (post.embed) {
       embeds.push(post.embed);
+    } else if (post.embeds) {
+      embeds.push(...post.embeds);
     }
     if (post.attachment) {
       post.attachment.forEach((attachment) => attachmentPromises.push(attachment));

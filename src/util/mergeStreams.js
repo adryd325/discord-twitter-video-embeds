@@ -15,7 +15,7 @@ module.exports = async function mergeStreams(video, audio) {
   const outFile = path.join(tempDir, `mergeStreams_${id}.mp4`);
 
   // Write the files (in parallel)
-  await Promise.all([fs.promises.writeFile(videoFile, await video), fs.promises.writeFile(audioFile, await audio)]);
+  await Promise.all([fs.promises.writeFile(videoFile, video), fs.promises.writeFile(audioFile, audio)]);
 
   // Run ffmpeg
   await sh(`ffmpeg -i "${videoFile}" -i "${audioFile}" -f mp4 "${outFile}"`);

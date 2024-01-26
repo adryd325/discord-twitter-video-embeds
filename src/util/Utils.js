@@ -20,10 +20,12 @@ function safeReply(message, newMessage) {
   } catch (exception) {
     if (exception instanceof DiscordAPIError) {
       log.error(exception);
-      return;
+      return null;
     }
     throw exception;
   }
+
+  return null;
 }
 
 function notifyPermissions(message, permissions, mode) {
@@ -38,15 +40,13 @@ function notifyPermissions(message, permissions, mode) {
   );
   setTimeout(async () => {
     if (reply != undefined) {
-      reply.then((replyResolved) => {
-        try {
-          replyResolved.delete();
-        } catch (error) {
-          if (error instanceof DiscordAPIError) {
-            return;
-          }
+      try {
+        (await reply).delete();
+      } catch (error) {
+        if (error instanceof DiscordAPIError) {
+          return;
         }
-      });
+      }
     }
   }, 30 * 1000);
   return message;

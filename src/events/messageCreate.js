@@ -13,6 +13,7 @@ const videoReply = require("../handlers/videoReply");
 const GuildFlags = require("../structures/GuildFlags");
 const GuildOptions = require("../structures/GuildOptions");
 const MessageOwners = require("../structures/MessageOwners");
+const PlatformFlags = require("../structures/PlatformFlags");
 const { EmbedModes, QRT_UNROLL_BOTS, SAFEST_EMBED_MODE, MAX_DISCORD_MESSAGE_LENGTH } = require("../util/Constants");
 const getPosts = require("../util/getPosts");
 const log = require("../util/log");
@@ -94,11 +95,15 @@ async function sendMessage(message, posts, options) {
 
 module.exports = async function handleMessage(message) {
   const startTime = Date.now();
-  if (!shouldProcessMessage(message)) return null;
+  if (!shouldProcessMessage(message)) return;
   log.verbose("messageCreate", "Passed initial checks");
 
   // Guild options
-  let options = { mode: EmbedModes.VIDEO_REPLY, flags: new GuildFlags([GuildFlags.Flags.TWITTER_ONLY_VIDEO]) }; // Default options
+  let options = {
+    mode: EmbedModes.VIDEO_REPLY,
+    flags: new GuildFlags([GuildFlags.Flags.TWITTER_ONLY_VIDEO]),
+    platforms: new PlatformFlags(-1)
+  }; // Default options
   if (message.channel instanceof GuildChannel || message.channel instanceof ThreadChannel) {
     const dbOptions = await GuildOptions.getOptions(message.guild.id);
     if (dbOptions) {
@@ -119,7 +124,7 @@ module.exports = async function handleMessage(message) {
   // @ts-ignore
   if (postsPromises.length === 0) {
     log.verbose("messageCreate", "No valid posts");
-    return null;
+    return;
   }
 
   // Resolve all the posts
@@ -129,7 +134,7 @@ module.exports = async function handleMessage(message) {
   log.verbose("messageCreate", typeof posts);
 
   // Check for links we cannot re-embed
-  if (posts.includes(null) || posts.find((post) => post.provider == 'INSTAGRAM')) {
+  if (posts.includes(null) || posts.find((post) => post.provider == "INSTAGRAM")) {
     options.mode = SAFEST_EMBED_MODE;
     log.verbose("messageCreate", "Set mode to safest since message includes non-re-embedable content");
   }
@@ -142,9 +147,8 @@ module.exports = async function handleMessage(message) {
   // No embedable links
   if (!posts.find((post) => post !== null)) {
     log.verbose("messageCreate", "No embedable links");
-    return null;
+    return;
   }
-
 
   // Finally send the message
   const response = await sendMessage(
