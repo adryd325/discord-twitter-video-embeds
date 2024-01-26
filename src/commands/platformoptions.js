@@ -5,12 +5,12 @@ const PlatformFlags = require("../structures/PlatformFlags");
 
 module.exports = new Command(
   {
-    name: "platformoptions",
+    name: "toggleplatform",
     options: [
       {
         type: ApplicationCommandOptionType.Integer,
         name: "mode",
-        description: "Mode to switch to",
+        description: "Platform to toggle",
         choices: [
           {
             name: "TWITTER",

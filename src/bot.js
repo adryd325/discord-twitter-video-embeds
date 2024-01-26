@@ -12,6 +12,7 @@ const GuildOptions = require("./structures/GuildOptions");
 const interactionHandler = require("./structures/InteractionHandler");
 const { TEMP_DIR, EmbedModes } = require("./util/Constants");
 const log = require("./util/log");
+const platformoptionsCommand = require("./commands/platformoptions");
 
 Error.stackTraceLimit = 100;
 
@@ -97,6 +98,7 @@ discord.on("debug", (data) => {
 interactionHandler.registerCommand(modeCommand);
 interactionHandler.registerCommand(twitterVideoEmbedCommand);
 interactionHandler.registerCommand(adminCommand);
+interactionHandler.registerCommand(platformoptionsCommand);
 
 let exiting = false;
 process.on("SIGINT", () => {
