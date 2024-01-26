@@ -37,24 +37,24 @@ async function getPost(mdMatch, options, spoiler) {
   switch (provider) {
     case Providers.TWITTER:
     case Providers.X_DOT_COM:
-      if (!options.platforms.hasFlag(PlatformFlags.Flags.TWITTER)) {
+      if (!options.platforms.has(PlatformFlags.Flags.TWITTER)) {
         return null;
       }
       break;
     case Providers.REDDIT:
     case Providers.REDDIT_VIDEO:
-      if (!options.platforms.hasFlag(PlatformFlags.Flags.REDDIT)) {
+      if (!options.platforms.has(PlatformFlags.Flags.REDDIT)) {
         return null;
       }
       break;
     case Providers.INSTAGRAM:
-      if (!options.platforms.hasFlag(PlatformFlags.Flags.INSTAGRAM_FACEBOOK)) {
+      if (!options.platforms.has(PlatformFlags.Flags.INSTAGRAM_FACEBOOK)) {
         return null;
       }
       break;
     case Providers.TIKTOK:
     case Providers.TIKTOK_REDIRECT:
-      if (!options.platforms.hasFlag(PlatformFlags.Flags.TIKTOK)) {
+      if (!options.platforms.has(PlatformFlags.Flags.TIKTOK)) {
         return null;
       }
       break;
