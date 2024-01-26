@@ -102,7 +102,7 @@ module.exports = async function handleMessage(message) {
   let options = {
     mode: EmbedModes.VIDEO_REPLY,
     flags: new GuildFlags([GuildFlags.Flags.TWITTER_ONLY_VIDEO]),
-    platforms: new PlatformFlags((1 >> 24) - 1)
+    platforms: new PlatformFlags((1 << 24) - 1)
   }; // Default options
   if (message.channel instanceof GuildChannel || message.channel instanceof ThreadChannel) {
     const dbOptions = await GuildOptions.getOptions(message.guild.id);
